@@ -440,7 +440,7 @@ requires-dist = [
     { name = "attrs", specifier = ">=22.2.0" },
     { name = "fastapi", extras = ["standard"], specifier = "==0.128.0" },
     { name = "httpx", specifier = ">=0.23.0,<0.29.0" },
-    { name = "llm-bridge", specifier = "==1.17.6" },
+    { name = "llm-bridge", specifier = "==1.17.9" },
     { name = "python-dateutil", specifier = ">=2.8.0,<3.0.0" },
     { name = "python-dotenv", specifier = "==1.2.1" },
     { name = "python-jose", extras = ["cryptography"], specifier = "==3.5.0" },
@@ -719,7 +719,7 @@ wheels = [
 
 [[package]]
 name = "llm-bridge"
-version = "1.17.6"
+version = "1.17.9"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "anthropic" },
@@ -734,9 +734,9 @@ dependencies = [
     { name = "tenacity" },
     { name = "tiktoken" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/8d/43/655971b27237c9e72f5a1672c48a0e8ad8b7302390df91e4881426b9422c/llm_bridge-1.17.6.tar.gz", hash = "sha256:52fe34ee41569aa8afb7706f0c9edc7f9bf6cf8f345d686d4fea210a932ac35a", size = 82774, upload-time = "2026-03-20T10:43:40.226Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/f0/3d/caa8fba6b9f8952be09fec457a87810f30eade7dfb371e4deee23d855b4b/llm_bridge-1.17.9.tar.gz", hash = "sha256:1b514ffc1de53a7d23694cab4503c30e7ae286a0a345013880879bb38e0aea04", size = 82670, upload-time = "2026-04-10T02:27:09.524Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/65/34/69dc5716958074435b28c78c8f60a78da643f0021558fdd188320bb9dc58/llm_bridge-1.17.6-py3-none-any.whl", hash = "sha256:ff245ffbd48ed9c1d58046f0f694f1546014b36a752a5c278419c7e9e46d4e04", size = 44817, upload-time = "2026-03-20T10:43:38.871Z" },
+    { url = "https://files.pythonhosted.org/packages/fd/e9/854ea9b1da1e80da8a0b78e1f8f058eabc527bb1843a784b7c3dcddd9a80/llm_bridge-1.17.9-py3-none-any.whl", hash = "sha256:7d8f93e363e9dc461bfda58bd4eda2804498bfb442acdef84e47f8b18ada65f3", size = 44449, upload-time = "2026-04-10T02:27:10.638Z" },
 ]
 
 [[package]]
@@ -905,7 +905,7 @@ wheels = [
 
 [[package]]
 name = "openai"
-version = "2.9.0"
+version = "2.30.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "anyio" },
@@ -917,9 +917,9 @@ dependencies = [
     { name = "tqdm" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/09/48/516290f38745cc1e72856f50e8afed4a7f9ac396a5a18f39e892ab89dfc2/openai-2.9.0.tar.gz", hash = "sha256:b52ec65727fc8f1eed2fbc86c8eac0998900c7ef63aa2eb5c24b69717c56fa5f", size = 608202, upload-time = "2025-12-04T18:15:09.01Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/88/15/52580c8fbc16d0675d516e8749806eda679b16de1e4434ea06fb6feaa610/openai-2.30.0.tar.gz", hash = "sha256:92f7661c990bda4b22a941806c83eabe4896c3094465030dd882a71abe80c885", size = 676084, upload-time = "2026-03-25T22:08:59.96Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/59/fd/ae2da789cd923dd033c99b8d544071a827c92046b150db01cfa5cea5b3fd/openai-2.9.0-py3-none-any.whl", hash = "sha256:0d168a490fbb45630ad508a6f3022013c155a68fd708069b6a1a01a5e8f0ffad", size = 1030836, upload-time = "2025-12-04T18:15:07.063Z" },
+    { url = "https://files.pythonhosted.org/packages/2a/9e/5bfa2270f902d5b92ab7d41ce0475b8630572e71e349b2a4996d14bdda93/openai-2.30.0-py3-none-any.whl", hash = "sha256:9a5ae616888eb2748ec5e0c5b955a51592e0b201a11f4262db920f2a78c5231d", size = 1146656, upload-time = "2026-03-25T22:08:58.2Z" },
 ]
 
 [[package]]

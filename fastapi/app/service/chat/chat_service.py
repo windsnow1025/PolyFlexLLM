@@ -26,8 +26,6 @@ async def handle_chat_interaction(
 ):
     logging.info(f"User ID: {user_id}, Request ID: {request_id}")
 
-    await preprocess_messages(messages, api_type)
-
     async def reduce_credit(input_tokens: int, output_tokens: int) -> float:
         cost = calculate_chat_cost(
             api_type=api_type,

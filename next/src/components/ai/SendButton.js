@@ -208,10 +208,6 @@ function SendButton({
         });
       };
 
-      const handleDone = () => {
-        setConversationsReloadKey(prev => prev + 1);
-      };
-
       try {
         if (!isTemporaryChat) {
           if (conversationUpdatePromiseRef.current) {
@@ -230,12 +226,15 @@ function SendButton({
         }
         let success;
         if (stream) {
-          success = await handleStreamGenerate(currentReqIndex, handleStreamOpen, handleDone);
+          success = await handleStreamGenerate(currentReqIndex, handleStreamOpen, () => {});
         } else {
           success = await handleNonStreamGenerate(currentReqIndex);
         }
         if (success) {
           switchStatus(false);
+          if (!isTemporaryChat && selectedConversationId) {
+            setConversationsReloadKey(prev => prev + 1);
+          }
         }
       } catch (err) {
         abortRequest();

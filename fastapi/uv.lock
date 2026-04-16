@@ -129,7 +129,7 @@ wheels = [
 
 [[package]]
 name = "anthropic"
-version = "0.75.0"
+version = "0.96.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "anyio" },
@@ -141,9 +141,9 @@ dependencies = [
     { name = "sniffio" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/04/1f/08e95f4b7e2d35205ae5dcbb4ae97e7d477fc521c275c02609e2931ece2d/anthropic-0.75.0.tar.gz", hash = "sha256:e8607422f4ab616db2ea5baacc215dd5f028da99ce2f022e33c7c535b29f3dfb", size = 439565, upload-time = "2025-11-24T20:41:45.28Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/b9/7e/672f533dee813028d2c699bfd2a7f52c9118d7353680d9aa44b9e23f717f/anthropic-0.96.0.tar.gz", hash = "sha256:9de947b737f39452f68aa520f1c2239d44119c9b73b0fb6d4e6ca80f00279ee6", size = 658210, upload-time = "2026-04-16T14:28:02.846Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/60/1c/1cd02b7ae64302a6e06724bf80a96401d5313708651d277b1458504a1730/anthropic-0.75.0-py3-none-any.whl", hash = "sha256:ea8317271b6c15d80225a9f3c670152746e88805a7a61e14d4a374577164965b", size = 388164, upload-time = "2025-11-24T20:41:43.587Z" },
+    { url = "https://files.pythonhosted.org/packages/48/5a/72f33204064b6e87601a71a6baf8d855769f8a0c1eaae8d06a1094872371/anthropic-0.96.0-py3-none-any.whl", hash = "sha256:9a6e335a354602a521cd9e777e92bfd46ba6e115bf9bbfe6135311e8fb2015b2", size = 635930, upload-time = "2026-04-16T14:28:01.436Z" },
 ]
 
 [[package]]
@@ -547,7 +547,7 @@ requires-dist = [
     { name = "attrs", specifier = ">=22.2.0" },
     { name = "fastapi", extras = ["standard"], specifier = "==0.128.0" },
     { name = "httpx", specifier = ">=0.23.0,<0.29.0" },
-    { name = "llm-bridge", specifier = "==2.0.2" },
+    { name = "llm-bridge", specifier = "==2.0.3" },
     { name = "python-dateutil", specifier = ">=2.8.0,<3.0.0" },
     { name = "python-dotenv", specifier = "==1.2.1" },
     { name = "python-jose", extras = ["cryptography"], specifier = "==3.5.0" },
@@ -980,7 +980,7 @@ wheels = [
 
 [[package]]
 name = "llm-bridge"
-version = "2.0.2"
+version = "2.0.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "anthropic" },
@@ -994,9 +994,9 @@ dependencies = [
     { name = "tenacity" },
     { name = "xai-sdk" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/6e/ad/f613791ebd36ff3bc64fa9946bb373ed23d58d81ffc64c277b65f7c26ba8/llm_bridge-2.0.2.tar.gz", hash = "sha256:c085bd78e409cea1da0971b9d5e4463c06949138a179bd17563ea91c3c15f62a", size = 131278, upload-time = "2026-04-16T15:10:32.626Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/cb/1c/05f0f36ccc8c58a13d88579cf5048df2df23ff91b0d3e8eba2a499c2124c/llm_bridge-2.0.3.tar.gz", hash = "sha256:2f969516ddb3d9a01c32f86ad5134ca010dc0c06e327ea6543100aee95cda56a", size = 131306, upload-time = "2026-04-16T16:12:35.327Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/b7/8f/de8f112307649c19f1f745f1026bf3f0868a634939e5fd6675eff104343f/llm_bridge-2.0.2-py3-none-any.whl", hash = "sha256:779c3ba7fee907155518aaae65766cb672af7e739d43e5b38d110c830e720067", size = 49091, upload-time = "2026-04-16T15:10:31.076Z" },
+    { url = "https://files.pythonhosted.org/packages/64/08/8e0faf394f094c87263a07f265fe8475e73d260391b4f3629ca2138dd2d9/llm_bridge-2.0.3-py3-none-any.whl", hash = "sha256:e274de26c7a68e0554fb0445c0761ab903b1787e396f5a75173efef4664b0b04", size = 49132, upload-time = "2026-04-16T16:12:33.92Z" },
 ]
 
 [[package]]

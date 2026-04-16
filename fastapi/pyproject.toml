@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "FastAPI for UniWebPlatform"
 readme = "README.md"
 dependencies = [
-    "llm_bridge==2.0.2",
+    "llm_bridge==2.0.3",
     "fastapi[standard]==0.128.0", # fastapi
     "python-dotenv==1.2.1", # dotenv
     "python-jose[cryptography]==3.5.0", # jose

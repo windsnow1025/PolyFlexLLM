@@ -2,7 +2,6 @@ export const StorageKeys = {
   Token: "token",
   APIBaseURLs: "apiBaseURLs",
   APIBaseURLsOptions: "apiBaseURLsOptions",
-  SecretKey: "secretKey",
   DeveloperMode: "developerMode",
 }
 

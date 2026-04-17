@@ -46,9 +46,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: `${baseUrl}/ai`,
       lastModified: new Date(),
     },
-    {
-      url: `${baseUrl}/password`,
-      lastModified: new Date(),
-    },
   ];
 }

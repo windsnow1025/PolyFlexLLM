@@ -7,7 +7,6 @@ import Stack from '@mui/material/Stack';
 import Tooltip from '@mui/material/Tooltip';
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
-import PasswordIcon from '@mui/icons-material/Password';
 import SettingsRoundedIcon from '@mui/icons-material/SettingsRounded';
 import Link from 'next/link';
 import {usePathname} from 'next/navigation';
@@ -15,7 +14,6 @@ import {usePathname} from 'next/navigation';
 const mainListItems = [
   { text: 'Home', icon: <HomeRoundedIcon />, href: '/' },
   { text: 'AI Studio', icon: <AutoAwesomeIcon />, href: '/ai' },
-  { text: 'Crypto', icon: <PasswordIcon />, href: '/password' },
 ];
 
 const secondaryListItems = [

@@ -185,7 +185,7 @@ function Index() {
         <BottomNavigationAction
           label="GitHub"
           icon={<GitHubIcon/>}
-          onClick={() => window.open('https://github.com/windsnow1025/UniWebPlatform', '_blank')}
+          onClick={() => window.open('https://github.com/windsnow1025/PolyFlexLLM', '_blank')}
         />
         <BottomNavigationAction
           label="Privacy"

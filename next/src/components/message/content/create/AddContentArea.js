@@ -8,7 +8,7 @@ import {ContentTypeEnum} from "@/client/nest";
 import AddTextButton from "./AddTextButton";
 import useScreenSize from "@/hooks/useScreenSize";
 
-function AddContentArea({contents, setContents, setUploadingCount}) {
+function AddContentArea({setContents, setUploadingCount}) {
   const screenSize = useScreenSize();
   const xsScreen = screenSize === 'xs';
 

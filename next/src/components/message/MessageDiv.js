@@ -181,7 +181,6 @@ function MessageDiv(props) {
 
         {rawEditableState !== RawEditableState.AlwaysFalse && !isTemporaryChat && (
           <AddContentArea
-            contents={message.contents}
             setContents={handleContentsChange}
             setUploadingCount={setUploadingCount}
           />

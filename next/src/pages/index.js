@@ -7,8 +7,10 @@ import {
   Card,
   CardContent,
   Chip,
+  Container,
   Divider,
   Grid,
+  Stack,
   Typography,
   useTheme
 } from "@mui/material";
@@ -26,6 +28,7 @@ import LocalOfferIcon from '@mui/icons-material/LocalOffer';
 import Head from "next/head";
 import {useRouter} from "next/router";
 import {AuthorEmail} from "@/lib/common/Constants";
+import Copyright from "@/components/common/dashboard/internals/components/Copyright";
 
 function FeatureCard({title, description, icon}) {
   const theme = useTheme();
@@ -108,9 +111,11 @@ function Index() {
           <Typography variant="h2" color="primary" gutterBottom>
             PolyFlexLLM
           </Typography>
-          <Typography variant="h5" color="textSecondary" sx={{mb: 3, maxWidth: 700, mx: 'auto'}}>
-            A full-stack web platform for interacting with various LLMs, featuring full conversation context control and Markdown + LaTeX rendering.
-          </Typography>
+          <Container maxWidth="md" sx={{mb: 3}}>
+            <Typography variant="h5" color="textSecondary">
+              A full-stack web platform for interacting with various LLMs, featuring full conversation context control and Markdown + LaTeX rendering.
+            </Typography>
+          </Container>
           <Box sx={{display: 'flex', gap: 1, justifyContent: 'center', flexWrap: 'wrap', mt: 3}}>
             {providers.map((provider) => (
               <Chip key={provider} label={provider} variant="outlined" size="small"/>
@@ -133,9 +138,11 @@ function Index() {
           <Typography variant="h4" align="center" gutterBottom>
             Features
           </Typography>
-          <Typography variant="body1" color="textSecondary" align="center" sx={{mb: 4, maxWidth: 600, mx: 'auto'}}>
-            Everything you need to interact with the leading AI models in one place.
-          </Typography>
+          <Container maxWidth="md" sx={{mb: 4}}>
+            <Typography variant="body1" color="textSecondary" align="center">
+              Everything you need to interact with the leading AI models in one place.
+            </Typography>
+          </Container>
           <Grid container spacing={3} justifyContent="center">
             {features.map((feature) => (
               <Grid key={feature.title} size={{xs: 12, sm: 6, md: 4}}>
@@ -153,9 +160,11 @@ function Index() {
           <Typography variant="h4" gutterBottom>
             Simple, Transparent Pricing
           </Typography>
-          <Typography variant="body1" color="textSecondary" sx={{mb: 3, maxWidth: 500, mx: 'auto'}}>
-            Pay only for what you use. Check out our pricing details to find the plan that works for you.
-          </Typography>
+          <Container maxWidth="md" sx={{mb: 3}}>
+            <Typography variant="body1" color="textSecondary">
+              Pay only for what you use. Check out our pricing details to find the plan that works for you.
+            </Typography>
+          </Container>
           <Button variant="contained" size="large" onClick={() => router.push('/pricing/pricing')}>
             View Pricing
           </Button>
@@ -164,17 +173,21 @@ function Index() {
         <Divider/>
 
         {/* AI Wrapper Disclaimer and Disclosure */}
-        <div className="text-center mt-2">
-          <Typography variant="body2" color="textSecondary">
-            Disclaimer: This platform is an independent product and is not affiliated with OpenAI, Google, Anthropic,
-            xAI or any other AI model providers. We provide access to the various models through our custom interface.
-          </Typography>
-          <Typography variant="body2" color="textSecondary">
-            Disclosure: Our platform offers a user-friendly interface built on top of models like Gemini to enhance
-            usability and provide additional features. We are an independent service and not affiliated with the model
-            providers.
-          </Typography>
-        </div>
+        <Container maxWidth="md">
+          <Stack spacing={1}>
+            <Typography variant="caption" color="text.secondary">
+              <strong>Disclaimer:</strong> This platform is an independent product and is not affiliated with OpenAI, Google, Anthropic,
+              xAI or any other AI model providers. We provide access to the various models through our custom interface.
+            </Typography>
+            <Typography variant="caption" color="text.secondary">
+              <strong>Disclosure:</strong> Our platform offers a user-friendly interface built on top of models like Gemini to enhance
+              usability and provide additional features. We are an independent service and not affiliated with the model
+              providers.
+            </Typography>
+          </Stack>
+        </Container>
+
+        <Copyright variant="caption"/>
       </div>
       <BottomNavigation showLabels>
         <BottomNavigationAction

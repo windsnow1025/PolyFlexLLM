@@ -1,6 +1,7 @@
 import {Alert, Button, CircularProgress, Snackbar} from "@mui/material";
 import ChatIcon from "@mui/icons-material/Chat";
 import React, {useState} from "react";
+import {Temporal} from "@js-temporal/polyfill";
 import ChatLogic from "@/lib/chat/ChatLogic";
 import ConversationLogic from "@/lib/conversation/ConversationLogic";
 
@@ -24,9 +25,8 @@ function NewConversationButton({
     clearUIStateRef.current?.();
     setLoading(true);
     try {
-      // YYYY-MM-DD HH:MM:SS
-      const now = new Date();
-      const dateStr = now.toISOString().replace('T', ' ').substring(0, 19);
+      // YYYY-MM-DD HH:MM:SS (local time)
+      const dateStr = Temporal.Now.plainDateTimeISO().toString({smallestUnit: 'second'}).replace('T', ' ');
 
       const defaultMessages = ChatLogic.getInitMessages();
 

@@ -1,5 +1,6 @@
 import Link from '@mui/material/Link';
 import Typography from '@mui/material/Typography';
+import {Temporal} from "@js-temporal/polyfill";
 
 export default function Copyright(props: any) {
   return (
@@ -18,7 +19,7 @@ export default function Copyright(props: any) {
       <Link color="inherit" href="https://github.com/windsnow1025/PolyFlexLLM" target="_blank" rel="noopener noreferrer">
         PolyFlexLLM
       </Link>{' '}
-      {new Date().getFullYear()}
+      {Temporal.Now.plainDateISO().year}
       {'.'}
     </Typography>
   );

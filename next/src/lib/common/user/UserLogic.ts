@@ -1,3 +1,4 @@
+import {Temporal} from "@js-temporal/polyfill";
 import UserClient from "./UserClient";
 import AuthClient from "@/lib/common/user/AuthClient";
 import {handleError} from "@/lib/common/ErrorHandler";
@@ -22,7 +23,7 @@ export default class UserLogic {
       const payload = JSON.parse(payloadJson);
 
       const exp = payload.exp;
-      const now = Math.floor(Date.now() / 1000);
+      const now = Math.floor(Temporal.Now.instant().epochMilliseconds / 1000);
 
       return exp < now;
     } catch (error) {

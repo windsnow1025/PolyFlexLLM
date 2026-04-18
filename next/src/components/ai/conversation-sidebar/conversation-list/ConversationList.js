@@ -12,6 +12,7 @@ import {
   Typography,
 } from '@mui/material';
 import {ExpandMore as ExpandMoreIcon} from '@mui/icons-material';
+import {Temporal} from "@js-temporal/polyfill";
 import ConversationLogic from "@/lib/conversation/ConversationLogic";
 import ChatLogic from "@/lib/chat/ChatLogic";
 import LabelLogic from "@/lib/label/LabelLogic";
@@ -124,7 +125,7 @@ function ConversationList({
         .map(newVersion =>
           fetchedMap.get(newVersion.id) ?? currentMap.get(newVersion.id)
         )
-        .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+        .sort((a, b) => Temporal.Instant.compare(Temporal.Instant.from(b.updatedAt), Temporal.Instant.from(a.updatedAt)));
 
       setConversations(mergedConversations);
 
@@ -291,7 +292,7 @@ function ConversationList({
     return acc;
   }, {});
   Object.keys(groups).forEach(key => {
-    groups[key].sort((a, b) => new Date(b.conv.updatedAt) - new Date(a.conv.updatedAt));
+    groups[key].sort((a, b) => Temporal.Instant.compare(Temporal.Instant.from(b.conv.updatedAt), Temporal.Instant.from(a.conv.updatedAt)));
   });
 
   // Build ordered group keys: 'no-label' first, then all labels

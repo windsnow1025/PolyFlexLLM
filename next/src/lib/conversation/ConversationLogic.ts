@@ -1,3 +1,4 @@
+import {Temporal} from "@js-temporal/polyfill";
 import {handleError} from "@/lib/common/ErrorHandler";
 import ConversationClient from "./ConversationClient";
 import {ConversationReqDto, ConversationResDto, ConversationVersionResDto, Message} from "@/client/nest";
@@ -30,22 +31,22 @@ export default class ConversationLogic {
   }
 
   static formatDate(dateString: string): string {
-    const date = new Date(dateString);
-    const now = new Date();
+    const instant = Temporal.Instant.from(dateString);
+    const duration = Temporal.Now.instant().since(instant);
 
-    const diffMs = Math.max(0, now.getTime() - date.getTime());
-    const diffMins = Math.floor(diffMs / 60000);
-    const diffHours = Math.floor(diffMs / 3600000);
-    const diffDays = Math.floor(diffMs / 86400000);
+    const diffMins = Math.max(0, Math.floor(duration.total({unit: 'minute'})));
+    const diffHours = Math.max(0, Math.floor(duration.total({unit: 'hour'})));
+    const diffDays = Math.max(0, Math.floor(duration.total({unit: 'day'})));
 
     if (diffMins < 60) {
-      return diffMins <= 0 ? 'Just now' : `${diffMins} min${diffMins !== 1 ? 's' : ''} ago`;
+      return diffMins === 0 ? 'Just now' : `${diffMins} min${diffMins !== 1 ? 's' : ''} ago`;
     } else if (diffHours < 24) {
       return `${diffHours} hour${diffHours !== 1 ? 's' : ''} ago`;
     } else if (diffDays < 7) {
       return `${diffDays} day${diffDays !== 1 ? 's' : ''} ago`;
     } else {
-      return date.toLocaleDateString(undefined, {
+      const plainDate = instant.toZonedDateTimeISO(Temporal.Now.timeZoneId()).toPlainDate();
+      return plainDate.toLocaleString(undefined, {
         year: 'numeric',
         month: 'short',
         day: 'numeric'

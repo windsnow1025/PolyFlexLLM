@@ -25,7 +25,7 @@ function AudioRecord({setFile, isUploading, setIsUploading}) {
 
       recorder.onstop = async () => {
         const audioBlob = new Blob(chunks, {type: 'audio/webm'});
-        const audioFile = new File([audioBlob], `recording-${Date.now()}.webm`, {type: 'audio/webm'});
+        const audioFile = new File([audioBlob], 'recording.webm', {type: 'audio/webm'});
 
         await uploadAudio(audioFile);
       };

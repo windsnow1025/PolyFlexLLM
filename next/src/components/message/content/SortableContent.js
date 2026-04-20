@@ -79,7 +79,7 @@ function SortableContent({
                 >
                   <DragIndicatorIcon fontSize="small"/>
                 </div>
-                <Typography variant="subtitle2" className="flex-grow">
+                <Typography variant="subtitle2" className="grow">
                   Text Content
                 </Typography>
                 <Tooltip title="Copy">
@@ -141,8 +141,8 @@ function SortableContent({
 
   if (content.type === ContentTypeEnum.File) {
     return (
-      <div ref={setNodeRef} style={style} {...attributes}>
-        <div className="flex-start-center">
+      <div ref={setNodeRef} style={style} {...attributes} className="max-w-full">
+        <div className="flex-start-center-nowrap">
           {rawEditableState !== RawEditableState.AlwaysFalse && !isTemporaryChat && (
             <div
               {...listeners}

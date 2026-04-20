@@ -59,29 +59,27 @@ const FileDiv = ({fileUrl, rawEditableState, onDelete}) => {
 
   return (
     <>
-      <Paper key={fileUrl} elevation="1" className="flex-center">
-        <div className="inflex-fill">
-          <div className="flex-between">
-            <Typography variant="body2" className="break-all" sx={{ pl: 2 }}>
-              <a href={fileUrl} target="_blank" rel="noopener noreferrer">
-                {fileName}
-              </a>
-            </Typography>
-            <Tooltip title="Preview file">
-              <IconButton onClick={() => setPreviewOpen(true)} size="small">
-                <VisibilityIcon fontSize="small"/>
-              </IconButton>
-            </Tooltip>
-          </div>
-        </div>
+      <Paper key={fileUrl} elevation="1" className="flex-center-nowrap min-w-0">
+        <Typography
+          variant="body2"
+          className="overflow-x-auto whitespace-nowrap"
+          sx={{ pl: 2 }}
+        >
+          <a href={fileUrl} target="_blank" rel="noopener noreferrer">
+            {fileName}
+          </a>
+        </Typography>
+        <Tooltip title="Preview file">
+          <IconButton onClick={() => setPreviewOpen(true)} size="small">
+            <VisibilityIcon fontSize="small"/>
+          </IconButton>
+        </Tooltip>
         {onDelete && (
-          <div className="self-end">
-            <Tooltip title="Remove file">
-              <IconButton onClick={handleFileDelete} size="small" color="error">
-                <RemoveCircleOutlineIcon fontSize="small"/>
-              </IconButton>
-            </Tooltip>
-          </div>
+          <Tooltip title="Remove file">
+            <IconButton onClick={handleFileDelete} size="small" color="error">
+              <RemoveCircleOutlineIcon fontSize="small"/>
+            </IconButton>
+          </Tooltip>
         )}
       </Paper>
 

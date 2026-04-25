@@ -17,6 +17,7 @@ import {
 import GitHubIcon from "@mui/icons-material/GitHub";
 import EmailIcon from "@mui/icons-material/Email";
 import PolicyIcon from '@mui/icons-material/Policy';
+import RuleIcon from '@mui/icons-material/Rule';
 import GavelIcon from '@mui/icons-material/Gavel';
 import SmartToyIcon from '@mui/icons-material/SmartToy';
 import CodeIcon from '@mui/icons-material/Code';
@@ -217,6 +218,12 @@ function Index() {
           href="/legal/terms"
           label="Terms"
           icon={<GavelIcon/>}
+        />
+        <BottomNavigationAction
+          component="a"
+          href="/legal/policy"
+          label="Policy"
+          icon={<RuleIcon/>}
         />
       </BottomNavigation>
     </div>

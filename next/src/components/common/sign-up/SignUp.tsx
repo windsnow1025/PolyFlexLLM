@@ -73,6 +73,7 @@ export default function SignUp() {
   const [confirmPasswordErrorMessage, setConfirmPasswordErrorMessage] = React.useState('');
   const [agreedToPrivacy, setAgreedToPrivacy] = React.useState(false);
   const [agreedToTerms, setAgreedToTerms] = React.useState(false);
+  const [agreedToPolicy, setAgreedToPolicy] = React.useState(false);
 
   const [alertOpen, setAlertOpen] = React.useState(false);
   const [alertMessage, setAlertMessage] = React.useState('');
@@ -262,13 +263,29 @@ export default function SignUp() {
                   </Typography>
                 }
               />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={agreedToPolicy}
+                    onChange={(e) => setAgreedToPolicy(e.target.checked)}
+                  />
+                }
+                label={
+                  <Typography variant="body2">
+                    I agree to the{' '}
+                    <Link href="/legal/policy" target="_blank">
+                      Acceptable Use Policy
+                    </Link>
+                  </Typography>
+                }
+              />
             </FormGroup>
             <Button
               type="submit"
               fullWidth
               variant="contained"
               onClick={validateInputs}
-              disabled={!agreedToPrivacy || !agreedToTerms}
+              disabled={!agreedToPrivacy || !agreedToTerms || !agreedToPolicy}
             >
               Sign up
             </Button>

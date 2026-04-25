@@ -201,14 +201,16 @@ function Index() {
           onClick={() => window.open('https://github.com/windsnow1025/PolyFlexLLM', '_blank')}
         />
         <BottomNavigationAction
+          component="a"
+          href="/legal/privacy"
           label="Privacy"
           icon={<PolicyIcon/>}
-          onClick={() => window.open('/legal/privacy')}
         />
         <BottomNavigationAction
+          component="a"
+          href="/legal/terms"
           label="Terms"
           icon={<GavelIcon/>}
-          onClick={() => window.open('/legal/terms')}
         />
       </BottomNavigation>
     </div>

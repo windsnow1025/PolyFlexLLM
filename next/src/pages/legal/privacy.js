@@ -9,7 +9,7 @@ function PrivacyPolicy() {
 
   const fetchMarkdown = async () => {
     const publicService = new PublicClient();
-    const markdownContent = await publicService.fetchMarkdown('PrivatePolicy.md');
+    const markdownContent = await publicService.fetchMarkdown('PrivacyPolicy.md');
     setMarkdown(markdownContent);
   };
 

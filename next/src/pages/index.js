@@ -107,7 +107,7 @@ function Index() {
       </Head>
       <div className="local-scroll-scrollable flex-column gap-y-8 p-4">
         {/* Hero Section */}
-        <Box sx={{textAlign: 'center', py: 4}}>
+        <div className="text-center">
           <Typography variant="h2" color="primary" gutterBottom>
             PolyFlexLLM
           </Typography>
@@ -129,12 +129,12 @@ function Index() {
               Sign up
             </Button>
           </div>
-        </Box>
+        </div>
 
         <Divider/>
 
         {/* Features Section */}
-        <Box sx={{py: 2}}>
+        <div>
           <Typography variant="h4" align="center" gutterBottom>
             Features
           </Typography>
@@ -150,12 +150,12 @@ function Index() {
               </Grid>
             ))}
           </Grid>
-        </Box>
+        </div>
 
         <Divider/>
 
         {/* Pricing CTA Section */}
-        <Box sx={{textAlign: 'center', py: 4}}>
+        <div className="text-center">
           <LocalOfferIcon sx={{fontSize: 48, color: theme.vars.palette.primary.main, mb: 1}}/>
           <Typography variant="h4" gutterBottom>
             Simple, Transparent Pricing
@@ -168,26 +168,32 @@ function Index() {
           <Button variant="contained" size="large" onClick={() => router.push('/pricing/pricing')}>
             View Pricing
           </Button>
-        </Box>
+        </div>
 
         <Divider/>
 
-        {/* AI Wrapper Disclaimer and Disclosure */}
-        <Container maxWidth="md">
-          <Stack spacing={1}>
-            <Typography variant="caption" color="text.secondary">
-              <strong>Disclaimer:</strong> This platform is an independent product and is not affiliated with OpenAI, Google, Anthropic,
-              xAI or any other AI model providers. We provide access to the various models through our custom interface.
-            </Typography>
-            <Typography variant="caption" color="text.secondary">
-              <strong>Disclosure:</strong> Our platform offers a user-friendly interface built on top of models like Gemini to enhance
-              usability and provide additional features. We are an independent service and not affiliated with the model
-              providers.
-            </Typography>
-          </Stack>
-        </Container>
+        <div className="flex-column-center">
+          {/* AI Wrapper Disclaimer and Disclosure */}
+          <Container maxWidth="md">
+            <Stack spacing={1}>
+              <Typography variant="caption" color="text.secondary">
+                <strong>Disclaimer:</strong> This platform is an independent product and is not affiliated with OpenAI, Google, Anthropic,
+                xAI or any other AI model providers. We provide access to the various models through our custom interface.
+              </Typography>
+              <Typography variant="caption" color="text.secondary">
+                <strong>Disclosure:</strong> Our platform offers a user-friendly interface built on top of models like Gemini to enhance
+                usability and provide additional features. We are an independent service and not affiliated with the model
+                providers.
+              </Typography>
+            </Stack>
+          </Container>
 
-        <Copyright variant="caption"/>
+          <Typography variant="caption" align="center" sx={{color: 'text.secondary', pt: 2}}>
+            Support: {AuthorEmail}
+          </Typography>
+          <Copyright variant="caption"/>
+        </div>
+
       </div>
       <BottomNavigation showLabels>
         <BottomNavigationAction

@@ -123,10 +123,10 @@ function Index() {
             ))}
           </Box>
           <div className="flex-center gap-4 mt-6">
-            <Button variant="contained" onClick={() => router.push('/auth/signin')}>
+            <Button variant="contained" href="/auth/signin">
               Sign in
             </Button>
-            <Button variant="outlined" onClick={() => router.push('/auth/signup')}>
+            <Button variant="outlined" href="/auth/signup">
               Sign up
             </Button>
           </div>

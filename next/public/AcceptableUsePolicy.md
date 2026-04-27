@@ -98,4 +98,4 @@ We will interpret our policies and resolve disputes in favor of protecting users
 
 ## PolyFlexLLM Synthetic Media and AI Tools
 
-PolyFlexLLM does not allow the use of large language models or any other synthetic or manipulated media tools for the creation of NSFW and sexually explicit content.
+PolyFlexLLM does not allow the use of the Services, large language models or any other synthetic or manipulated media tools for the creation of sexual, adult, or pornographic content.

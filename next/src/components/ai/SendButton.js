@@ -163,16 +163,18 @@ function SendButton({
     switchStatus(false);
   }
 
-  const abortRequest = () => {
-    // Backend Abort
-    if (requestIdRef.current) {
-      chatLogic.abortChat(requestIdRef.current);
-    }
+  const abortFrontendRequest = () => {
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
     }
     clearUIState();
-    switchStatus(false);
+  };
+
+  const abortRequest = () => {
+    if (requestIdRef.current) {
+      chatLogic.abortChat(requestIdRef.current);
+    }
+    abortFrontendRequest();
   };
 
   const handleGenerate = async () => {
@@ -237,7 +239,7 @@ function SendButton({
           }
         }
       } catch (err) {
-        abortRequest();
+        abortFrontendRequest();
         setAlertMessage(err.message);
         setAlertSeverity('error');
         setAlertOpen(true);

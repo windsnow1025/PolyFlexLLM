@@ -547,7 +547,7 @@ requires-dist = [
     { name = "attrs", specifier = ">=22.2.0" },
     { name = "fastapi", extras = ["standard"], specifier = "==0.128.0" },
     { name = "httpx", specifier = ">=0.23.0,<0.29.0" },
-    { name = "llm-bridge", specifier = "==2.0.5" },
+    { name = "llm-bridge", specifier = "==2.0.6" },
     { name = "python-dateutil", specifier = ">=2.8.0,<3.0.0" },
     { name = "python-dotenv", specifier = "==1.2.1" },
     { name = "python-jose", extras = ["cryptography"], specifier = "==3.5.0" },
@@ -980,7 +980,7 @@ wheels = [
 
 [[package]]
 name = "llm-bridge"
-version = "2.0.5"
+version = "2.0.6"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "anthropic" },
@@ -994,9 +994,8 @@ dependencies = [
     { name = "tenacity" },
     { name = "xai-sdk" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/47/e7/d54fd4b86afbe03323710e6f5391fae643a924ea343341f3cd7527d61856/llm_bridge-2.0.5.tar.gz", hash = "sha256:16d698268cac58da3c4299ab1e3a3e65398799506cc87791b64a71466c39ee93", size = 131361, upload-time = "2026-04-26T02:14:52.305Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/88/71/b365260f5eba811286d4074eacd719e6165c3feeefd207e2234409352454/llm_bridge-2.0.5-py3-none-any.whl", hash = "sha256:74c3d9ca462d9e0da2d29414179f977079ec6c5b737dd9ae23e2bdd6348f223e", size = 49247, upload-time = "2026-04-26T02:14:50.953Z" },
+    { url = "https://files.pythonhosted.org/packages/8b/16/5220eb6e81886e45c6ac4f6930de402c57bfd5105580240fb4580a4f111d/llm_bridge-2.0.6-py3-none-any.whl", hash = "sha256:6b65067e4b07fc5a1443d1334bcb9c0a17ed6bc4c0558514885191f3ae33dd30", size = 49234, upload-time = "2026-05-06T06:32:35.695Z" },
 ]
 
 [[package]]

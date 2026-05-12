@@ -11,7 +11,7 @@ FROM base AS build
 COPY pnpm-lock.yaml /app
 RUN pnpm fetch
 
-COPY package.json /app
+COPY package.json pnpm-workspace.yaml /app/
 RUN pnpm install --offline
 
 COPY . /app
@@ -22,7 +22,7 @@ FROM base AS prod
 COPY pnpm-lock.yaml /app
 RUN pnpm fetch --prod
 
-COPY package.json /app
+COPY package.json pnpm-workspace.yaml /app/
 RUN pnpm install --offline --prod
 
 FROM base

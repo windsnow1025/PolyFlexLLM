@@ -6,7 +6,7 @@ readme = "README.md"
 dependencies = [
     "llm_bridge==2.0.6",
     "fastapi[standard]==0.128.0", # fastapi
-    "python-dotenv==1.2.1", # dotenv
+    "python-dotenv==1.2.2", # dotenv
     "python-jose[cryptography]==3.5.0", # jose
     # Client
     "httpx>=0.23.0,<0.29.0",

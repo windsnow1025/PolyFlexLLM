@@ -7,10 +7,12 @@ import {
   Alert,
   Box,
   CircularProgress,
+  Link,
   List,
   Snackbar,
   Typography,
 } from '@mui/material';
+import {useAuthentication} from "@/session/SessionContext";
 import {ExpandMore as ExpandMoreIcon} from '@mui/icons-material';
 import {Temporal} from "@js-temporal/polyfill";
 import ConversationLogic from "@/lib/conversation/ConversationLogic";
@@ -38,6 +40,7 @@ function ConversationList({
                             conversationUpdatePromiseRef,
                           }) {
   const router = useRouter();
+  const authentication = useAuthentication();
 
   // Alert state
   const [alertOpen, setAlertOpen] = useState(false);
@@ -266,7 +269,12 @@ function ConversationList({
   if (!signedIn) {
     return (
       <div className="local-scroll-scrollable flex-center p-4">
-        <Typography variant="body2" color="text.secondary">Sign in to view conversations</Typography>
+        <Typography variant="body2" color="text.secondary">
+          <Link component="button" type="button" onClick={() => authentication?.signIn()}>
+            Sign in
+          </Link>
+          {' to view conversations'}
+        </Typography>
       </div>
     );
   }

@@ -1,10 +1,12 @@
 import React, {useEffect, useMemo, useState} from 'react';
-import {CircularProgress, Typography} from "@mui/material";
+import {CircularProgress, Link, Typography} from "@mui/material";
 import UserLogic from "@/lib/common/user/UserLogic";
 import {StorageKeys} from "@/lib/common/Constants";
+import {useAuthentication} from "@/session/SessionContext";
 
 function CreditSection({refreshKey = 0, decimalPlaces = null}) {
   const userLogic = useMemo(() => new UserLogic(), []);
+  const authentication = useAuthentication();
 
   const [credit, setCredit] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -39,7 +41,14 @@ function CreditSection({refreshKey = 0, decimalPlaces = null}) {
   }
 
   if (!signedIn) {
-    return <Typography>Sign in to view credits</Typography>;
+    return (
+      <Typography>
+        <Link component="button" type="button" onClick={() => authentication?.signIn()}>
+          Sign in
+        </Link>
+        {' to view credits'}
+      </Typography>
+    );
   }
 
   return <Typography>Credit: {formatCredit(credit)}</Typography>;

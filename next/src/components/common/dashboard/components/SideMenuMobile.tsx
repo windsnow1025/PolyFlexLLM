@@ -5,6 +5,9 @@ import Drawer, {drawerClasses} from '@mui/material/Drawer';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
+import LoginRoundedIcon from '@mui/icons-material/LoginRounded';
+import PersonAddRoundedIcon from '@mui/icons-material/PersonAddRounded';
+import {useRouter} from 'next/router';
 import MenuContent from './MenuContent';
 import AnnouncementBell from '@/components/common/components/AnnouncementBell';
 import {useAuthentication, useSession} from '@/session/SessionContext';
@@ -17,6 +20,7 @@ interface SideMenuMobileProps {
 export default function SideMenuMobile({ open, toggleDrawer }: SideMenuMobileProps) {
   const session = useSession();
   const authentication = useAuthentication();
+  const router = useRouter();
 
   return (
     <Drawer
@@ -59,15 +63,42 @@ export default function SideMenuMobile({ open, toggleDrawer }: SideMenuMobilePro
           <MenuContent />
           <Divider />
         </Stack>
-        <Stack sx={{ p: 2 }}>
-          <Button
-            variant="outlined"
-            fullWidth
-            startIcon={<LogoutRoundedIcon />}
-            onClick={() => authentication?.signOut()}
-          >
-            Logout
-          </Button>
+        <Stack sx={{ p: 2, gap: 1 }}>
+          {session?.user ? (
+            <Button
+              variant="outlined"
+              fullWidth
+              startIcon={<LogoutRoundedIcon />}
+              onClick={() => {
+                authentication?.signOut()
+              }}
+            >
+              Logout
+            </Button>
+          ) : (
+            <>
+              <Button
+                variant="outlined"
+                fullWidth
+                startIcon={<LoginRoundedIcon />}
+                onClick={() => {
+                  authentication?.signIn()
+                }}
+              >
+                Sign in
+              </Button>
+              <Button
+                variant="outlined"
+                fullWidth
+                startIcon={<PersonAddRoundedIcon />}
+                onClick={() => {
+                  router.push('/auth/signup');
+                }}
+              >
+                Sign up
+              </Button>
+            </>
+          )}
         </Stack>
       </Stack>
     </Drawer>

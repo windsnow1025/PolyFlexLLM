@@ -136,47 +136,7 @@ function ConversationList({
         const currentConversation = mergedConversations.find(c => c.id === selectedConversationId);
         if (currentConversation) {
           await ConversationLogic.populatePromptContents(currentConversation.messages);
-          setMessages(prevMsgs => {
-            const serverMsgs = currentConversation.messages;
-            if (!prevMsgs) return serverMsgs;
-
-            const result = [];
-            const len = Math.max(prevMsgs.length, serverMsgs.length);
-
-            // Server is truth
-            for (let i = 0; i < len; i++) {
-              const local = prevMsgs[i];
-              const server = serverMsgs[i];
-
-              if (!server) {
-                // Server has fewer messages, truncate
-                break;
-              }
-              if (!local) {
-                // Server has extra messages, append
-                result.push(server);
-                continue;
-              }
-              if (local.id === server.id) {
-                // Same UUID, keep local
-                result.push(local);
-                continue;
-              }
-              // Different UUID: check if content is equivalent (ignore id)
-              // Normalize: strip id and falsy top-level fields (treat undefined and "" as equivalent)
-              const normalize = ({id, ...rest}) =>
-                Object.fromEntries(Object.entries(rest).filter(([, v]) => v != null && v !== ""));
-              if (isEqual(normalize(local), normalize(server))) {
-                // Same content, keep local to preserve TransitionGroup key
-                result.push(local);
-              } else {
-                // Content differs, use server from here on
-                return [...result, ...serverMsgs.slice(i)];
-              }
-            }
-
-            return result;
-          });
+          setMessages(prevMsgs => ConversationLogic.mergeMessages(prevMsgs, currentConversation.messages));
         } else {
           showAlert('Selected conversation not found', 'warning');
         }

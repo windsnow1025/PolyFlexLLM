@@ -1,4 +1,5 @@
 import {Temporal} from "@js-temporal/polyfill";
+import {isEqual} from "lodash";
 import {handleError} from "@/lib/common/ErrorHandler";
 import ConversationClient from "./ConversationClient";
 import {ConversationReqDto, ConversationResDto, ConversationVersionResDto, Message} from "@/client/nest";
@@ -51,6 +52,48 @@ export default class ConversationLogic {
       day: 'numeric'
     });
   };
+
+  static mergeMessages(prevMsgs: Message[] | null, serverMsgs: Message[]): Message[] {
+    if (!prevMsgs) return serverMsgs;
+
+    // Normalize: strip id and falsy top-level fields (treat undefined and "" as equivalent)
+    const normalize = ({id, ...rest}: Message) =>
+      Object.fromEntries(Object.entries(rest).filter(([, v]) => v != null && v !== ""));
+
+    const result: Message[] = [];
+    const len = Math.max(prevMsgs.length, serverMsgs.length);
+
+    // Server is truth
+    for (let i = 0; i < len; i++) {
+      const local = prevMsgs[i];
+      const server = serverMsgs[i];
+
+      if (!server) {
+        // Server has fewer messages, truncate
+        break;
+      }
+      if (!local) {
+        // Server has extra messages, append
+        result.push(server);
+        continue;
+      }
+      if (local.id === server.id) {
+        // Same UUID, keep local
+        result.push(local);
+        continue;
+      }
+      // Different UUID: check if content is equivalent (ignore id)
+      if (isEqual(normalize(local), normalize(server))) {
+        // Same content, keep local to preserve TransitionGroup key
+        result.push(local);
+      } else {
+        // Content differs, use server from here on
+        return [...result, ...serverMsgs.slice(i)];
+      }
+    }
+
+    return result;
+  }
 
   async fetchConversations(ids?: number[]): Promise<ConversationResDto[]> {
     try {

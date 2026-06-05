@@ -211,11 +211,17 @@ function ConversationList({
 
     setLoadingConversationId(conversationId);
 
-    const conversations = await loadConversations();
-    const conversation = conversations.find(conversation => conversation.id === conversationId);
+    let conversation;
+    try {
+      const conversations = await loadConversations();
+      conversation = conversations.find(conversation => conversation.id === conversationId);
 
-    await activateConversation(conversation);
-    setLoadingConversationId(null);
+      await activateConversation(conversation);
+    } catch (err) {
+      showAlert(err.message, 'error');
+    } finally {
+      setLoadingConversationId(null);
+    }
 
     // Check if backend is still generating for this conversation
     try {

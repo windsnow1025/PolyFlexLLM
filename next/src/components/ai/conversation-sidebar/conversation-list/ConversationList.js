@@ -242,7 +242,7 @@ function ConversationList({
           }
         }, 3000);
       }
-    } catch {
+    } catch (err) {
       showAlert('Failed to check generating status: ' + err.message, 'error');
     }
   };

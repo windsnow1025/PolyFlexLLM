@@ -38,20 +38,18 @@ export default class ConversationLogic {
     const diffHours = Math.max(0, Math.floor(duration.total({unit: 'hour'})));
     const diffDays = Math.max(0, Math.floor(duration.total({unit: 'day'})));
 
-    if (diffMins < 60) {
-      return diffMins === 0 ? 'Just now' : `${diffMins} min${diffMins !== 1 ? 's' : ''} ago`;
-    } else if (diffHours < 24) {
-      return `${diffHours} hour${diffHours !== 1 ? 's' : ''} ago`;
-    } else if (diffDays < 7) {
-      return `${diffDays} day${diffDays !== 1 ? 's' : ''} ago`;
-    } else {
-      const plainDate = instant.toZonedDateTimeISO(Temporal.Now.timeZoneId()).toPlainDate();
-      return plainDate.toLocaleString(undefined, {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric'
-      });
-    }
+    const rtf = new Intl.RelativeTimeFormat(undefined, {numeric: 'auto'});
+
+    if (diffMins < 60) return rtf.format(-diffMins, 'minute');
+    if (diffHours < 24) return rtf.format(-diffHours, 'hour');
+    if (diffDays < 7) return rtf.format(-diffDays, 'day');
+
+    const plainDate = instant.toZonedDateTimeISO(Temporal.Now.timeZoneId()).toPlainDate();
+    return plainDate.toLocaleString(undefined, {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
   };
 
   async fetchConversations(ids?: number[]): Promise<ConversationResDto[]> {

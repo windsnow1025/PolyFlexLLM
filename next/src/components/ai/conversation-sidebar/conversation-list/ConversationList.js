@@ -35,6 +35,7 @@ function ConversationList({
                             conversationsReloadKey,
                             setConversationsReloadKey,
                             setIsTemporaryChat,
+                            isGeneratingRef,
                             abortGenerateRef,
                             clearUIStateRef,
                             conversationUpdatePromiseRef,
@@ -132,7 +133,7 @@ function ConversationList({
 
       setConversations(mergedConversations);
 
-      if (selectedConversationId) {
+      if (selectedConversationId && !isGeneratingRef?.current) {
         const currentConversation = mergedConversations.find(c => c.id === selectedConversationId);
         if (currentConversation) {
           await ConversationLogic.populatePromptContents(currentConversation.messages);
@@ -148,7 +149,7 @@ function ConversationList({
     } finally {
       setIsLoadingConversations(false);
     }
-  }, [conversationLogic, conversations, conversationUpdatePromiseRef, selectedConversationId, setConversations, setMessages]);
+  }, [conversationLogic, conversations, conversationUpdatePromiseRef, selectedConversationId, isGeneratingRef, setConversations, setMessages]);
 
   useEffect(() => {
     if (!signedIn) {

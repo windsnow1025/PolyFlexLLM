@@ -154,6 +154,7 @@ function ConversationSidebar({
           conversationsReloadKey={conversationsReloadKey}
           setConversationsReloadKey={setConversationsReloadKey}
           setIsTemporaryChat={setIsTemporaryChat}
+          isGeneratingRef={isGeneratingRef}
           abortGenerateRef={abortGenerateRef}
           clearUIStateRef={clearUIStateRef}
           conversationUpdatePromiseRef={conversationUpdatePromiseRef}

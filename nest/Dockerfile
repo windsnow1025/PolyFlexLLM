@@ -30,4 +30,4 @@ COPY --from=prod /app/node_modules /app/node_modules
 COPY --from=build /app/dist /app/dist
 COPY --from=build /app/package.json /app
 EXPOSE 3000
-CMD [ "pnpm", "start:prod" ]
+CMD [ "node", "dist/src/main" ]

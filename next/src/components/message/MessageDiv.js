@@ -1,11 +1,11 @@
 import React, {memo, useState} from 'react';
-import {useTheme} from '@mui/material/styles';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
-import {Box, IconButton, Tooltip} from "@mui/material";
+import {IconButton, Tooltip} from "@mui/material";
 import RoleSelect from '@/components/message/role/RoleSelect';
 import DisplayDiv from "@/components/message/content/display/DisplayDiv";
 import ThoughtDiv from "@/components/message/content/thought/ThoughtDiv";
 import SortableContents from './content/SortableContents';
+import MessageContainer from './MessageContainer';
 import AddContentArea from "@/components/message/content/create/AddContentArea";
 import PromptSelect from "@/components/message/prompt/PromptSelect";
 import {MessageRoleEnum} from "@/client/nest";
@@ -30,7 +30,6 @@ function MessageDiv(props) {
   // import usePropsChangeLogger from "../../hooks/usePropsChangeLogger";
   // usePropsChangeLogger(`MessageDiv: ${message.id}`, props);
 
-  const theme = useTheme();
   const [showPreview, setShowPreview] = useState(message.role !== MessageRoleEnum.User);
 
   const handleRoleChange = (newRole) => {
@@ -63,39 +62,6 @@ function MessageDiv(props) {
     setMessage(message.id, {...message, thought: newThought});
   };
 
-  const getRoleBorderColor = (role) => {
-    switch (role) {
-      case MessageRoleEnum.User:
-        return theme.vars.palette.primary.main;
-      case MessageRoleEnum.Assistant:
-        return theme.vars.palette.secondary.main;
-      case MessageRoleEnum.System:
-        return theme.vars.palette.warning.main;
-      default:
-        return 'transparent';
-    }
-  };
-
-  const getRoleBorderStyles = (role) => {
-    const color = getRoleBorderColor(role);
-    return {
-      border: `1px solid color-mix(in srgb, ${color}, white 50%)`
-    };
-  };
-
-  const getMessageContainerStyles = (role) => {
-    switch (role) {
-      case MessageRoleEnum.User:
-        return {justifyContent: 'flex-end'};
-      case MessageRoleEnum.Assistant:
-        return {justifyContent: 'flex-start'};
-      case MessageRoleEnum.System:
-        return {justifyContent: 'center'};
-      default:
-        return {};
-    }
-  };
-
   const handleCopyMessage = () => {
     const textToCopy = message.contents
       .filter(content => content.type !== 'File')
@@ -108,20 +74,7 @@ function MessageDiv(props) {
   const rawEditableState = showPreview ? RawEditableState.AlwaysFalse : RawEditableState.AlwaysTrue;
 
   return (
-    <div style={{...getMessageContainerStyles(message.role), display: 'flex'}}>
-      <Box
-        className="p-2 rounded-lg"
-        sx={{
-          ...getRoleBorderStyles(message.role),
-          minWidth: "75%",
-          maxWidth: "95%",
-          '&:hover': {
-            borderColor: getRoleBorderColor(message.role),
-            outline: `1px solid ${getRoleBorderColor(message.role)}`,
-            boxShadow: theme.shadows[3],
-          },
-        }}
-      >
+    <MessageContainer role={message.role}>
         <div className="flex items-center">
           <RoleSelect role={message.role} setRole={handleRoleChange}/>
           {(message.role === MessageRoleEnum.System || message.role === MessageRoleEnum.User) && !isTemporaryChat && (
@@ -185,8 +138,7 @@ function MessageDiv(props) {
             setUploadingCount={setUploadingCount}
           />
         )}
-      </Box>
-    </div>
+    </MessageContainer>
   );
 }
 

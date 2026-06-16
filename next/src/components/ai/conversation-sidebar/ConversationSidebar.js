@@ -21,6 +21,7 @@ function ConversationSidebar({
                                isGeneratingRef,
                                abortGenerateRef,
                                clearUIStateRef,
+                               setIsBackendGenerating,
                              }) {
   const conversationLogic = useMemo(() => new ConversationLogic(), []);
 
@@ -158,6 +159,7 @@ function ConversationSidebar({
           abortGenerateRef={abortGenerateRef}
           clearUIStateRef={clearUIStateRef}
           conversationUpdatePromiseRef={conversationUpdatePromiseRef}
+          setIsBackendGenerating={setIsBackendGenerating}
         />
       </div>
       <Snackbar

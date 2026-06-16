@@ -38,6 +38,9 @@ function AIStudio({
   const [isGenerating, setIsGenerating] = useState(false);
   const isGeneratingRef = useRef(false);
 
+  // Backend generation status
+  const [isBackendGenerating, setIsBackendGenerating] = useState(false);
+
   // Ref for handleGenerate function
   const handleGenerateRef = useRef(null);
   const abortGenerateRef = useRef(null);
@@ -133,6 +136,7 @@ function AIStudio({
               isGeneratingRef={isGeneratingRef}
               abortGenerateRef={abortGenerateRef}
               clearUIStateRef={clearUIStateRef}
+              setIsBackendGenerating={setIsBackendGenerating}
             />
           </Drawer>
         ) : (
@@ -154,6 +158,7 @@ function AIStudio({
                 isGeneratingRef={isGeneratingRef}
                 abortGenerateRef={abortGenerateRef}
                 clearUIStateRef={clearUIStateRef}
+                setIsBackendGenerating={setIsBackendGenerating}
               />
             </Collapse>
           </Paper>
@@ -190,6 +195,7 @@ function AIStudio({
                 messages={messages}
                 setMessages={setMessages}
                 isGenerating={isGenerating}
+                isBackendGenerating={isBackendGenerating}
                 setIsGenerating={setIsGenerating}
                 isGeneratingRef={isGeneratingRef}
                 abortGenerateRef={abortGenerateRef}

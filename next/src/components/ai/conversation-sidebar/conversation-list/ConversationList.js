@@ -39,6 +39,7 @@ function ConversationList({
                             abortGenerateRef,
                             clearUIStateRef,
                             conversationUpdatePromiseRef,
+                            setIsBackendGenerating,
                           }) {
   const router = useRouter();
   const authentication = useAuthentication();
@@ -169,6 +170,7 @@ function ConversationList({
 
   const selectConversation = async (conversationId) => {
     clearUIStateRef.current?.();
+    setIsBackendGenerating(false);
 
     setLoadingConversationId(conversationId);
 
@@ -189,12 +191,13 @@ function ConversationList({
       const generating = await chatLogic.checkGenerating(conversationId);
       if (generating) {
         const versionBefore = conversation.version;
-        showAlert('Backend is still generating for this conversation. Will auto-refresh when done.', 'info');
+        setIsBackendGenerating(true);
         const pollInterval = setInterval(async () => {
           try {
             const stillGenerating = await chatLogic.checkGenerating(conversationId);
             if (!stillGenerating) {
               clearInterval(pollInterval);
+              setIsBackendGenerating(false);
               setConversationsReloadKey(prev => prev + 1);
               const updated = await conversationLogic.fetchConversation(conversationId);
               if (updated.version > versionBefore) {
@@ -205,6 +208,7 @@ function ConversationList({
             }
           } catch (err) {
             clearInterval(pollInterval);
+            setIsBackendGenerating(false);
             showAlert('Failed to check generating status: ' + err.message, 'error');
           }
         }, 3000);

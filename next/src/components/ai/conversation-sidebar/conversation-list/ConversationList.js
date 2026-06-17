@@ -170,14 +170,12 @@ function ConversationList({
 
   const selectConversation = async (conversationId) => {
     clearUIStateRef.current?.();
-    setIsBackendGenerating(false);
 
     setLoadingConversationId(conversationId);
 
-    let conversation;
     try {
       const conversations = await loadConversations();
-      conversation = conversations.find(conversation => conversation.id === conversationId);
+      const conversation = conversations.find(conversation => conversation.id === conversationId);
 
       await activateConversation(conversation);
     } catch (err) {
@@ -185,40 +183,39 @@ function ConversationList({
     } finally {
       setLoadingConversationId(null);
     }
-
-    // Check if backend is still generating for this conversation
-    try {
-      const generating = await chatLogic.checkGenerating(conversationId);
-      if (generating) {
-        const versionBefore = conversation.version;
-        setIsBackendGenerating(true);
-        const pollInterval = setInterval(async () => {
-          try {
-            const stillGenerating = await chatLogic.checkGenerating(conversationId);
-            if (!stillGenerating) {
-              clearInterval(pollInterval);
-              setIsBackendGenerating(false);
-              setConversationsReloadKey(prev => prev + 1);
-              const updated = await conversationLogic.fetchConversation(conversationId);
-              if (updated.version > versionBefore) {
-                showAlert('Generation complete. Conversation refreshed.', 'success');
-              } else {
-                showAlert('Generation ended with no new messages. It either failed or crashed.', 'warning');
-              }
-            }
-          } catch (err) {
-            clearInterval(pollInterval);
-            setIsBackendGenerating(false);
-            showAlert('Failed to check generating status: ' + err.message, 'error');
-          }
-        }, 3000);
-      }
-    } catch (err) {
-      showAlert('Failed to check generating status: ' + err.message, 'error');
-    }
   };
 
-  const handleAccordionChange = (panel) => (event, isExpanded) => {
+  // Poll backend generation status for the current conversation
+  useEffect(() => {
+    setIsBackendGenerating(false);
+
+    if (!selectedConversationId || isGeneratingRef.current) {
+      return;
+    }
+
+    let cancelled = false;
+    let timer;
+
+    const poll = async (wasGenerating) => {
+      const generating = await chatLogic.checkGenerating(selectedConversationId);
+      if (cancelled) return;
+      setIsBackendGenerating(generating);
+      if (generating) {
+        timer = setTimeout(() => poll(true), 3000);
+      } else if (wasGenerating) {
+        setConversationsReloadKey(prev => prev + 1);
+      }
+    };
+
+    poll(false);
+
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+  }, [selectedConversationId, chatLogic, isGeneratingRef, setIsBackendGenerating, setConversationsReloadKey]);
+
+  const handleAccordionChange = (panel) => (_event, isExpanded) => {
     setExpandedAccordion(prev => ({
       ...prev,
       [panel]: isExpanded

@@ -7,7 +7,7 @@ from typing import Callable, Awaitable
 
 from fastapi import HTTPException
 from fastapi.responses import StreamingResponse
-from llm_bridge import *
+from llm_bridge import ChatResponse, File, serialize
 
 from app.client.nest_js_client.models import Message, Content, ContentType, MessageRole
 from app.service.chat.generation_manager import generation_manager
@@ -46,7 +46,7 @@ def _build_message(
     )
 
 
-def _to_log_safe(response: ChatResponse) -> ChatResponse:
+def _to_log(response: ChatResponse) -> ChatResponse:
     return ChatResponse(
         text=response.text,
         thought=response.thought,
@@ -112,7 +112,7 @@ async def non_stream_handler(
     try:
         cost = await reduce_credit(chat_response.input_tokens, chat_response.output_tokens)
 
-        logging.info(f"content: {_to_log_safe(chat_response)}")
+        logging.info(f"content: {_to_log(chat_response)}")
         logging.info(f"cost: {cost}")
 
         if conversation_id is not None and not generation_manager.is_aborted(request_id):
@@ -159,7 +159,7 @@ async def stream_handler(
                     logging.info(f"Request {request_id} aborted")
                     break
 
-                logging.info(f"chunk: {_to_log_safe(chunk)}")
+                logging.info(f"chunk: {_to_log(chunk)}")
 
                 if chunk.text:
                     text += chunk.text
@@ -198,7 +198,7 @@ async def stream_handler(
 
             cost = await reduce_credit(input_tokens, output_tokens)
 
-            logging.info(f"content: {_to_log_safe(chat_response)}")
+            logging.info(f"content: {_to_log(chat_response)}")
             logging.info(f"cost: {cost}")
 
             if conversation_id is not None and not generation_manager.is_aborted(request_id):

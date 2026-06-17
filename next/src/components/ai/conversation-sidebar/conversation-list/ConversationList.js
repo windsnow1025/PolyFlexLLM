@@ -67,6 +67,9 @@ function ConversationList({
   const [loadingConversationId, setLoadingConversationId] = useState(null);
   const [isLoadingLabels, setIsLoadingLabels] = useState(false);
 
+  // Backend Generation Check
+  const [generationCheckKey, setGenerationCheckKey] = useState(0);
+
   const conversationLogic = useMemo(() => new ConversationLogic(), []);
   const chatLogic = useMemo(() => new ChatLogic(), []);
   const labelLogic = useMemo(() => new LabelLogic(), []);
@@ -185,7 +188,7 @@ function ConversationList({
     }
   };
 
-  // Poll backend generation status for the current conversation
+  // Poll backend generation status when frontend not generating
   useEffect(() => {
     setIsBackendGenerating(false);
 
@@ -213,7 +216,18 @@ function ConversationList({
       cancelled = true;
       clearTimeout(timer);
     };
-  }, [selectedConversationId, chatLogic, isGeneratingRef, setIsBackendGenerating, setConversationsReloadKey]);
+  }, [selectedConversationId, generationCheckKey, chatLogic, isGeneratingRef, setIsBackendGenerating, setConversationsReloadKey]);
+
+  // Check backend generation when tab regains focus
+  useEffect(() => {
+    const handleVisible = () => {
+      if (document.visibilityState === 'visible') {
+        setGenerationCheckKey(prev => prev + 1);
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisible);
+    return () => document.removeEventListener('visibilitychange', handleVisible);
+  }, []);
 
   const handleAccordionChange = (panel) => (_event, isExpanded) => {
     setExpandedAccordion(prev => ({

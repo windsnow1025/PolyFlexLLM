@@ -204,6 +204,15 @@ function ConversationList({
       if (cancelled) return;
       setIsBackendGenerating(generating);
       if (generating) {
+        if (!isGeneratingRef.current) {
+          setMessages(prevMessages => {
+            const lastMessage = prevMessages[prevMessages.length - 1];
+            if (lastMessage && lastMessage.role === 'assistant') {
+              return prevMessages.slice(0, -1);
+            }
+            return prevMessages;
+          });
+        }
         timer = setTimeout(() => poll(true), 3000);
       } else if (wasGenerating) {
         setConversationsReloadKey(prev => prev + 1);
@@ -216,7 +225,7 @@ function ConversationList({
       cancelled = true;
       clearTimeout(timer);
     };
-  }, [selectedConversationId, generationCheckKey, chatLogic, isGeneratingRef, setIsBackendGenerating, setConversationsReloadKey]);
+  }, [selectedConversationId, generationCheckKey, chatLogic, isGeneratingRef, setMessages, setIsBackendGenerating, setConversationsReloadKey]);
 
   // Check backend generation when tab regains focus
   useEffect(() => {

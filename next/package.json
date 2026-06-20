@@ -31,7 +31,7 @@
     "@mui/x-date-pickers-pro": "^8.27.2",
     "@mui/x-tree-view": "^8.27.2",
     "@react-spring/web": "^10.0.3",
-    "axios": "^1.15.2",
+    "axios": "^1.16.0",
     "clsx": "^2.1.1",
     "crypto-js": "^4.2.0",
     "dayjs": "^1.11.20",

@@ -26,18 +26,25 @@ import LabelGroupHeader from "./LabelGroupHeader";
 import ConversationItem from "./ConversationItem";
 
 function ConversationList({
-                            conversations,
-                            setConversations,
+                            // Messages
+                            setMessages,
+
+                            // Conversation
                             selectedConversationId,
                             setSelectedConversationId,
-                            setMessages,
+                            conversationUpdatePromiseRef,
+
+                            // Conversations
+                            conversations,
+                            setConversations,
                             conversationsReloadKey,
                             setConversationsReloadKey,
-                            setResumeKey,
+
+                            // Generation
                             isGeneratingRef,
                             abortGenerateRef,
                             clearUIStateRef,
-                            conversationUpdatePromiseRef,
+                            setResumeKey,
                           }) {
   const router = useRouter();
   const authentication = useAuthentication();

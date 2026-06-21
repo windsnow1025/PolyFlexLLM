@@ -6,21 +6,28 @@ import TemporaryChatButton from "../TemporaryChatButton";
 import ConversationLogic from "@/lib/conversation/ConversationLogic";
 
 function ConversationSidebar({
+                               // Messages
                                messages,
                                setMessages,
+
+                               // Conversation
                                selectedConversationId,
                                setSelectedConversationId,
                                conversationUpdateKey,
                                conversationUpdatePromiseRef,
                                conversationVersionRef,
+
+                               // Conversations
                                conversations,
                                setConversations,
                                conversationsReloadKey,
                                setConversationsReloadKey,
-                               setResumeKey,
+
+                               // Generation
                                isGeneratingRef,
                                abortGenerateRef,
                                clearUIStateRef,
+                               setResumeKey,
                              }) {
   const conversationLogic = useMemo(() => new ConversationLogic(), []);
 
@@ -142,18 +149,25 @@ function ConversationSidebar({
         <Divider/>
 
         <ConversationList
-          conversations={conversations}
-          setConversations={setConversations}
+          // Messages
+          setMessages={setMessages}
+
+          // Conversation
           selectedConversationId={selectedConversationId}
           setSelectedConversationId={setSelectedConversationId}
-          setMessages={setMessages}
+          conversationUpdatePromiseRef={conversationUpdatePromiseRef}
+
+          // Conversations
+          conversations={conversations}
+          setConversations={setConversations}
           conversationsReloadKey={conversationsReloadKey}
           setConversationsReloadKey={setConversationsReloadKey}
-          setResumeKey={setResumeKey}
+
+          // Generation
           isGeneratingRef={isGeneratingRef}
           abortGenerateRef={abortGenerateRef}
           clearUIStateRef={clearUIStateRef}
-          conversationUpdatePromiseRef={conversationUpdatePromiseRef}
+          setResumeKey={setResumeKey}
         />
       </div>
       <Snackbar

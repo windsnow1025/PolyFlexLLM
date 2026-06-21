@@ -4,11 +4,18 @@ import ReplayIcon from '@mui/icons-material/Replay';
 import {wait} from "@/components/common/utils/Wait";
 
 function RetryButton({
+                       // Messages
                        messages,
                        setMessages,
-                       abortGenerateRef,
-                       handleGenerateRef,
+
+                       // Conversation
                        setConversationUpdateKey,
+
+                       // Generation
+                       handleGenerateRef,
+                       abortGenerateRef,
+
+                       // UI
                        isUploading,
                      }) {
   const isRetryEnabled = () => {

@@ -115,42 +115,56 @@ function AIStudio({
             }}
           >
             <ConversationSidebar
+              // Messages
               messages={messages}
               setMessages={setMessages}
+
+              // Conversation
               selectedConversationId={selectedConversationId}
               setSelectedConversationId={setSelectedConversationId}
               conversationUpdateKey={conversationUpdateKey}
               conversationUpdatePromiseRef={conversationUpdatePromiseRef}
               conversationVersionRef={conversationVersionRef}
+
+              // Conversations
               conversations={conversations}
               setConversations={setConversations}
               conversationsReloadKey={conversationsReloadKey}
               setConversationsReloadKey={setConversationsReloadKey}
-              setResumeKey={setResumeKey}
+
+              // Generation
               isGeneratingRef={isGeneratingRef}
               abortGenerateRef={abortGenerateRef}
               clearUIStateRef={clearUIStateRef}
+              setResumeKey={setResumeKey}
             />
           </Drawer>
         ) : (
           <Paper elevation={2} sx={{borderRadius: 0}} className="flex">
             <Collapse orientation="horizontal" in={drawerOpen}>
               <ConversationSidebar
+                // Messages
                 messages={messages}
                 setMessages={setMessages}
+
+                // Conversation
                 selectedConversationId={selectedConversationId}
                 setSelectedConversationId={setSelectedConversationId}
                 conversationUpdateKey={conversationUpdateKey}
                 conversationUpdatePromiseRef={conversationUpdatePromiseRef}
                 conversationVersionRef={conversationVersionRef}
+
+                // Conversations
                 conversations={conversations}
                 setConversations={setConversations}
                 conversationsReloadKey={conversationsReloadKey}
                 setConversationsReloadKey={setConversationsReloadKey}
-                setResumeKey={setResumeKey}
+
+                // Generation
                 isGeneratingRef={isGeneratingRef}
                 abortGenerateRef={abortGenerateRef}
                 clearUIStateRef={clearUIStateRef}
+                setResumeKey={setResumeKey}
               />
             </Collapse>
           </Paper>
@@ -183,18 +197,29 @@ function AIStudio({
           </div>
           <Paper elevation={0} className="local-scroll-scrollable px-1" id="chat-messages">
             <ChatMessagesDiv
+              // Messages
               messages={messages}
               setMessages={setMessages}
+
+              // Conversation
+              selectedConversationId={selectedConversationId}
+              setConversationUpdateKey={setConversationUpdateKey}
+
+              // Prompts
+              promptsReloadKey={promptsReloadKey}
+              setPromptsReloadKey={setPromptsReloadKey}
+
+              // Generation
               isGenerating={isGenerating}
               setIsGenerating={setIsGenerating}
               isGeneratingRef={isGeneratingRef}
               abortGenerateRef={abortGenerateRef}
-              setConversationUpdateKey={setConversationUpdateKey}
-              promptsReloadKey={promptsReloadKey}
-              setPromptsReloadKey={setPromptsReloadKey}
-              selectedConversationId={selectedConversationId}
+
+              // Side-effect setters
               isLastChunkThought={isLastChunkThought}
               setUploadingCount={setUploadingCount}
+
+              // UI
               isAtBottomRef={isAtBottomRef}
             />
           </Paper>
@@ -205,21 +230,19 @@ function AIStudio({
           <div className="flex-around">
             <div className="flex-center">
               <SendButton
-                isGenerating={isGenerating}
-                setIsGenerating={setIsGenerating}
-                isGeneratingRef={isGeneratingRef}
-                setIsLastChunkThought={setIsLastChunkThought}
-                setConversationsReloadKey={setConversationsReloadKey}
-                resumeKey={resumeKey}
-                setCreditRefreshKey={setCreditRefreshKey}
-                handleGenerateRef={handleGenerateRef}
-                abortGenerateRef={abortGenerateRef}
-                clearUIStateRef={clearUIStateRef}
+                // Messages
+                messages={messages}
+                setMessages={setMessages}
+
+                // Conversation
                 selectedConversationId={selectedConversationId}
                 conversationUpdatePromiseRef={conversationUpdatePromiseRef}
                 conversationVersionRef={conversationVersionRef}
-                messages={messages}
-                setMessages={setMessages}
+
+                // Conversations
+                setConversationsReloadKey={setConversationsReloadKey}
+
+                // Chat config
                 apiType={apiType}
                 model={model}
                 temperature={temperature}
@@ -227,15 +250,37 @@ function AIStudio({
                 thought={thought}
                 webSearch={webSearch}
                 codeExecution={codeExecution}
+
+                // Generation
+                isGenerating={isGenerating}
+                setIsGenerating={setIsGenerating}
+                isGeneratingRef={isGeneratingRef}
+                handleGenerateRef={handleGenerateRef}
+                abortGenerateRef={abortGenerateRef}
+                clearUIStateRef={clearUIStateRef}
+                resumeKey={resumeKey}
+
+                // Side-effect setters
+                setIsLastChunkThought={setIsLastChunkThought}
+                setCreditRefreshKey={setCreditRefreshKey}
+
+                // UI
                 isUploading={isUploading}
                 isAtBottomRef={isAtBottomRef}
               />
               <RetryButton
+                // Messages
                 messages={messages}
                 setMessages={setMessages}
-                abortGenerateRef={abortGenerateRef}
-                handleGenerateRef={handleGenerateRef}
+
+                // Conversation
                 setConversationUpdateKey={setConversationUpdateKey}
+
+                // Generation
+                handleGenerateRef={handleGenerateRef}
+                abortGenerateRef={abortGenerateRef}
+
+                // UI
                 isUploading={isUploading}
               />
             </div>

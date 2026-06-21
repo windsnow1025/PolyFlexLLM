@@ -7,21 +7,19 @@ import ConversationLogic from "@/lib/conversation/ConversationLogic";
 import {StorageKeys} from "@/lib/common/Constants";
 
 function SendButton({
-                      isGenerating,
-                      setIsGenerating,
-                      isGeneratingRef,
-                      setIsLastChunkThought,
-                      setConversationsReloadKey,
-                      resumeKey,
-                      setCreditRefreshKey,
-                      handleGenerateRef,
-                      abortGenerateRef,
-                      clearUIStateRef,
+                      // Messages
+                      messages,
+                      setMessages,
+
+                      // Conversation
                       selectedConversationId,
                       conversationUpdatePromiseRef,
                       conversationVersionRef,
-                      messages,
-                      setMessages,
+
+                      // Conversations
+                      setConversationsReloadKey,
+
+                      // Chat config
                       apiType,
                       model,
                       temperature,
@@ -29,6 +27,21 @@ function SendButton({
                       thought,
                       webSearch,
                       codeExecution,
+
+                      // Generation
+                      isGenerating,
+                      setIsGenerating,
+                      isGeneratingRef,
+                      handleGenerateRef,
+                      abortGenerateRef,
+                      clearUIStateRef,
+                      resumeKey,
+
+                      // Side-effect setters
+                      setIsLastChunkThought,
+                      setCreditRefreshKey,
+
+                      // UI
                       isUploading,
                       isAtBottomRef,
                     }) {

@@ -7,18 +7,29 @@ import {Alert, Collapse, Snackbar} from "@mui/material";
 import {TransitionGroup} from "react-transition-group";
 
 function ChatMessagesDiv({
+                           // Messages
                            messages,
                            setMessages,
+
+                           // Conversation
+                           selectedConversationId,
+                           setConversationUpdateKey,
+
+                           // Prompts
+                           promptsReloadKey,
+                           setPromptsReloadKey,
+
+                           // Generation
                            isGenerating,
                            setIsGenerating,
                            isGeneratingRef,
                            abortGenerateRef,
-                           setConversationUpdateKey,
-                           promptsReloadKey,
-                           setPromptsReloadKey,
-                           selectedConversationId,
+
+                           // Side-effect setters
                            isLastChunkThought,
                            setUploadingCount,
+
+                           // UI
                            isAtBottomRef,
                          }) {
   // Scroll to manually added message after Collapse animation

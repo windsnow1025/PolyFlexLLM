@@ -1,7 +1,7 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {Alert, Button, CircularProgress, Snackbar, Tooltip} from "@mui/material";
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import {v4 as uuidv4} from 'uuid';
+import {AbortIntent} from "@/client/fastapi";
 import ChatLogic from "@/lib/chat/ChatLogic";
 import ConversationLogic from "@/lib/conversation/ConversationLogic";
 import {StorageKeys} from "@/lib/common/Constants";
@@ -40,7 +40,6 @@ function SendButton({
   const latestRequestIndex = useRef(0);
   const isFirstStreamOpen = useRef(true);
   const abortControllerRef = useRef(null);
-  const requestIdRef = useRef(null);
 
   const [alertOpen, setAlertOpen] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
@@ -61,10 +60,9 @@ function SendButton({
 
   const handleNonStreamGenerate = async (currentReqIndex) => {
     const conversationId = isTemporaryChat ? undefined : selectedConversationId;
-    requestIdRef.current = uuidv4();
 
     const content = await chatLogic.nonStreamGenerate(
-      requestIdRef.current, messages, apiType, model, temperature, thought, webSearch, codeExecution,
+      messages, apiType, model, temperature, thought, webSearch, codeExecution,
       conversationId
     );
 
@@ -97,11 +95,10 @@ function SendButton({
   const handleStreamGenerate = async (currentReqIndex, onOpenCallback, onDoneCallback) => {
     let isFirstChunk = true;
     const conversationId = isTemporaryChat ? undefined : selectedConversationId;
-    requestIdRef.current = uuidv4();
     abortControllerRef.current = new AbortController();
 
     const generator = chatLogic.streamGenerate(
-      requestIdRef.current, messages, apiType, model, temperature, thought, webSearch, codeExecution,
+      messages, apiType, model, temperature, thought, webSearch, codeExecution,
       conversationId, onOpenCallback, onDoneCallback, abortControllerRef.current.signal
     );
 
@@ -158,7 +155,6 @@ function SendButton({
   };
 
   const clearUIState = () => {
-    requestIdRef.current = null;
     abortControllerRef.current = null;
     switchStatus(false);
   }
@@ -170,9 +166,9 @@ function SendButton({
     clearUIState();
   };
 
-  const abortRequest = () => {
-    if (requestIdRef.current) {
-      chatLogic.abortChat(requestIdRef.current);
+  const abortRequest = (intent = AbortIntent.Discard) => {
+    if (!isTemporaryChat && selectedConversationId) {
+      chatLogic.abortChat(selectedConversationId, intent);
     }
     abortFrontendRequest();
   };
@@ -247,7 +243,7 @@ function SendButton({
         setCreditRefreshKey(prev => prev + 1);
       }
     } else {
-      abortRequest();
+      abortRequest(AbortIntent.Keep);
     }
   };
 

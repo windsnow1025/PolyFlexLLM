@@ -75,69 +75,69 @@ function MessageDiv(props) {
 
   return (
     <MessageContainer role={message.role}>
-        <div className="flex items-center">
-          <RoleSelect role={message.role} setRole={handleRoleChange}/>
-          {(message.role === MessageRoleEnum.System || message.role === MessageRoleEnum.User) && !isTemporaryChat && (
-            <PromptSelect
-              message={message}
-              setMessage={setMessage}
-              setConversationUpdateKey={setConversationUpdateKey}
-              promptsReloadKey={promptsReloadKey}
-              setPromptsReloadKey={setPromptsReloadKey}
-            />
-          )}
-          <div className="inflex-fill"></div>
-
-          <Tooltip title={showPreview ? "Edit Mode" : "Preview Mode"}>
-            <IconButton size="small" onClick={() => {
-              setShowPreview(!showPreview)
-            }}>
-              {showPreview ? <EditSquareIcon fontSize="small"/> : <VisibilityIcon fontSize="small"/>}
-            </IconButton>
-          </Tooltip>
-
-          {rawEditableState === RawEditableState.AlwaysFalse && (
-            <Tooltip title="Copy Message">
-              <IconButton size="small" onClick={handleCopyMessage}>
-                <ContentCopyIcon fontSize="small"/>
-              </IconButton>
-            </Tooltip>
-          )}
-          <Tooltip title="Delete Message">
-            <IconButton size="small" color="error" onClick={() => onMessageDelete(message.id)}>
-              <RemoveCircleOutlineIcon fontSize="small"/>
-            </IconButton>
-          </Tooltip>
-        </div>
-
-        <div className="mt-2"></div>
-        <ThoughtDiv
-          thought={message.thought}
-          setThought={handleThoughtChange}
-          isPreview={showPreview}
-          isLoading={isThoughtLoading}
-        />
-
-        <SortableContents
-          contents={message.contents}
-          setContents={handleContentsChange}
-          rawEditableState={rawEditableState}
-          setConversationUpdateKey={setConversationUpdateKey}
-          isTemporaryChat={isTemporaryChat}
-        />
-
-        <DisplayDiv
-          display={message.display}
-          setDisplay={handleDisplayChange}
-          isPreview={showPreview}
-        />
-
-        {rawEditableState !== RawEditableState.AlwaysFalse && !isTemporaryChat && (
-          <AddContentArea
-            setContents={handleContentsChange}
-            setUploadingCount={setUploadingCount}
+      <div className="flex items-center">
+        <RoleSelect role={message.role} setRole={handleRoleChange}/>
+        {(message.role === MessageRoleEnum.System || message.role === MessageRoleEnum.User) && !isTemporaryChat && (
+          <PromptSelect
+            message={message}
+            setMessage={setMessage}
+            setConversationUpdateKey={setConversationUpdateKey}
+            promptsReloadKey={promptsReloadKey}
+            setPromptsReloadKey={setPromptsReloadKey}
           />
         )}
+        <div className="inflex-fill"></div>
+
+        <Tooltip title={showPreview ? "Edit Mode" : "Preview Mode"}>
+          <IconButton size="small" onClick={() => {
+            setShowPreview(!showPreview)
+          }}>
+            {showPreview ? <EditSquareIcon fontSize="small"/> : <VisibilityIcon fontSize="small"/>}
+          </IconButton>
+        </Tooltip>
+
+        {rawEditableState === RawEditableState.AlwaysFalse && (
+          <Tooltip title="Copy Message">
+            <IconButton size="small" onClick={handleCopyMessage}>
+              <ContentCopyIcon fontSize="small"/>
+            </IconButton>
+          </Tooltip>
+        )}
+        <Tooltip title="Delete Message">
+          <IconButton size="small" color="error" onClick={() => onMessageDelete(message.id)}>
+            <RemoveCircleOutlineIcon fontSize="small"/>
+          </IconButton>
+        </Tooltip>
+      </div>
+
+      <div className="mt-2"></div>
+      <ThoughtDiv
+        thought={message.thought}
+        setThought={handleThoughtChange}
+        isPreview={showPreview}
+        isLoading={isThoughtLoading}
+      />
+
+      <SortableContents
+        contents={message.contents}
+        setContents={handleContentsChange}
+        rawEditableState={rawEditableState}
+        setConversationUpdateKey={setConversationUpdateKey}
+        isTemporaryChat={isTemporaryChat}
+      />
+
+      <DisplayDiv
+        display={message.display}
+        setDisplay={handleDisplayChange}
+        isPreview={showPreview}
+      />
+
+      {rawEditableState !== RawEditableState.AlwaysFalse && !isTemporaryChat && (
+        <AddContentArea
+          setContents={handleContentsChange}
+          setUploadingCount={setUploadingCount}
+        />
+      )}
     </MessageContainer>
   );
 }

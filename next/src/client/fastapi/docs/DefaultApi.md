@@ -9,6 +9,7 @@ All URIs are relative to *http://localhost*
 |[**generateChatPost**](#generatechatpost) | **POST** /chat | Generate|
 |[**getModelsModelGet**](#getmodelsmodelget) | **GET** /model | Get Models|
 |[**isGeneratingChatGeneratingConversationIdGet**](#isgeneratingchatgeneratingconversationidget) | **GET** /chat/generating/{conversation_id} | Is Generating|
+|[**resumeChatStreamConversationIdGet**](#resumechatstreamconversationidget) | **GET** /chat/stream/{conversation_id} | Resume|
 |[**rootGet**](#rootget) | **GET** / | Root|
 
 # **abortChatChatAbortPost**
@@ -242,6 +243,57 @@ const { status, data } = await apiInstance.isGeneratingChatGeneratingConversatio
 ### Return type
 
 **boolean**
+
+### Authorization
+
+[HTTPBearer](../README.md#HTTPBearer)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | Successful Response |  -  |
+|**422** | Validation Error |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **resumeChatStreamConversationIdGet**
+> any resumeChatStreamConversationIdGet()
+
+
+### Example
+
+```typescript
+import {
+    DefaultApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new DefaultApi(configuration);
+
+let conversationId: number; // (default to undefined)
+
+const { status, data } = await apiInstance.resumeChatStreamConversationIdGet(
+    conversationId
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **conversationId** | [**number**] |  | defaults to undefined|
+
+
+### Return type
+
+**any**
 
 ### Authorization
 

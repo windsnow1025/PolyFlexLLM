@@ -5,7 +5,8 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**request_id** | **string** |  | [default to undefined]
+**conversation_id** | **number** |  | [default to undefined]
+**intent** | [**AbortIntent**](AbortIntent.md) |  | [default to undefined]
 
 ## Example
 
@@ -13,7 +14,8 @@ Name | Type | Description | Notes
 import { AbortRequest } from './api';
 
 const instance: AbortRequest = {
-    request_id,
+    conversation_id,
+    intent,
 };
 ```
 

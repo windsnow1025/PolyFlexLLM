@@ -5,7 +5,6 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**request_id** | **string** |  | [optional] [default to undefined]
 **messages** | [**Array&lt;Message&gt;**](Message.md) |  | [default to undefined]
 **api_type** | **string** |  | [default to undefined]
 **model** | **string** |  | [default to undefined]
@@ -23,7 +22,6 @@ Name | Type | Description | Notes
 import { ChatRequest } from './api';
 
 const instance: ChatRequest = {
-    request_id,
     messages,
     api_type,
     model,

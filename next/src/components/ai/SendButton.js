@@ -138,10 +138,6 @@ function SendButton({
       ...(selectedConversationId === null ? [ChatLogic.getEmptyUserMessage()] : []),
     ]);
 
-    if (selectedConversationId) {
-      setConversationsReloadKey(prev => prev + 1);
-    }
-
     return true;
   };
 
@@ -173,20 +169,11 @@ function SendButton({
     }
   };
 
-  const abortGenerate = async (intent = AbortIntent.Discard) => {
-    switchStatus(false);
+  const onGenerationEnded = () => {
     if (selectedConversationId) {
-      try {
-        await chatLogic.abortChat(selectedConversationId, intent);
-        if (intent === AbortIntent.Keep) {
-          setConversationsReloadKey(prev => prev + 1);
-        }
-      } catch (err) {
-        setAlertMessage(err.message);
-        setAlertSeverity('error');
-        setAlertOpen(true);
-      }
+      setConversationsReloadKey(prev => prev + 1);
     }
+    setCreditRefreshKey(prev => prev + 1);
   };
 
   const handleGenerate = async () => {
@@ -219,33 +206,40 @@ function SendButton({
           setAlertOpen(true);
         }
       }
-      let success;
       if (stream) {
-        success = await handleStreamGenerate(currentReqIndex);
+        await handleStreamGenerate(currentReqIndex);
       } else {
-        success = await handleNonStreamGenerate(currentReqIndex);
-      }
-      if (success) {
-        switchStatus(false);
-        if (selectedConversationId) {
-          setConversationsReloadKey(prev => prev + 1);
-        }
+        await handleNonStreamGenerate(currentReqIndex);
       }
     } catch (err) {
-      switchStatus(false);
       setAlertMessage(err.message);
       setAlertSeverity('error');
       setAlertOpen(true);
     } finally {
-      setCreditRefreshKey(prev => prev + 1);
+      switchStatus(false);
+      onGenerationEnded();
+    }
+  };
+
+  const abortGenerate = async (intent = AbortIntent.Discard) => {
+    switchStatus(false);
+    if (selectedConversationId) {
+      try {
+        await chatLogic.abortChat(selectedConversationId, intent);
+      } catch (err) {
+        setAlertMessage(err.message);
+        setAlertSeverity('error');
+        setAlertOpen(true);
+      }
+      onGenerationEnded();
     }
   };
 
   const handleClick = () => {
-    if (isGeneratingRef.current) {
-      abortGenerate(AbortIntent.Keep);
-    } else {
+    if (!isGeneratingRef.current) {
       handleGenerate();
+    } else {
+      abortGenerate(AbortIntent.Keep);
     }
   };
 
@@ -261,6 +255,7 @@ function SendButton({
     if (isGeneratingRef.current) return;
 
     let aborted = false;
+    let tookOver = false;
     const controller = new AbortController();
 
     // Clear stale assistant message
@@ -274,6 +269,7 @@ function SendButton({
       });
       latestRequestIndexRef.current += 1;
       abortControllerRef.current = controller;
+      tookOver = true;
       switchStatus(true);
     };
 
@@ -283,19 +279,17 @@ function SendButton({
           selectedConversationId, onOpen, controller.signal
         );
         const currentReqIndex = latestRequestIndexRef.current + 1;
-        const success = await consumeStreamChunks(currentReqIndex, generator);
+        await consumeStreamChunks(currentReqIndex, generator);
         if (aborted) return;
-        if (isGeneratingRef.current) {
-          if (success) {
-            switchStatus(false);
-            setConversationsReloadKey(prev => prev + 1);
-          }
-          setCreditRefreshKey(prev => prev + 1);
-        }
+        if (!tookOver) return;
+        switchStatus(false);
+        onGenerationEnded();
       } catch (err) {
         if (aborted) return;
-        switchStatus(false);
-        setCreditRefreshKey(prev => prev + 1);
+        if (tookOver) {
+          switchStatus(false);
+        }
+        onGenerationEnded();
         setAlertMessage(err.message);
         setAlertSeverity('error');
         setAlertOpen(true);

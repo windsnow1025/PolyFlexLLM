@@ -16,7 +16,6 @@ import {useAuthentication} from "@/session/SessionContext";
 import {ExpandMore as ExpandMoreIcon} from '@mui/icons-material';
 import {Temporal} from "@js-temporal/polyfill";
 import ConversationLogic from "@/lib/conversation/ConversationLogic";
-import ChatLogic from "@/lib/chat/ChatLogic";
 import LabelLogic from "@/lib/label/LabelLogic";
 import {isEqual} from 'lodash';
 import {NO_LABEL_COLOR} from "@/components/ai/conversation-sidebar/conversation-list/label/PresetColors";
@@ -34,12 +33,12 @@ function ConversationList({
                             setMessages,
                             conversationsReloadKey,
                             setConversationsReloadKey,
+                            setResumeKey,
                             setIsTemporaryChat,
                             isGeneratingRef,
                             abortGenerateRef,
                             clearUIStateRef,
                             conversationUpdatePromiseRef,
-                            setIsBackendGenerating,
                           }) {
   const router = useRouter();
   const authentication = useAuthentication();
@@ -67,11 +66,7 @@ function ConversationList({
   const [loadingConversationId, setLoadingConversationId] = useState(null);
   const [isLoadingLabels, setIsLoadingLabels] = useState(false);
 
-  // Backend Generation Check
-  const [generationCheckKey, setGenerationCheckKey] = useState(0);
-
   const conversationLogic = useMemo(() => new ConversationLogic(), []);
-  const chatLogic = useMemo(() => new ChatLogic(), []);
   const labelLogic = useMemo(() => new LabelLogic(), []);
 
   const showAlert = (message, severity = 'info') => {
@@ -181,6 +176,7 @@ function ConversationList({
       const conversation = conversations.find(conversation => conversation.id === conversationId);
 
       await activateConversation(conversation);
+      setResumeKey(prev => prev + 1);
     } catch (err) {
       showAlert(err.message, 'error');
     } finally {
@@ -188,55 +184,6 @@ function ConversationList({
     }
   };
 
-  // Poll backend generation status when frontend not generating
-  useEffect(() => {
-    setIsBackendGenerating(false);
-
-    if (!selectedConversationId || isGeneratingRef.current) {
-      return;
-    }
-
-    let cancelled = false;
-    let timer;
-
-    const poll = async (wasGenerating) => {
-      const generating = await chatLogic.checkGenerating(selectedConversationId);
-      if (cancelled) return;
-      setIsBackendGenerating(generating);
-      if (generating) {
-        if (!isGeneratingRef.current) {
-          setMessages(prevMessages => {
-            const lastMessage = prevMessages[prevMessages.length - 1];
-            if (lastMessage && lastMessage.role === 'assistant') {
-              return prevMessages.slice(0, -1);
-            }
-            return prevMessages;
-          });
-        }
-        timer = setTimeout(() => poll(true), 3000);
-      } else if (wasGenerating) {
-        setConversationsReloadKey(prev => prev + 1);
-      }
-    };
-
-    poll(false);
-
-    return () => {
-      cancelled = true;
-      clearTimeout(timer);
-    };
-  }, [selectedConversationId, generationCheckKey, chatLogic, isGeneratingRef, setMessages, setIsBackendGenerating, setConversationsReloadKey]);
-
-  // Check backend generation when tab regains focus
-  useEffect(() => {
-    const handleVisible = () => {
-      if (document.visibilityState === 'visible') {
-        setGenerationCheckKey(prev => prev + 1);
-      }
-    };
-    document.addEventListener('visibilitychange', handleVisible);
-    return () => document.removeEventListener('visibilitychange', handleVisible);
-  }, []);
 
   const handleAccordionChange = (panel) => (_event, isExpanded) => {
     setExpandedAccordion(prev => ({

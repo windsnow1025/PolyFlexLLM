@@ -1,5 +1,10 @@
 import axios from "axios";
 
+export function getErrorStatus(error: unknown): number | undefined {
+  if (axios.isAxiosError(error)) return error.response?.status;
+  return undefined;
+}
+
 export function handleError(error: unknown, fallbackMessage: string): never {
   if (axios.isAxiosError(error)) {
     const response = error.response;

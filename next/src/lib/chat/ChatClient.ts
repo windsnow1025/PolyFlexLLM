@@ -6,13 +6,11 @@ import {type AbortIntent, type ChatRequest, DefaultApi, type Message} from "@/cl
 import {StorageKeys} from "@/lib/common/Constants";
 
 export default class ChatClient {
-  // Consume an SSE endpoint as an async generator of ChatResponse chunks.
   private async* consumeStream(
     url: string,
     method: string,
     body: string | undefined,
     onOpenCallback?: () => void,
-    onDoneCallback?: () => void,
     signal?: AbortSignal,
   ): AsyncGenerator<ChatResponse, void, unknown> {
     const token = localStorage.getItem(StorageKeys.Token)!;
@@ -32,10 +30,6 @@ export default class ChatClient {
       openWhenHidden: true,
       signal: signal,
       async onopen(response: Response) {
-        if (onOpenCallback) {
-          onOpenCallback();
-        }
-
         if (!response.ok) {
           const status = response.status;
           const statusText = response.statusText;
@@ -45,21 +39,25 @@ export default class ChatClient {
           } catch (error) {
             console.error(error);
           }
+          const message = resJson?.detail ?? '';
 
-          let message = '';
-          if (resJson && resJson.detail) {
-            message = resJson.detail;
-          }
+          const err: Error & {isAxiosError: true; response: object} = Object.assign(
+            new Error(message),
+            {
+              isAxiosError: true as const,
+              response: {status, statusText, data: {message}},
+            },
+          );
+          throw err;
+        }
 
-          throw new Error(`${status} ${statusText}: ${message}.`);
+        if (onOpenCallback) {
+          onOpenCallback();
         }
       },
       onmessage(event: EventSourceMessage) {
         const parsedData = JSON.parse(event.data);
         if (parsedData.done) {
-          if (onDoneCallback) {
-            onDoneCallback();
-          }
           return;
         }
         queue.push(parsedData);
@@ -74,7 +72,7 @@ export default class ChatClient {
           resolveQueue();
         }
       },
-      onerror(err: any) {
+      onerror(err) {
         errorOccurred = err;
         isDone = true;
         if (resolveQueue) {
@@ -138,7 +136,6 @@ export default class ChatClient {
     code_execution: boolean,
     conversation_id?: number,
     onOpenCallback?: () => void,
-    onDoneCallback?: () => void,
     signal?: AbortSignal,
   ): AsyncGenerator<ChatResponse, void, unknown> {
     const requestData: ChatRequest = {
@@ -158,7 +155,6 @@ export default class ChatClient {
       "POST",
       JSON.stringify(requestData),
       onOpenCallback,
-      onDoneCallback,
       signal,
     );
   }
@@ -166,7 +162,6 @@ export default class ChatClient {
   async* resumeStream(
     conversation_id: number,
     onOpenCallback?: () => void,
-    onDoneCallback?: () => void,
     signal?: AbortSignal,
   ): AsyncGenerator<ChatResponse, void, unknown> {
     yield* this.consumeStream(
@@ -174,7 +169,6 @@ export default class ChatClient {
       "GET",
       undefined,
       onOpenCallback,
-      onDoneCallback,
       signal,
     );
   }

@@ -1,11 +1,9 @@
 import MessageDiv from "../message/MessageDiv";
-import MessageContainer from "../message/MessageContainer";
 import React, {useCallback, useMemo, useRef, useState} from "react";
 import AddMessageDivider from "./AddMessageDivider";
 import FileLogic from "@/lib/common/file/FileLogic";
 import ChatLogic from "@/lib/chat/ChatLogic";
-import {MessageRoleEnum} from "@/client/nest";
-import {Alert, Box, CircularProgress, Collapse, Snackbar, Typography} from "@mui/material";
+import {Alert, Collapse, Snackbar} from "@mui/material";
 import {TransitionGroup} from "react-transition-group";
 
 function ChatMessagesDiv({
@@ -22,7 +20,6 @@ function ChatMessagesDiv({
                            isLastChunkThought,
                            setUploadingCount,
                            isAtBottomRef,
-                           isBackendGenerating,
                          }) {
   // Scroll to manually added message after Collapse animation
   const scrollPendingRef = useRef(false);
@@ -144,19 +141,6 @@ function ChatMessagesDiv({
           }
         )}
       </TransitionGroup>
-
-      {/* Backend Generation Placeholder */}
-      {isBackendGenerating && !isGenerating && (
-        <MessageContainer role={MessageRoleEnum.Assistant}>
-          <Box sx={{display: "flex", alignItems: "center", gap: 1}}>
-            <CircularProgress size={16} color="secondary"/>
-            <Typography variant="body2">Backend is still generating...</Typography>
-          </Box>
-          <Typography variant="caption" color="text.secondary">
-            This conversation will refresh automatically when done.
-          </Typography>
-        </MessageContainer>
-      )}
 
       <Snackbar
         open={alertOpen}

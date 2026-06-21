@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {Alert, Button, CircularProgress, Snackbar, Tooltip} from "@mui/material";
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import {AbortIntent} from "@/client/fastapi";
@@ -12,6 +12,7 @@ function SendButton({
                       isGeneratingRef,
                       setIsLastChunkThought,
                       setConversationsReloadKey,
+                      resumeKey,
                       setCreditRefreshKey,
                       handleGenerateRef,
                       abortGenerateRef,
@@ -32,18 +33,17 @@ function SendButton({
                       isUploading,
                       isAtBottomRef,
                     }) {
-  const chatLogic = new ChatLogic();
-  const conversationLogic = new ConversationLogic();
-
-  const sendButtonRef = useRef(null);
-
-  const latestRequestIndex = useRef(0);
-  const isFirstStreamOpen = useRef(true);
-  const abortControllerRef = useRef(null);
-
   const [alertOpen, setAlertOpen] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
   const [alertSeverity, setAlertSeverity] = useState('info');
+
+  const chatLogic = useMemo(() => new ChatLogic(), []);
+  const conversationLogic = useMemo(() => new ConversationLogic(), []);
+
+  const sendButtonRef = useRef(null);
+
+  const latestRequestIndexRef = useRef(0);
+  const abortControllerRef = useRef(null);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -56,7 +56,50 @@ function SendButton({
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
     };
-  }, [messages]);
+  }, []);
+
+  const consumeStreamChunks = async (currentReqIndex, generator) => {
+    let isFirstChunk = true;
+    for await (const chunk of generator) {
+      // Frontend Abort
+      if (!(currentReqIndex === latestRequestIndexRef.current && isGeneratingRef.current)) {
+        return false;
+      }
+
+      // Create Empty Assistant Message on First Chunk
+      if (isFirstChunk) {
+        setMessages(prevMessages => [...prevMessages, ChatLogic.getEmptyAssistantMessage()]);
+        isFirstChunk = false;
+      }
+
+      // Thought loading status
+      if (chunk.thought) {
+        setIsLastChunkThought(true);
+      } else if (chunk.text || (chunk.files && chunk.files.length !== 0) || chunk.display) {
+        setIsLastChunkThought(false);
+      }
+
+      let fileUrls = [];
+      if (chunk.files && chunk.files.length > 0 && isTemporaryChat) {
+        setAlertMessage('File generation is not supported in Temporary Chat mode. Please create a new conversation to save files.');
+        setAlertSeverity('warning');
+        setAlertOpen(true);
+      }
+
+      setMessages(prevMessages => ChatLogic.updateMessage(
+        prevMessages, prevMessages.length - 1, chunk, fileUrls
+      ));
+
+      // Scroll
+      if (isAtBottomRef.current) {
+        const scrollableContainer = document.querySelector('#chat-messages');
+        setTimeout(() => {
+          scrollableContainer.scrollTop = scrollableContainer.scrollHeight;
+        }, 0);
+      }
+    }
+    return true;
+  };
 
   const handleNonStreamGenerate = async (currentReqIndex) => {
     const conversationId = isTemporaryChat ? undefined : selectedConversationId;
@@ -66,7 +109,7 @@ function SendButton({
       conversationId
     );
 
-    if (latestRequestIndex.current !== currentReqIndex || !isGeneratingRef.current) {
+    if (latestRequestIndexRef.current !== currentReqIndex || !isGeneratingRef.current) {
       return false;
     }
 
@@ -92,86 +135,47 @@ function SendButton({
     return true;
   };
 
-  const handleStreamGenerate = async (currentReqIndex, onOpenCallback, onDoneCallback) => {
-    let isFirstChunk = true;
+  const handleStreamGenerate = async (currentReqIndex) => {
     const conversationId = isTemporaryChat ? undefined : selectedConversationId;
     abortControllerRef.current = new AbortController();
 
     const generator = chatLogic.streamGenerate(
       messages, apiType, model, temperature, thought, webSearch, codeExecution,
-      conversationId, onOpenCallback, onDoneCallback, abortControllerRef.current.signal
+      conversationId, undefined, abortControllerRef.current.signal
     );
 
-    for await (const chunk of generator) {
-      // Frontend Abort
-      if (!(currentReqIndex === latestRequestIndex.current && isGeneratingRef.current)) {
-        return false;
-      }
+    const success = await consumeStreamChunks(currentReqIndex, generator);
 
-      // Create Empty Assistant Message on First Chunk
-      if (isFirstChunk) {
-        setMessages(prevMessages => [...prevMessages, ChatLogic.getEmptyAssistantMessage()]);
-        isFirstChunk = false;
-      }
-
-      // For thought loading status
-      if (chunk.thought) {
-        setIsLastChunkThought(true);
-      } else if (chunk.text || (chunk.files && chunk.files.length !== 0) || chunk.display) {
-        setIsLastChunkThought(false);
-      }
-
-      let fileUrls = [];
-      if (chunk.files && chunk.files.length > 0) {
-        if (isTemporaryChat) {
-          setAlertMessage('File generation is not supported in Temporary Chat mode. Please create a new conversation to save files.');
-          setAlertSeverity('warning');
-          setAlertOpen(true);
-        }
-      }
-
-      setMessages(prevMessages => ChatLogic.updateMessage(
-        prevMessages, prevMessages.length - 1, chunk, fileUrls
-      ));
-
-      if (isAtBottomRef.current) {
-        const scrollableContainer = document.querySelector('#chat-messages');
-        setTimeout(() => {
-          scrollableContainer.scrollTop = scrollableContainer.scrollHeight;
-        }, 0);
-      }
-    }
-
-    if (isTemporaryChat) {
+    if (success && isTemporaryChat) {
       setMessages(prevMessages => [...prevMessages, ChatLogic.getEmptyUserMessage()]);
     }
 
-    return true;
+    return success;
   };
 
   const switchStatus = (status) => {
     isGeneratingRef.current = status;
     setIsGenerating(status);
-  };
-
-  const clearUIState = () => {
-    abortControllerRef.current = null;
-    switchStatus(false);
-  }
-
-  const abortFrontendRequest = () => {
-    if (abortControllerRef.current) {
-      abortControllerRef.current.abort();
+    if (!status) {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+      abortControllerRef.current = null;
     }
-    clearUIState();
   };
 
-  const abortRequest = async (intent = AbortIntent.Discard) => {
-    abortFrontendRequest();
+  const abortGenerate = async (intent = AbortIntent.Discard) => {
+    switchStatus(false);
     if (!isTemporaryChat && selectedConversationId) {
-      await chatLogic.abortChat(selectedConversationId, intent);
-      if (intent === AbortIntent.Keep) {
-        setConversationsReloadKey(prev => prev + 1);
+      try {
+        await chatLogic.abortChat(selectedConversationId, intent);
+        if (intent === AbortIntent.Keep) {
+          setConversationsReloadKey(prev => prev + 1);
+        }
+      } catch (err) {
+        setAlertMessage(err.message);
+        setAlertSeverity('error');
+        setAlertOpen(true);
       }
     }
   };
@@ -183,78 +187,120 @@ function SendButton({
       setAlertOpen(true);
       return;
     }
+    if (isGeneratingRef.current) return;
 
-    if (!isGeneratingRef.current) {
-      switchStatus(true);
-      latestRequestIndex.current += 1;
-      const currentReqIndex = latestRequestIndex.current;
+    switchStatus(true);
+    latestRequestIndexRef.current += 1;
+    const currentReqIndex = latestRequestIndexRef.current;
 
-      isFirstStreamOpen.current = true;
-      const handleStreamOpen = () => {
-        if (isFirstStreamOpen.current) {
-          isFirstStreamOpen.current = false;
-          return;
+    try {
+      // Conversation Sync
+      if (!isTemporaryChat) {
+        if (conversationUpdatePromiseRef.current) {
+          await conversationUpdatePromiseRef.current;
         }
-
-        // This is a reconnection. Clear the last assistant message.
-        setMessages(prevMessages => {
-          const lastMessage = prevMessages[prevMessages.length - 1];
-          if (lastMessage && lastMessage.role === 'assistant') {
-            const newMessages = [...prevMessages];
-            // Replace the partially filled message with a new empty one
-            newMessages[newMessages.length - 1] = ChatLogic.getEmptyAssistantMessage();
-            return newMessages;
-          }
-          return prevMessages;
-        });
-      };
-
-      try {
-        if (!isTemporaryChat) {
-          if (conversationUpdatePromiseRef.current) {
-            await conversationUpdatePromiseRef.current;
-          }
-          const latestConversation = await conversationLogic.fetchConversation(selectedConversationId);
-          const currentVersion = conversationVersionRef.current[selectedConversationId];
-          if (latestConversation.version > currentVersion) {
-            throw new Error("Conversation is stale. Please reload the conversation.")
-          }
-          if (latestConversation.version < currentVersion) {
-            setAlertMessage("Local conversation is ahead of server. Continuing generation.");
-            setAlertSeverity("warning");
-            setAlertOpen(true);
-          }
+        const latestConversation = await conversationLogic.fetchConversation(selectedConversationId);
+        const currentVersion = conversationVersionRef.current[selectedConversationId];
+        if (latestConversation.version > currentVersion) {
+          throw new Error("Conversation is stale. Please reload the conversation.")
         }
-        let success;
-        if (stream) {
-          success = await handleStreamGenerate(currentReqIndex, handleStreamOpen, () => {});
-        } else {
-          success = await handleNonStreamGenerate(currentReqIndex);
+        if (latestConversation.version < currentVersion) {
+          setAlertMessage("Local conversation is ahead of server. Continuing generation.");
+          setAlertSeverity("warning");
+          setAlertOpen(true);
         }
-        if (success) {
-          switchStatus(false);
-          if (!isTemporaryChat && selectedConversationId) {
-            setConversationsReloadKey(prev => prev + 1);
-          }
-        }
-      } catch (err) {
-        abortFrontendRequest();
-        setAlertMessage(err.message);
-        setAlertSeverity('error');
-        setAlertOpen(true);
-      } finally {
-        setCreditRefreshKey(prev => prev + 1);
       }
+      let success;
+      if (stream) {
+        success = await handleStreamGenerate(currentReqIndex);
+      } else {
+        success = await handleNonStreamGenerate(currentReqIndex);
+      }
+      if (success) {
+        switchStatus(false);
+        if (!isTemporaryChat && selectedConversationId) {
+          setConversationsReloadKey(prev => prev + 1);
+        }
+      }
+    } catch (err) {
+      switchStatus(false);
+      setAlertMessage(err.message);
+      setAlertSeverity('error');
+      setAlertOpen(true);
+    } finally {
+      setCreditRefreshKey(prev => prev + 1);
+    }
+  };
+
+  const handleClick = () => {
+    if (isGeneratingRef.current) {
+      abortGenerate(AbortIntent.Keep);
     } else {
-      abortRequest(AbortIntent.Keep);
+      handleGenerate();
     }
   };
 
   useEffect(() => {
     handleGenerateRef.current = handleGenerate;
-    abortGenerateRef.current = abortRequest;
-    clearUIStateRef.current = clearUIState;
+    abortGenerateRef.current = abortGenerate;
+    clearUIStateRef.current = () => switchStatus(false);
   })
+
+  // Stream resume
+  useEffect(() => {
+    if (!selectedConversationId || isTemporaryChat) return;
+    if (isGeneratingRef.current) return;
+
+    let aborted = false;
+    const controller = new AbortController();
+
+    // Clear stale assistant message
+    const onOpen = () => {
+      setMessages(prevMessages => {
+        const lastMessage = prevMessages[prevMessages.length - 1];
+        if (lastMessage && lastMessage.role === 'assistant') {
+          return prevMessages.slice(0, -1);
+        }
+        return prevMessages;
+      });
+      latestRequestIndexRef.current += 1;
+      abortControllerRef.current = controller;
+      switchStatus(true);
+    };
+
+    const tryResume = async () => {
+      try {
+        const generator = chatLogic.resumeStream(
+          selectedConversationId, onOpen, controller.signal
+        );
+        const currentReqIndex = latestRequestIndexRef.current + 1;
+        const success = await consumeStreamChunks(currentReqIndex, generator);
+        if (aborted) return;
+        if (isGeneratingRef.current) {
+          if (success) {
+            switchStatus(false);
+            setConversationsReloadKey(prev => prev + 1);
+          }
+          setCreditRefreshKey(prev => prev + 1);
+        }
+      } catch (err) {
+        if (aborted) return;
+        switchStatus(false);
+        setCreditRefreshKey(prev => prev + 1);
+        setAlertMessage(err.message);
+        setAlertSeverity('error');
+        setAlertOpen(true);
+      }
+    };
+
+    tryResume();
+
+    return () => {
+      aborted = true;
+      controller.abort();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedConversationId, resumeKey]);
 
   return (
     <div className="m-2">
@@ -264,7 +310,7 @@ function SendButton({
             id="send"
             variant="contained"
             color="primary"
-            onClick={handleGenerate}
+            onClick={handleClick}
             startIcon={isGenerating ? <CircularProgress size={16} color="inherit"/> : <PlayArrowIcon/>}
             disabled={!messages || isUploading}
             ref={sendButtonRef}

@@ -3,7 +3,7 @@ import ChatClient from "./ChatClient";
 import {ApiTypeModel, ChatResponse} from "@/lib/chat/ChatResponse";
 import {Content, ContentTypeEnum, Message, MessageRoleEnum} from "@/client/nest";
 import {type AbortIntent, ContentType as ReqContentType, Message as ReqMessage, Role as ReqRole} from "@/client/fastapi";
-import {handleError} from "@/lib/common/ErrorHandler";
+import {getErrorStatus, handleError} from "@/lib/common/ErrorHandler";
 
 export default class ChatLogic {
   private chatClient: ChatClient;
@@ -266,14 +266,13 @@ export default class ChatLogic {
     code_execution: boolean,
     conversation_id?: number,
     onOpenCallback?: () => void,
-    onDoneCallback?: () => void,
     signal?: AbortSignal,
   ): AsyncGenerator<ChatResponse, void, unknown> {
     try {
       const filteredMessages = ChatLogic.convertMessagesFromUIToReq(messages);
       const response = this.chatClient.streamGenerate(
         filteredMessages, api_type, model, temperature, thought, web_search, code_execution,
-        conversation_id, onOpenCallback, onDoneCallback, signal
+        conversation_id, onOpenCallback, signal
       );
 
       for await (const chunk of response) {
@@ -298,12 +297,11 @@ export default class ChatLogic {
   async* resumeStream(
     conversation_id: number,
     onOpenCallback?: () => void,
-    onDoneCallback?: () => void,
     signal?: AbortSignal,
   ): AsyncGenerator<ChatResponse, void, unknown> {
     try {
       const response = this.chatClient.resumeStream(
-        conversation_id, onOpenCallback, onDoneCallback, signal
+        conversation_id, onOpenCallback, signal
       );
 
       for await (const chunk of response) {
@@ -321,6 +319,7 @@ export default class ChatLogic {
         }
       }
     } catch (error) {
+      if (getErrorStatus(error) === 404) return;
       handleError(error, 'Failed to resume streaming chat response');
     }
   }

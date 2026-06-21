@@ -17,11 +17,11 @@ function ConversationSidebar({
                                setConversations,
                                conversationsReloadKey,
                                setConversationsReloadKey,
+                               setResumeKey,
                                setIsTemporaryChat,
                                isGeneratingRef,
                                abortGenerateRef,
                                clearUIStateRef,
-                               setIsBackendGenerating,
                              }) {
   const conversationLogic = useMemo(() => new ConversationLogic(), []);
 
@@ -154,12 +154,12 @@ function ConversationSidebar({
           setMessages={setMessages}
           conversationsReloadKey={conversationsReloadKey}
           setConversationsReloadKey={setConversationsReloadKey}
+          setResumeKey={setResumeKey}
           setIsTemporaryChat={setIsTemporaryChat}
           isGeneratingRef={isGeneratingRef}
           abortGenerateRef={abortGenerateRef}
           clearUIStateRef={clearUIStateRef}
           conversationUpdatePromiseRef={conversationUpdatePromiseRef}
-          setIsBackendGenerating={setIsBackendGenerating}
         />
       </div>
       <Snackbar

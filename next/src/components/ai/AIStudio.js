@@ -38,9 +38,6 @@ function AIStudio({
   const [isGenerating, setIsGenerating] = useState(false);
   const isGeneratingRef = useRef(false);
 
-  // Backend generation status
-  const [isBackendGenerating, setIsBackendGenerating] = useState(false);
-
   // Ref for handleGenerate function
   const handleGenerateRef = useRef(null);
   const abortGenerateRef = useRef(null);
@@ -58,6 +55,7 @@ function AIStudio({
   const [selectedConversationId, setSelectedConversationId] = useState(null);
   const [conversationUpdateKey, setConversationUpdateKey] = useState(0);
   const [conversationsReloadKey, setConversationsReloadKey] = useState(0);
+  const [resumeKey, setResumeKey] = useState(0);
 
   // Ref for conversation sync
   const conversationUpdatePromiseRef = useRef(null);
@@ -79,7 +77,7 @@ function AIStudio({
   // Credit refresh
   const [creditRefreshKey, setCreditRefreshKey] = useState(0);
 
-  // Track whether user is at bottom of chat scroll container
+  // Whether user is at bottom of chat scroll container
   const isAtBottomRef = useRef(true);
 
   const hasMessages = messages !== null;
@@ -93,11 +91,12 @@ function AIStudio({
     return () => container.removeEventListener('scroll', handleScroll);
   }, [hasMessages]);
 
-  // Refresh conversations when page becomes visible
+  // Refresh conversations and resume stream when tab focus
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'visible') {
         setConversationsReloadKey(prev => prev + 1);
+        setResumeKey(prev => prev + 1);
       }
     };
 
@@ -132,11 +131,11 @@ function AIStudio({
               setConversations={setConversations}
               conversationsReloadKey={conversationsReloadKey}
               setConversationsReloadKey={setConversationsReloadKey}
+              setResumeKey={setResumeKey}
               setIsTemporaryChat={setIsTemporaryChat}
               isGeneratingRef={isGeneratingRef}
               abortGenerateRef={abortGenerateRef}
               clearUIStateRef={clearUIStateRef}
-              setIsBackendGenerating={setIsBackendGenerating}
             />
           </Drawer>
         ) : (
@@ -154,11 +153,11 @@ function AIStudio({
                 setConversations={setConversations}
                 conversationsReloadKey={conversationsReloadKey}
                 setConversationsReloadKey={setConversationsReloadKey}
+                setResumeKey={setResumeKey}
                 setIsTemporaryChat={setIsTemporaryChat}
                 isGeneratingRef={isGeneratingRef}
                 abortGenerateRef={abortGenerateRef}
                 clearUIStateRef={clearUIStateRef}
-                setIsBackendGenerating={setIsBackendGenerating}
               />
             </Collapse>
           </Paper>
@@ -195,7 +194,6 @@ function AIStudio({
                 messages={messages}
                 setMessages={setMessages}
                 isGenerating={isGenerating}
-                isBackendGenerating={isBackendGenerating}
                 setIsGenerating={setIsGenerating}
                 isGeneratingRef={isGeneratingRef}
                 abortGenerateRef={abortGenerateRef}
@@ -240,6 +238,7 @@ function AIStudio({
                 isGeneratingRef={isGeneratingRef}
                 setIsLastChunkThought={setIsLastChunkThought}
                 setConversationsReloadKey={setConversationsReloadKey}
+                resumeKey={resumeKey}
                 setCreditRefreshKey={setCreditRefreshKey}
                 handleGenerateRef={handleGenerateRef}
                 abortGenerateRef={abortGenerateRef}

@@ -42,7 +42,7 @@ async def non_stream_handler(
         token: str,
         conversation_id: int | None,
 ) -> ChatResponse:
-    assert chat_response.input_tokens and chat_response.output_tokens
+    assert chat_response.input_tokens is not None and chat_response.output_tokens is not None
     cost = await reduce_credit(chat_response.input_tokens, chat_response.output_tokens)
 
     logging.info(f"content: {response_transform.to_log(chat_response)}")
@@ -89,7 +89,7 @@ async def stream_handler(
             if result.error:
                 generation_manager.finish(session)
             else:
-                assert result.input_tokens and result.output_tokens
+                assert result.input_tokens is not None and result.output_tokens is not None
                 cost = await reduce_credit(result.input_tokens, result.output_tokens)
                 logging.info(f"content: {response_transform.to_log(result)}")
                 logging.info(f"cost: {cost}")

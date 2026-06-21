@@ -10,7 +10,6 @@ from app.service.user import user_logic
 
 
 async def handle_chat_interaction(
-        request_id: str,
         token: str,
         user_id: str,
         messages: list[Message],
@@ -24,7 +23,7 @@ async def handle_chat_interaction(
         structured_output_schema: dict | None,
         conversation_id: int | None,
 ):
-    logging.info(f"User ID: {user_id}, Request ID: {request_id}")
+    logging.info(f"User ID: {user_id}")
 
     async def reduce_credit(input_tokens: int, output_tokens: int) -> float:
         cost = calculate_chat_cost(
@@ -68,16 +67,16 @@ async def handle_chat_interaction(
                 generator: AsyncGenerator[ChatResponse, None]
         ) -> StreamingResponse:
             return await response_handler.stream_handler(
-                request_id, generator, reduce_credit, token, conversation_id
+                generator, reduce_credit, token, conversation_id
             )
     else:
         response = await chat_client.generate_non_stream_response()
 
         async def final_response_handler(
-                content: ChatResponse
+                chat_response: ChatResponse
         ) -> ChatResponse:
             return await response_handler.non_stream_handler(
-                request_id, content, reduce_credit, token, conversation_id
+                chat_response, reduce_credit, token, conversation_id
             )
 
     return await final_response_handler(response)

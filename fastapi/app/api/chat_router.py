@@ -1,5 +1,4 @@
 import logging
-import uuid
 from typing import Any, Optional
 
 from fastapi import APIRouter, HTTPException, Depends
@@ -9,8 +8,11 @@ from pydantic import BaseModel
 
 import app.service.auth as auth
 from app.client.nest_js_client.models import UserResDto
+from app.service.chat import response_handler
 from app.service.chat.chat_service import handle_chat_interaction
 from app.service.chat.generation_manager import generation_manager
+from app.service.chat.generation_session import AbortIntent
+from app.service.conversation import conversation_logic
 from app.service.user import user_logic
 
 chat_router = APIRouter()
@@ -18,7 +20,6 @@ security = HTTPBearer()
 
 
 class ChatRequest(BaseModel):
-    request_id: Optional[str] = None
     messages: list[Message]
     api_type: str
     model: str
@@ -32,7 +33,8 @@ class ChatRequest(BaseModel):
 
 
 class AbortRequest(BaseModel):
-    request_id: str
+    conversation_id: int
+    intent: AbortIntent
 
 
 @chat_router.post("/chat")
@@ -53,10 +55,7 @@ async def generate(
         if user.credit <= 0:
             raise HTTPException(status_code=402, detail="Insufficient credit")
 
-        request_id = chat_request.request_id or str(uuid.uuid4())
-
         return await handle_chat_interaction(
-            request_id=request_id,
             token=token,
             user_id=user_id,
             messages=chat_request.messages,
@@ -77,6 +76,17 @@ async def generate(
         raise HTTPException(status_code=500, detail=str(e))
 
 
+@chat_router.get("/chat/stream/{conversation_id}")
+async def resume(
+        conversation_id: int,
+        credentials: HTTPAuthorizationCredentials = Depends(security),
+):
+    token: str = credentials.credentials
+    auth.get_user_id_from_token(token)
+    await conversation_logic.get_conversation(token, conversation_id)
+    return await response_handler.resume_handler(conversation_id)
+
+
 @chat_router.post("/chat/abort")
 async def abort_chat(
         abort_request: AbortRequest,
@@ -84,7 +94,8 @@ async def abort_chat(
 ) -> bool:
     token: str = credentials.credentials
     auth.get_user_id_from_token(token)
-    generation_manager.set_aborted(abort_request.request_id)
+    await conversation_logic.get_conversation(token, abort_request.conversation_id)
+    await response_handler.abort_handler(abort_request.conversation_id, abort_request.intent)
     return True
 
 

@@ -44,8 +44,8 @@ Log in as root user
    cd /root/kubernetes
    unzip kubernetes.zip
    rm kubernetes.zip
-   mv kubernetes UniWebPlatform
-   cd UniWebPlatform/
+   mv kubernetes PolyFlexLLM
+   cd PolyFlexLLM/
    ```
 
 #### K3S Installation and Configuration

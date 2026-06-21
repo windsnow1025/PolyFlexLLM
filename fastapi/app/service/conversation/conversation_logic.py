@@ -6,7 +6,7 @@ import httpx
 from fastapi import HTTPException
 
 from app.client.nest_js_client.models import ConversationResDto, ConversationReqDto, Message, Content, ContentType, MessageRole
-from app.client.nest_js_client.types import Unset
+from app.client.nest_js_client.types import UNSET
 from app.service.conversation import conversation_client
 from app.service.file import file_logic
 from llm_bridge import File
@@ -103,8 +103,8 @@ async def save_response_to_conversation(
             id=str(uuid.uuid4()),
             role=MessageRole.ASSISTANT,
             contents=contents,
-            thought=thought or Unset(),
-            display=display or Unset(),
+            thought=thought or UNSET,
+            display=display or UNSET,
         )
 
         # User Message

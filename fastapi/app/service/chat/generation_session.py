@@ -24,6 +24,7 @@ class GenerationSession:
         self._buffer: list[ChatResponse] = []
         self._subscribers: set[asyncio.Queue] = set()
         self._lock: asyncio.Lock = asyncio.Lock()
+        self._finalized: asyncio.Event = asyncio.Event()
 
     @property
     def conversation_id(self) -> int | None:
@@ -66,3 +67,9 @@ class GenerationSession:
             for queue in self._subscribers:
                 queue.put_nowait(None)
             self._subscribers.clear()
+
+    def mark_finalized(self) -> None:
+        self._finalized.set()
+
+    async def wait_finalized(self) -> None:
+        await self._finalized.wait()

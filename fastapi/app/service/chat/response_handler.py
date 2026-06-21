@@ -111,6 +111,8 @@ async def stream_handler(
 
                 generation_manager.finish(session)
 
+            session.mark_finalized()
+
     create_task(run())
     return await _stream_response(session)
 
@@ -127,3 +129,4 @@ async def abort_handler(conversation_id: int, intent: AbortIntent) -> None:
     if session is not None:
         state = GenerationState.StoppedKept if intent is AbortIntent.Keep else GenerationState.StoppedDiscarded
         await session.close(state)
+        await session.wait_finalized()

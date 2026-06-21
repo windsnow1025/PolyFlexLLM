@@ -166,11 +166,14 @@ function SendButton({
     clearUIState();
   };
 
-  const abortRequest = (intent = AbortIntent.Discard) => {
-    if (!isTemporaryChat && selectedConversationId) {
-      chatLogic.abortChat(selectedConversationId, intent);
-    }
+  const abortRequest = async (intent = AbortIntent.Discard) => {
     abortFrontendRequest();
+    if (!isTemporaryChat && selectedConversationId) {
+      await chatLogic.abortChat(selectedConversationId, intent);
+      if (intent === AbortIntent.Keep) {
+        setConversationsReloadKey(prev => prev + 1);
+      }
+    }
   };
 
   const handleGenerate = async () => {

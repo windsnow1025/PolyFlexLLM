@@ -111,7 +111,7 @@ function ConversationMenu({
 
     if (conversationId === selectedConversationId) {
       setSelectedConversationId(null);
-      setMessages(null);
+      setMessages(ChatLogic.getInitMessages());
     }
     setLoadingConversationId(null);
   };

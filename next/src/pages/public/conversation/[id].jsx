@@ -44,7 +44,7 @@ export default function PublicConversationPage() {
 
   return (
     <div>
-      <AIStudio initMessages={messages} initIsTemporaryChat={true} />
+      <AIStudio initMessages={messages} />
 
       <Snackbar
         open={alertOpen}

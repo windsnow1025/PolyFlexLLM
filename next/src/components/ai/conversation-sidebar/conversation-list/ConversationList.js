@@ -34,7 +34,6 @@ function ConversationList({
                             conversationsReloadKey,
                             setConversationsReloadKey,
                             setResumeKey,
-                            setIsTemporaryChat,
                             isGeneratingRef,
                             abortGenerateRef,
                             clearUIStateRef,
@@ -161,7 +160,6 @@ function ConversationList({
 
   const activateConversation = async (conversation) => {
     await ConversationLogic.populatePromptContents(conversation.messages);
-    setIsTemporaryChat(false);
     setMessages(conversation.messages);
     setSelectedConversationId(conversation.id);
   };

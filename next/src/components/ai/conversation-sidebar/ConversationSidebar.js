@@ -18,7 +18,6 @@ function ConversationSidebar({
                                conversationsReloadKey,
                                setConversationsReloadKey,
                                setResumeKey,
-                               setIsTemporaryChat,
                                isGeneratingRef,
                                abortGenerateRef,
                                clearUIStateRef,
@@ -130,8 +129,6 @@ function ConversationSidebar({
           <TemporaryChatButton
             setMessages={setMessages}
             setSelectedConversationId={setSelectedConversationId}
-            setIsTemporaryChat={setIsTemporaryChat}
-            buttonStyle="sidebar"
             clearUIStateRef={clearUIStateRef}
           />
           <NewConversationButton
@@ -139,8 +136,6 @@ function ConversationSidebar({
             setConversations={setConversations}
             setSelectedConversationId={setSelectedConversationId}
             setConversationsReloadKey={setConversationsReloadKey}
-            setIsTemporaryChat={setIsTemporaryChat}
-            buttonStyle="sidebar"
             clearUIStateRef={clearUIStateRef}
           />
         </div>
@@ -155,7 +150,6 @@ function ConversationSidebar({
           conversationsReloadKey={conversationsReloadKey}
           setConversationsReloadKey={setConversationsReloadKey}
           setResumeKey={setResumeKey}
-          setIsTemporaryChat={setIsTemporaryChat}
           isGeneratingRef={isGeneratingRef}
           abortGenerateRef={abortGenerateRef}
           clearUIStateRef={clearUIStateRef}

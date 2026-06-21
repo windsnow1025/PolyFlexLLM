@@ -11,20 +11,17 @@ import ToggleConversationButton from "./ToggleConversationButton";
 import useScreenSize from '@/hooks/useScreenSize';
 import AIStudioTour from './AIStudioTour';
 import ScrollToBottomButton from './ScrollToBottomButton';
-import NewConversationButton from "./conversation-sidebar/NewConversationButton";
-import TemporaryChatButton from "./TemporaryChatButton";
 
 function AIStudio({
-                  initMessages = null,
-                  initIsTemporaryChat = false,
-                }) {
+                    initMessages = null,
+                  }) {
   const screenSize = useScreenSize();
   const [drawerOpen, setDrawerOpen] = useState(() => {
     return screenSize === 'xs' || screenSize === 'sm' ? false : true;
   });
 
   // Chat Parameters
-  const [messages, setMessages] = useState(initMessages);
+  const [messages, setMessages] = useState(initMessages ?? ChatLogic.getInitMessages());
   const [apiType, setApiType] = useState(ChatLogic.defaultApiTypeModels[0].apiType);
   const [model, setModel] = useState(ChatLogic.defaultApiTypeModels[0].model);
   const [temperature, setTemperature] = useState(0);
@@ -32,7 +29,6 @@ function AIStudio({
   const [thought, setThought] = useState(true);
   const [webSearch, setWebSearch] = useState(true);
   const [codeExecution, setCodeExecution] = useState(false);
-  const [isTemporaryChat, setIsTemporaryChat] = useState(initIsTemporaryChat);
 
   // Generation Control
   const [isGenerating, setIsGenerating] = useState(false);
@@ -53,6 +49,7 @@ function AIStudio({
   // Conversation
   const [conversations, setConversations] = useState([]);
   const [selectedConversationId, setSelectedConversationId] = useState(null);
+  const isTemporaryChat = selectedConversationId === null;
   const [conversationUpdateKey, setConversationUpdateKey] = useState(0);
   const [conversationsReloadKey, setConversationsReloadKey] = useState(0);
   const [resumeKey, setResumeKey] = useState(0);
@@ -80,7 +77,6 @@ function AIStudio({
   // Whether user is at bottom of chat scroll container
   const isAtBottomRef = useRef(true);
 
-  const hasMessages = messages !== null;
   useEffect(() => {
     const container = document.querySelector('#chat-messages');
     if (!container) return;
@@ -89,7 +85,7 @@ function AIStudio({
     };
     container.addEventListener('scroll', handleScroll);
     return () => container.removeEventListener('scroll', handleScroll);
-  }, [hasMessages]);
+  }, []);
 
   // Refresh conversations and resume stream when tab focus
   useEffect(() => {
@@ -132,7 +128,6 @@ function AIStudio({
               conversationsReloadKey={conversationsReloadKey}
               setConversationsReloadKey={setConversationsReloadKey}
               setResumeKey={setResumeKey}
-              setIsTemporaryChat={setIsTemporaryChat}
               isGeneratingRef={isGeneratingRef}
               abortGenerateRef={abortGenerateRef}
               clearUIStateRef={clearUIStateRef}
@@ -154,7 +149,6 @@ function AIStudio({
                 conversationsReloadKey={conversationsReloadKey}
                 setConversationsReloadKey={setConversationsReloadKey}
                 setResumeKey={setResumeKey}
-                setIsTemporaryChat={setIsTemporaryChat}
                 isGeneratingRef={isGeneratingRef}
                 abortGenerateRef={abortGenerateRef}
                 clearUIStateRef={clearUIStateRef}
@@ -189,42 +183,21 @@ function AIStudio({
             </div>
           </div>
           <Paper elevation={0} className="local-scroll-scrollable px-1" id="chat-messages">
-            {messages !== null ? (
-              <ChatMessagesDiv
-                messages={messages}
-                setMessages={setMessages}
-                isGenerating={isGenerating}
-                setIsGenerating={setIsGenerating}
-                isGeneratingRef={isGeneratingRef}
-                abortGenerateRef={abortGenerateRef}
-                setConversationUpdateKey={setConversationUpdateKey}
-                promptsReloadKey={promptsReloadKey}
-                setPromptsReloadKey={setPromptsReloadKey}
-                isTemporaryChat={isTemporaryChat}
-                isLastChunkThought={isLastChunkThought}
-                setUploadingCount={setUploadingCount}
-                isAtBottomRef={isAtBottomRef}
-              />
-            ) : (
-              <div className="flex-around h-full">
-                <NewConversationButton
-                  setMessages={setMessages}
-                  setConversations={setConversations}
-                  setSelectedConversationId={setSelectedConversationId}
-                  setConversationsReloadKey={setConversationsReloadKey}
-                  setIsTemporaryChat={setIsTemporaryChat}
-                  buttonStyle="main"
-                  clearUIStateRef={clearUIStateRef}
-                />
-                <TemporaryChatButton
-                  setMessages={setMessages}
-                  setSelectedConversationId={setSelectedConversationId}
-                  setIsTemporaryChat={setIsTemporaryChat}
-                  buttonStyle="main"
-                  clearUIStateRef={clearUIStateRef}
-                />
-              </div>
-            )}
+            <ChatMessagesDiv
+              messages={messages}
+              setMessages={setMessages}
+              isGenerating={isGenerating}
+              setIsGenerating={setIsGenerating}
+              isGeneratingRef={isGeneratingRef}
+              abortGenerateRef={abortGenerateRef}
+              setConversationUpdateKey={setConversationUpdateKey}
+              promptsReloadKey={promptsReloadKey}
+              setPromptsReloadKey={setPromptsReloadKey}
+              isTemporaryChat={isTemporaryChat}
+              isLastChunkThought={isLastChunkThought}
+              setUploadingCount={setUploadingCount}
+              isAtBottomRef={isAtBottomRef}
+            />
           </Paper>
 
           <ScrollToBottomButton/>

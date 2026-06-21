@@ -2,80 +2,29 @@ import {ApiTypeModel, ChatResponse} from "./ChatResponse";
 import {getAPIBaseURLs, getFastAPIOpenAPIConfiguration} from "@/lib/common/APIConfig";
 import {EventSourceMessage, fetchEventSource} from '@microsoft/fetch-event-source';
 import {handleError} from "@/lib/common/ErrorHandler";
-import {type ChatRequest, DefaultApi, type Message} from "@/client/fastapi";
+import {type AbortIntent, type ChatRequest, DefaultApi, type Message} from "@/client/fastapi";
 import {StorageKeys} from "@/lib/common/Constants";
 
 export default class ChatClient {
-  async nonStreamGenerate(
-    request_id: string,
-    messages: Message[],
-    api_type: string,
-    model: string,
-    temperature: number,
-    thought: boolean,
-    web_search: boolean,
-    code_execution: boolean,
-    conversation_id?: number,
-  ): Promise<ChatResponse> {
-    const requestData: ChatRequest = {
-      request_id: request_id,
-      messages: messages,
-      api_type: api_type,
-      model: model,
-      temperature: temperature,
-      stream: false,
-      thought: thought,
-      web_search: web_search,
-      code_execution: code_execution,
-      conversation_id: conversation_id,
-    };
-
-    try {
-      const api = new DefaultApi(getFastAPIOpenAPIConfiguration());
-      const res = await api.generateChatPost(requestData);
-      return res.data;
-    } catch (error) {
-      handleError(error, 'Failed to generate non-streaming chat response');
-    }
-  }
-
-  async* streamGenerate(
-    request_id: string,
-    messages: Message[],
-    api_type: string,
-    model: string,
-    temperature: number,
-    thought: boolean,
-    web_search: boolean,
-    code_execution: boolean,
-    conversation_id?: number,
+  // Consume an SSE endpoint as an async generator of ChatResponse chunks.
+  private async* consumeStream(
+    url: string,
+    method: string,
+    body: string | undefined,
     onOpenCallback?: () => void,
     onDoneCallback?: () => void,
     signal?: AbortSignal,
   ): AsyncGenerator<ChatResponse, void, unknown> {
     const token = localStorage.getItem(StorageKeys.Token)!;
 
-    const requestData: ChatRequest = {
-      request_id: request_id,
-      messages: messages,
-      api_type: api_type,
-      model: model,
-      temperature: temperature,
-      stream: true,
-      thought: thought,
-      web_search: web_search,
-      code_execution: code_execution,
-      conversation_id: conversation_id,
-    };
-
     const queue: ChatResponse[] = [];
     let resolveQueue: (() => void) | null = null;
     let isDone = false;
     let errorOccurred: Error | null = null;
 
-    fetchEventSource(`${getAPIBaseURLs().fastAPI}/chat`, {
-      method: "POST",
-      body: JSON.stringify(requestData),
+    fetchEventSource(url, {
+      method: method,
+      body: body,
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
@@ -148,9 +97,91 @@ export default class ChatClient {
     }
   }
 
-  async abortChat(request_id: string): Promise<boolean> {
+  async nonStreamGenerate(
+    messages: Message[],
+    api_type: string,
+    model: string,
+    temperature: number,
+    thought: boolean,
+    web_search: boolean,
+    code_execution: boolean,
+    conversation_id?: number,
+  ): Promise<ChatResponse> {
+    const requestData: ChatRequest = {
+      messages: messages,
+      api_type: api_type,
+      model: model,
+      temperature: temperature,
+      stream: false,
+      thought: thought,
+      web_search: web_search,
+      code_execution: code_execution,
+      conversation_id: conversation_id,
+    };
+
+    try {
+      const api = new DefaultApi(getFastAPIOpenAPIConfiguration());
+      const res = await api.generateChatPost(requestData);
+      return res.data;
+    } catch (error) {
+      handleError(error, 'Failed to generate non-streaming chat response');
+    }
+  }
+
+  async* streamGenerate(
+    messages: Message[],
+    api_type: string,
+    model: string,
+    temperature: number,
+    thought: boolean,
+    web_search: boolean,
+    code_execution: boolean,
+    conversation_id?: number,
+    onOpenCallback?: () => void,
+    onDoneCallback?: () => void,
+    signal?: AbortSignal,
+  ): AsyncGenerator<ChatResponse, void, unknown> {
+    const requestData: ChatRequest = {
+      messages: messages,
+      api_type: api_type,
+      model: model,
+      temperature: temperature,
+      stream: true,
+      thought: thought,
+      web_search: web_search,
+      code_execution: code_execution,
+      conversation_id: conversation_id,
+    };
+
+    yield* this.consumeStream(
+      `${getAPIBaseURLs().fastAPI}/chat`,
+      "POST",
+      JSON.stringify(requestData),
+      onOpenCallback,
+      onDoneCallback,
+      signal,
+    );
+  }
+
+  async* resumeStream(
+    conversation_id: number,
+    onOpenCallback?: () => void,
+    onDoneCallback?: () => void,
+    signal?: AbortSignal,
+  ): AsyncGenerator<ChatResponse, void, unknown> {
+    yield* this.consumeStream(
+      `${getAPIBaseURLs().fastAPI}/chat/stream/${conversation_id}`,
+      "GET",
+      undefined,
+      onOpenCallback,
+      onDoneCallback,
+      signal,
+    );
+  }
+
+  async abortChat(conversationId: number, intent: AbortIntent): Promise<boolean> {
     const api = new DefaultApi(getFastAPIOpenAPIConfiguration());
-    const res = await api.abortChatChatAbortPost({request_id});
+    const res = await api.abortChatChatAbortPost({conversation_id: conversationId, intent: intent});
     return res.data;
   }
 

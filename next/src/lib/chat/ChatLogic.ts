@@ -1,9 +1,8 @@
 import {v4 as uuidv4} from 'uuid';
 import ChatClient from "./ChatClient";
-import {ApiTypeModel, ChatResponse, ResponseFile} from "@/lib/chat/ChatResponse";
+import {ApiTypeModel, ChatResponse} from "@/lib/chat/ChatResponse";
 import {Content, ContentTypeEnum, Message, MessageRoleEnum} from "@/client/nest";
-import {ContentType as ReqContentType, Message as ReqMessage, Role as ReqRole} from "@/client/fastapi";
-import FileLogic from "@/lib/common/file/FileLogic";
+import {type AbortIntent, ContentType as ReqContentType, Message as ReqMessage, Role as ReqRole} from "@/client/fastapi";
 import {handleError} from "@/lib/common/ErrorHandler";
 
 export default class ChatLogic {
@@ -64,30 +63,6 @@ export default class ChatLogic {
   static getFileUrlsFromMessages(messages: Message[]): string[] {
     return messages
       .flatMap(message => ChatLogic.getFileUrlsFromMessage(message));
-  }
-
-  // For converting model generated file data to urls
-  static async getFileUrls(files: ResponseFile[]): Promise<string[]> {
-    if (files.length === 0) {
-      return [];
-    }
-
-    const base64ToFile = (name: string, data: string, type: string) => {
-      const byteCharacters = atob(data);
-      const byteNumbers = new Array(byteCharacters.length);
-      for (let i = 0; i < byteCharacters.length; i++) {
-        byteNumbers[i] = byteCharacters.charCodeAt(i);
-      }
-      const byteArray = new Uint8Array(byteNumbers);
-      return new File([byteArray], name, {type: type});
-    };
-
-    const fileObjects = files.map((file) =>
-      base64ToFile(file.name, file.data, file.type)
-    );
-
-    const fileLogic = new FileLogic();
-    return await fileLogic.uploadFiles(fileObjects);
   }
 
   // For non-stream response
@@ -248,9 +223,7 @@ export default class ChatLogic {
     }));
   }
 
-  // For chat request
   async nonStreamGenerate(
-    request_id: string,
     messages: Message[],
     api_type: string,
     model: string,
@@ -263,7 +236,7 @@ export default class ChatLogic {
     try {
       const filteredMessages = ChatLogic.convertMessagesFromUIToReq(messages);
       const content = await this.chatClient.nonStreamGenerate(
-        request_id, filteredMessages, api_type, model, temperature, thought, web_search, code_execution,
+        filteredMessages, api_type, model, temperature, thought, web_search, code_execution,
         conversation_id
       );
       if (content.error) {
@@ -283,9 +256,7 @@ export default class ChatLogic {
     }
   }
 
-  // For chat request
   async* streamGenerate(
-    request_id: string,
     messages: Message[],
     api_type: string,
     model: string,
@@ -301,7 +272,7 @@ export default class ChatLogic {
     try {
       const filteredMessages = ChatLogic.convertMessagesFromUIToReq(messages);
       const response = this.chatClient.streamGenerate(
-        request_id, filteredMessages, api_type, model, temperature, thought, web_search, code_execution,
+        filteredMessages, api_type, model, temperature, thought, web_search, code_execution,
         conversation_id, onOpenCallback, onDoneCallback, signal
       );
 
@@ -324,9 +295,39 @@ export default class ChatLogic {
     }
   }
 
-  async abortChat(request_id: string): Promise<boolean> {
+  async* resumeStream(
+    conversation_id: number,
+    onOpenCallback?: () => void,
+    onDoneCallback?: () => void,
+    signal?: AbortSignal,
+  ): AsyncGenerator<ChatResponse, void, unknown> {
     try {
-      return await this.chatClient.abortChat(request_id);
+      const response = this.chatClient.resumeStream(
+        conversation_id, onOpenCallback, onDoneCallback, signal
+      );
+
+      for await (const chunk of response) {
+        if (chunk.error) {
+          throw new Error(`chunk.error: ${chunk.error}`);
+        }
+
+        yield {
+          text: chunk.text,
+          code: chunk.code,
+          code_output: chunk.code_output,
+          thought: chunk.thought,
+          files: chunk.files,
+          display: chunk.display,
+        }
+      }
+    } catch (error) {
+      handleError(error, 'Failed to resume streaming chat response');
+    }
+  }
+
+  async abortChat(conversationId: number, intent: AbortIntent): Promise<boolean> {
+    try {
+      return await this.chatClient.abortChat(conversationId, intent);
     } catch (error) {
       handleError(error, 'Failed to abort chat');
     }

@@ -49,7 +49,6 @@ function AIStudio({
   // Conversation
   const [conversations, setConversations] = useState([]);
   const [selectedConversationId, setSelectedConversationId] = useState(null);
-  const isTemporaryChat = selectedConversationId === null;
   const [conversationUpdateKey, setConversationUpdateKey] = useState(0);
   const [conversationsReloadKey, setConversationsReloadKey] = useState(0);
   const [resumeKey, setResumeKey] = useState(0);
@@ -193,7 +192,7 @@ function AIStudio({
               setConversationUpdateKey={setConversationUpdateKey}
               promptsReloadKey={promptsReloadKey}
               setPromptsReloadKey={setPromptsReloadKey}
-              isTemporaryChat={isTemporaryChat}
+              selectedConversationId={selectedConversationId}
               isLastChunkThought={isLastChunkThought}
               setUploadingCount={setUploadingCount}
               isAtBottomRef={isAtBottomRef}
@@ -216,7 +215,6 @@ function AIStudio({
                 handleGenerateRef={handleGenerateRef}
                 abortGenerateRef={abortGenerateRef}
                 clearUIStateRef={clearUIStateRef}
-                isTemporaryChat={isTemporaryChat}
                 selectedConversationId={selectedConversationId}
                 conversationUpdatePromiseRef={conversationUpdatePromiseRef}
                 conversationVersionRef={conversationVersionRef}

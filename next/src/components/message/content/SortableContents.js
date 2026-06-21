@@ -8,7 +8,7 @@ function SortableContents({
                             contents,
                             setContents,
                             rawEditableState,
-                            isTemporaryChat,
+                            selectedConversationId,
                           }) {
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -68,7 +68,7 @@ function SortableContents({
             contents={contents}
             setContents={setContents}
             rawEditableState={rawEditableState}
-            isTemporaryChat={isTemporaryChat}
+            selectedConversationId={selectedConversationId}
           />
         );
       }
@@ -85,7 +85,7 @@ function SortableContents({
                 contents={contents}
                 setContents={setContents}
                 rawEditableState={rawEditableState}
-                isTemporaryChat={isTemporaryChat}
+                selectedConversationId={selectedConversationId}
               />
             ))}
           </div>

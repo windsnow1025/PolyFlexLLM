@@ -19,7 +19,7 @@ function SortableContent({
                            contents,
                            setContents,
                            rawEditableState,
-                           isTemporaryChat,
+                           selectedConversationId,
                          }) {
   const {
     attributes,
@@ -69,7 +69,7 @@ function SortableContent({
             backgroundColor: `color-mix(in srgb, ${theme.vars.palette.info.main}, transparent 80%)`
           }}
         >
-          {(rawEditableState !== RawEditableState.AlwaysFalse && !isTemporaryChat) ? (
+          {(rawEditableState !== RawEditableState.AlwaysFalse && selectedConversationId !== null) ? (
             <>
               <div className="flex-start-center">
                 <div
@@ -143,7 +143,7 @@ function SortableContent({
     return (
       <div ref={setNodeRef} style={style} {...attributes} className="max-w-full">
         <div className="flex-start-center-nowrap">
-          {rawEditableState !== RawEditableState.AlwaysFalse && !isTemporaryChat && (
+          {rawEditableState !== RawEditableState.AlwaysFalse && selectedConversationId !== null && (
             <div
               {...listeners}
               className="flex"

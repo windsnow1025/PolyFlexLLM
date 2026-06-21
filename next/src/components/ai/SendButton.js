@@ -17,7 +17,6 @@ function SendButton({
                       handleGenerateRef,
                       abortGenerateRef,
                       clearUIStateRef,
-                      isTemporaryChat,
                       selectedConversationId,
                       conversationUpdatePromiseRef,
                       conversationVersionRef,
@@ -80,7 +79,7 @@ function SendButton({
       }
 
       let fileUrls = [];
-      if (chunk.files && chunk.files.length > 0 && isTemporaryChat) {
+      if (chunk.files && chunk.files.length > 0 && selectedConversationId === null) {
         setAlertMessage('File generation is not supported in Temporary Chat mode. Please create a new conversation to save files.');
         setAlertSeverity('warning');
         setAlertOpen(true);
@@ -102,11 +101,9 @@ function SendButton({
   };
 
   const handleNonStreamGenerate = async (currentReqIndex) => {
-    const conversationId = isTemporaryChat ? undefined : selectedConversationId;
-
     const content = await chatLogic.nonStreamGenerate(
       messages, apiType, model, temperature, thought, webSearch, codeExecution,
-      conversationId
+      selectedConversationId ?? undefined
     );
 
     if (latestRequestIndexRef.current !== currentReqIndex || !isGeneratingRef.current) {
@@ -115,7 +112,7 @@ function SendButton({
 
     let fileUrls = [];
     if (content.files && content.files.length > 0) {
-      if (isTemporaryChat) {
+      if (selectedConversationId === null) {
         setAlertMessage('File generation is not supported in Temporary Chat mode. Please create a new conversation to save files.');
         setAlertSeverity('warning');
         setAlertOpen(true);
@@ -125,10 +122,10 @@ function SendButton({
     setMessages(prevMessages => [
       ...prevMessages,
       ChatLogic.createAssistantMessage(content, fileUrls),
-      ...(isTemporaryChat ? [ChatLogic.getEmptyUserMessage()] : []),
+      ...(selectedConversationId === null ? [ChatLogic.getEmptyUserMessage()] : []),
     ]);
 
-    if (conversationId) {
+    if (selectedConversationId) {
       setConversationsReloadKey(prev => prev + 1);
     }
 
@@ -136,17 +133,16 @@ function SendButton({
   };
 
   const handleStreamGenerate = async (currentReqIndex) => {
-    const conversationId = isTemporaryChat ? undefined : selectedConversationId;
     abortControllerRef.current = new AbortController();
 
     const generator = chatLogic.streamGenerate(
       messages, apiType, model, temperature, thought, webSearch, codeExecution,
-      conversationId, undefined, abortControllerRef.current.signal
+      selectedConversationId ?? undefined, undefined, abortControllerRef.current.signal
     );
 
     const success = await consumeStreamChunks(currentReqIndex, generator);
 
-    if (success && isTemporaryChat) {
+    if (success && selectedConversationId === null) {
       setMessages(prevMessages => [...prevMessages, ChatLogic.getEmptyUserMessage()]);
     }
 
@@ -166,7 +162,7 @@ function SendButton({
 
   const abortGenerate = async (intent = AbortIntent.Discard) => {
     switchStatus(false);
-    if (!isTemporaryChat && selectedConversationId) {
+    if (selectedConversationId) {
       try {
         await chatLogic.abortChat(selectedConversationId, intent);
         if (intent === AbortIntent.Keep) {
@@ -195,7 +191,7 @@ function SendButton({
 
     try {
       // Conversation Sync
-      if (!isTemporaryChat) {
+      if (selectedConversationId) {
         if (conversationUpdatePromiseRef.current) {
           await conversationUpdatePromiseRef.current;
         }
@@ -218,7 +214,7 @@ function SendButton({
       }
       if (success) {
         switchStatus(false);
-        if (!isTemporaryChat && selectedConversationId) {
+        if (selectedConversationId) {
           setConversationsReloadKey(prev => prev + 1);
         }
       }
@@ -248,7 +244,7 @@ function SendButton({
 
   // Stream resume
   useEffect(() => {
-    if (!selectedConversationId || isTemporaryChat) return;
+    if (!selectedConversationId) return;
     if (isGeneratingRef.current) return;
 
     let aborted = false;

@@ -22,7 +22,7 @@ function MessageDiv(props) {
     setConversationUpdateKey,
     promptsReloadKey,
     setPromptsReloadKey,
-    isTemporaryChat,
+    selectedConversationId,
     isThoughtLoading,
     setUploadingCount,
   } = props;
@@ -77,7 +77,7 @@ function MessageDiv(props) {
     <MessageContainer role={message.role}>
       <div className="flex items-center">
         <RoleSelect role={message.role} setRole={handleRoleChange}/>
-        {(message.role === MessageRoleEnum.System || message.role === MessageRoleEnum.User) && !isTemporaryChat && (
+        {(message.role === MessageRoleEnum.System || message.role === MessageRoleEnum.User) && selectedConversationId !== null && (
           <PromptSelect
             message={message}
             setMessage={setMessage}
@@ -123,7 +123,7 @@ function MessageDiv(props) {
         setContents={handleContentsChange}
         rawEditableState={rawEditableState}
         setConversationUpdateKey={setConversationUpdateKey}
-        isTemporaryChat={isTemporaryChat}
+        selectedConversationId={selectedConversationId}
       />
 
       <DisplayDiv
@@ -132,7 +132,7 @@ function MessageDiv(props) {
         isPreview={showPreview}
       />
 
-      {rawEditableState !== RawEditableState.AlwaysFalse && !isTemporaryChat && (
+      {rawEditableState !== RawEditableState.AlwaysFalse && selectedConversationId !== null && (
         <AddContentArea
           setContents={handleContentsChange}
           setUploadingCount={setUploadingCount}

@@ -16,7 +16,7 @@ function ChatMessagesDiv({
                            setConversationUpdateKey,
                            promptsReloadKey,
                            setPromptsReloadKey,
-                           isTemporaryChat,
+                           selectedConversationId,
                            isLastChunkThought,
                            setUploadingCount,
                            isAtBottomRef,
@@ -121,7 +121,7 @@ function ChatMessagesDiv({
                     setConversationUpdateKey={setConversationUpdateKey}
                     promptsReloadKey={promptsReloadKey}
                     setPromptsReloadKey={setPromptsReloadKey}
-                    isTemporaryChat={isTemporaryChat}
+                    selectedConversationId={selectedConversationId}
                     isThoughtLoading={isThoughtLoading}
                     setUploadingCount={setUploadingCount}
                   />

@@ -43,7 +43,7 @@ export default function PublicConversationPage() {
   }
 
   return (
-    <div>
+    <>
       <AIStudio initMessages={messages} />
 
       <Snackbar
@@ -55,7 +55,6 @@ export default function PublicConversationPage() {
           {alertMessage}
         </Alert>
       </Snackbar>
-
-    </div>
+    </>
   );
 }

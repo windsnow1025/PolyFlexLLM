@@ -183,7 +183,6 @@ function SendButton({
       setAlertOpen(true);
       return;
     }
-    if (isGeneratingRef.current) return;
 
     switchStatus(true);
     latestRequestIndexRef.current += 1;

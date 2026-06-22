@@ -66,10 +66,7 @@ export default class ChatLogic {
   }
 
   // For non-stream response
-  static createAssistantMessage(
-    chatResponse: ChatResponse,
-    fileUrls: string[],
-  ): Message {
+  static createAssistantMessage(chatResponse: ChatResponse): Message {
     const contents: Content[] = [];
 
     if (chatResponse.code) {
@@ -93,15 +90,6 @@ export default class ChatLogic {
       });
     }
 
-    if (fileUrls && fileUrls.length > 0) {
-      fileUrls.forEach(fileUrl => {
-        contents.push({
-          type: ContentTypeEnum.File,
-          data: fileUrl
-        });
-      });
-    }
-
     return {
       id: uuidv4(),
       role: MessageRoleEnum.Assistant,
@@ -116,7 +104,6 @@ export default class ChatLogic {
     messages: Message[],
     index: number,
     chunk: ChatResponse,
-    fileUrls: string[]
   ): Message[] {
     const newMessages = [...messages];
 
@@ -147,15 +134,6 @@ export default class ChatLogic {
 
     if (chunk.text) {
       appendOrCreateContent(ContentTypeEnum.Text, chunk.text);
-    }
-
-    if (fileUrls && fileUrls.length > 0) {
-      fileUrls.forEach(fileUrl => {
-        currentMessage.contents.push({
-          type: ContentTypeEnum.File,
-          data: fileUrl
-        });
-      });
     }
 
     if (chunk.thought) {

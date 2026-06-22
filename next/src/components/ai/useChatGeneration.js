@@ -89,7 +89,6 @@ export default function useChatGeneration({
         setIsLastChunkThought(false);
       }
 
-      let fileUrls = [];
       if (chunk.files && chunk.files.length > 0 && selectedConversationId === null) {
         setAlertMessage('File generation is not supported in Temporary Chat mode. Please create a new conversation to save files.');
         setAlertSeverity('warning');
@@ -97,7 +96,7 @@ export default function useChatGeneration({
       }
 
       setMessages(prevMessages => ChatLogic.updateMessage(
-        prevMessages, prevMessages.length - 1, chunk, fileUrls
+        prevMessages, prevMessages.length - 1, chunk
       ));
 
       // Scroll
@@ -121,7 +120,6 @@ export default function useChatGeneration({
       return false;
     }
 
-    let fileUrls = [];
     if (content.files && content.files.length > 0) {
       if (selectedConversationId === null) {
         setAlertMessage('File generation is not supported in Temporary Chat mode. Please create a new conversation to save files.');
@@ -132,7 +130,7 @@ export default function useChatGeneration({
 
     setMessages(prevMessages => [
       ...prevMessages,
-      ChatLogic.createAssistantMessage(content, fileUrls),
+      ChatLogic.createAssistantMessage(content),
       ...(selectedConversationId === null ? [ChatLogic.getEmptyUserMessage()] : []),
     ]);
 

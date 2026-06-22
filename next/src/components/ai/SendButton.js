@@ -216,7 +216,9 @@ function SendButton({
       setAlertSeverity('error');
       setAlertOpen(true);
     } finally {
-      switchStatus(false);
+      if (latestRequestIndexRef.current === currentReqIndex) {
+        switchStatus(false);
+      }
       onGenerationEnded();
     }
   };

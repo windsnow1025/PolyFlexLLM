@@ -80,7 +80,7 @@ export default class ChatClient {
         }
         throw err;
       }
-    });
+    }).catch(() => {});
 
     while (!isDone || queue.length > 0) {
       if (queue.length > 0) {

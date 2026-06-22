@@ -42,8 +42,8 @@ function ConversationList({
 
                             // Generation
                             isGeneratingRef,
-                            abortGenerateRef,
-                            clearUIStateRef,
+                            abortGenerate,
+                            clearUIState,
                             setResumeKey,
                           }) {
   const router = useRouter();
@@ -172,7 +172,7 @@ function ConversationList({
   };
 
   const selectConversation = async (conversationId) => {
-    clearUIStateRef.current?.();
+    clearUIState();
 
     setLoadingConversationId(conversationId);
 
@@ -324,8 +324,8 @@ function ConversationList({
                           setSelectedConversationId={setSelectedConversationId}
                           setMessages={setMessages}
                           setConversationsReloadKey={setConversationsReloadKey}
-                          abortGenerateRef={abortGenerateRef}
-                          clearUIStateRef={clearUIStateRef}
+                          abortGenerate={abortGenerate}
+                          clearUIState={clearUIState}
                           activateConversation={activateConversation}
                           setLoadingConversationId={setLoadingConversationId}
                           labels={labels}

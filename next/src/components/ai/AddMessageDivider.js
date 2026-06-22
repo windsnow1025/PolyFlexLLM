@@ -17,7 +17,7 @@ function AddMessageDivider({
                              messages,
                              setMessages,
                              index,
-                             abortGenerateRef,
+                             abortGenerate,
                              setConversationUpdateKey,
                              setScrollToIndex,
                            }) {
@@ -25,7 +25,7 @@ function AddMessageDivider({
 
   const handleMessageAdd = (index) => {
     if (index === messages.length - 1) {
-      abortGenerateRef.current();
+      abortGenerate();
     }
 
     const newMessages = [...messages];

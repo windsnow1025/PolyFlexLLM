@@ -12,8 +12,8 @@ function RetryButton({
                        setConversationUpdateKey,
 
                        // Generation
-                       handleGenerateRef,
-                       abortGenerateRef,
+                       handleGenerate,
+                       abortGenerate,
 
                        // UI
                        isUploading,
@@ -50,7 +50,7 @@ function RetryButton({
 
   const handleRetry = async () => {
     // 1. Stop sending if it is sending
-    abortGenerateRef.current?.();
+    abortGenerate();
 
     // 2. Remove empty messages after the last assistant message and remove the last assistant message
     setMessages(prevMessages => {
@@ -74,7 +74,7 @@ function RetryButton({
     // 3. Trigger sending
     // Wait for setMessages
     await wait(0);
-    handleGenerateRef?.current();
+    handleGenerate();
   };
 
   return (

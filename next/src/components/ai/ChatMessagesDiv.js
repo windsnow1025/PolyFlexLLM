@@ -22,7 +22,7 @@ function ChatMessagesDiv({
                            // Generation
                            isGenerating,
                            isGeneratingRef,
-                           abortGenerateRef,
+                           abortGenerate,
 
                            // Side-effect setters
                            isLastChunkThought,
@@ -75,7 +75,7 @@ function ChatMessagesDiv({
     let fileUrlsToDelete = [];
     const isDeletingLastMessage = messages.length > 0 && messages[messages.length - 1].id === id;
     if (isDeletingLastMessage && isGeneratingRef.current) {
-      abortGenerateRef.current();
+      abortGenerate();
     }
 
     // Remove the message from the UI
@@ -103,7 +103,7 @@ function ChatMessagesDiv({
 
     setConversationUpdateKey(prev => prev + 1);
 
-  }, [messages, setMessages, isGeneratingRef, abortGenerateRef, setConversationUpdateKey, fileLogic]);
+  }, [messages, setMessages, isGeneratingRef, abortGenerate, setConversationUpdateKey, fileLogic]);
 
   return (
     <div>
@@ -111,7 +111,7 @@ function ChatMessagesDiv({
         messages={messages}
         setMessages={setMessages}
         index={-1}
-        abortGenerateRef={abortGenerateRef}
+        abortGenerate={abortGenerate}
         setConversationUpdateKey={setConversationUpdateKey}
         setScrollToIndex={setScrollToIndex}
       />
@@ -137,7 +137,7 @@ function ChatMessagesDiv({
                     messages={messages}
                     setMessages={setMessages}
                     index={index}
-                    abortGenerateRef={abortGenerateRef}
+                    abortGenerate={abortGenerate}
                     setConversationUpdateKey={setConversationUpdateKey}
                     setScrollToIndex={setScrollToIndex}
                   />

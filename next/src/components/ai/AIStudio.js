@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Collapse, Drawer, Paper} from "@mui/material";
+import {Alert, Collapse, Drawer, Paper, Snackbar} from "@mui/material";
 
 import ChatLogic from "@/lib/chat/ChatLogic";
 import ConfigDiv from "./ConfigDiv";
@@ -9,6 +9,7 @@ import ChatMessagesDiv from "./ChatMessagesDiv";
 import ConversationSidebar from "./conversation-sidebar/ConversationSidebar";
 import ToggleConversationButton from "./ToggleConversationButton";
 import useScreenSize from '@/hooks/useScreenSize';
+import useChatGeneration from './useChatGeneration';
 import AIStudioTour from './AIStudioTour';
 import ScrollToBottomButton from './ScrollToBottomButton';
 
@@ -29,15 +30,6 @@ function AIStudio({
   const [thought, setThought] = useState(true);
   const [webSearch, setWebSearch] = useState(true);
   const [codeExecution, setCodeExecution] = useState(false);
-
-  // Generation Control
-  const [isGenerating, setIsGenerating] = useState(false);
-  const isGeneratingRef = useRef(false);
-
-  // Ref for handleGenerate function
-  const handleGenerateRef = useRef(null);
-  const abortGenerateRef = useRef(null);
-  const clearUIStateRef = useRef(null);
 
   // Thought Loading
   const [isLastChunkThought, setIsLastChunkThought] = useState(false);
@@ -102,6 +94,40 @@ function AIStudio({
     };
   }, []);
 
+  // Generation Control
+  const chat = useChatGeneration({
+    // Messages
+    messages,
+    setMessages,
+
+    // Conversation
+    selectedConversationId,
+    conversationUpdatePromiseRef,
+    conversationVersionRef,
+
+    // Conversations
+    setConversationsReloadKey,
+
+    // Chat config
+    apiType,
+    model,
+    temperature,
+    stream,
+    thought,
+    webSearch,
+    codeExecution,
+
+    // Side-effect setters
+    setIsLastChunkThought,
+    setCreditRefreshKey,
+
+    // UI
+    isAtBottomRef,
+
+    // Resume trigger
+    resumeKey,
+  });
+
   return (
     <div className="local-scroll-container">
       <div className="local-scroll-unscrollable-x">
@@ -133,9 +159,9 @@ function AIStudio({
               setConversationsReloadKey={setConversationsReloadKey}
 
               // Generation
-              isGeneratingRef={isGeneratingRef}
-              abortGenerateRef={abortGenerateRef}
-              clearUIStateRef={clearUIStateRef}
+              isGeneratingRef={chat.isGeneratingRef}
+              abortGenerate={chat.abortGenerate}
+              clearUIState={chat.clearUIState}
               setResumeKey={setResumeKey}
             />
           </Drawer>
@@ -161,9 +187,9 @@ function AIStudio({
                 setConversationsReloadKey={setConversationsReloadKey}
 
                 // Generation
-                isGeneratingRef={isGeneratingRef}
-                abortGenerateRef={abortGenerateRef}
-                clearUIStateRef={clearUIStateRef}
+                isGeneratingRef={chat.isGeneratingRef}
+                abortGenerate={chat.abortGenerate}
+                clearUIState={chat.clearUIState}
                 setResumeKey={setResumeKey}
               />
             </Collapse>
@@ -210,9 +236,9 @@ function AIStudio({
               setPromptsReloadKey={setPromptsReloadKey}
 
               // Generation
-              isGenerating={isGenerating}
-              isGeneratingRef={isGeneratingRef}
-              abortGenerateRef={abortGenerateRef}
+              isGenerating={chat.isGenerating}
+              isGeneratingRef={chat.isGeneratingRef}
+              abortGenerate={chat.abortGenerate}
 
               // Side-effect setters
               isLastChunkThought={isLastChunkThought}
@@ -229,43 +255,10 @@ function AIStudio({
           <div className="flex-around">
             <div className="flex-center">
               <SendButton
-                // Messages
-                messages={messages}
-                setMessages={setMessages}
-
-                // Conversation
-                selectedConversationId={selectedConversationId}
-                conversationUpdatePromiseRef={conversationUpdatePromiseRef}
-                conversationVersionRef={conversationVersionRef}
-
-                // Conversations
-                setConversationsReloadKey={setConversationsReloadKey}
-
-                // Chat config
-                apiType={apiType}
-                model={model}
-                temperature={temperature}
-                stream={stream}
-                thought={thought}
-                webSearch={webSearch}
-                codeExecution={codeExecution}
-
-                // Generation
-                isGenerating={isGenerating}
-                setIsGenerating={setIsGenerating}
-                isGeneratingRef={isGeneratingRef}
-                handleGenerateRef={handleGenerateRef}
-                abortGenerateRef={abortGenerateRef}
-                clearUIStateRef={clearUIStateRef}
-                resumeKey={resumeKey}
-
-                // Side-effect setters
-                setIsLastChunkThought={setIsLastChunkThought}
-                setCreditRefreshKey={setCreditRefreshKey}
-
-                // UI
-                isUploading={isUploading}
-                isAtBottomRef={isAtBottomRef}
+                isGenerating={chat.isGenerating}
+                handleGenerate={chat.handleGenerate}
+                abortGenerate={chat.abortGenerate}
+                disabled={!messages || isUploading}
               />
               <RetryButton
                 // Messages
@@ -276,8 +269,8 @@ function AIStudio({
                 setConversationUpdateKey={setConversationUpdateKey}
 
                 // Generation
-                handleGenerateRef={handleGenerateRef}
-                abortGenerateRef={abortGenerateRef}
+                handleGenerate={chat.handleGenerate}
+                abortGenerate={chat.abortGenerate}
 
                 // UI
                 isUploading={isUploading}
@@ -286,6 +279,16 @@ function AIStudio({
           </div>
         </div>
       </div>
+
+      <Snackbar
+        open={chat.alertOpen}
+        autoHideDuration={6000}
+        onClose={() => chat.setAlertOpen(false)}
+      >
+        <Alert onClose={() => chat.setAlertOpen(false)} severity={chat.alertSeverity} sx={{width: '100%'}}>
+          {chat.alertMessage}
+        </Alert>
+      </Snackbar>
     </div>
   );
 }

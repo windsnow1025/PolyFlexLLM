@@ -10,7 +10,7 @@ function NewConversationButton({
                                  setConversations,
                                  setSelectedConversationId,
                                  setConversationsReloadKey,
-                                 clearUIStateRef,
+                                 clearUIState,
                                }) {
   const conversationLogic = new ConversationLogic();
 
@@ -20,7 +20,7 @@ function NewConversationButton({
   const [loading, setLoading] = useState(false);
 
   const handleNewConversation = async () => {
-    clearUIStateRef.current?.();
+    clearUIState();
     setLoading(true);
     try {
       // YYYY-MM-DD HH:MM:SS (local time)

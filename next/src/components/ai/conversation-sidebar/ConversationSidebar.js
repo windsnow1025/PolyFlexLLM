@@ -25,8 +25,8 @@ function ConversationSidebar({
 
                                // Generation
                                isGeneratingRef,
-                               abortGenerateRef,
-                               clearUIStateRef,
+                               abortGenerate,
+                               clearUIState,
                                setResumeKey,
                              }) {
   const conversationLogic = useMemo(() => new ConversationLogic(), []);
@@ -136,14 +136,14 @@ function ConversationSidebar({
           <TemporaryChatButton
             setMessages={setMessages}
             setSelectedConversationId={setSelectedConversationId}
-            clearUIStateRef={clearUIStateRef}
+            clearUIState={clearUIState}
           />
           <NewConversationButton
             setMessages={setMessages}
             setConversations={setConversations}
             setSelectedConversationId={setSelectedConversationId}
             setConversationsReloadKey={setConversationsReloadKey}
-            clearUIStateRef={clearUIStateRef}
+            clearUIState={clearUIState}
           />
         </div>
         <Divider/>
@@ -165,8 +165,8 @@ function ConversationSidebar({
 
           // Generation
           isGeneratingRef={isGeneratingRef}
-          abortGenerateRef={abortGenerateRef}
-          clearUIStateRef={clearUIStateRef}
+          abortGenerate={abortGenerate}
+          clearUIState={clearUIState}
           setResumeKey={setResumeKey}
         />
       </div>

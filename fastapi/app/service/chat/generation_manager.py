@@ -14,6 +14,7 @@ class GenerationManager:
         old_session = self._sessions.get(conversation_id)
         if old_session is not None:
             await old_session.close(GenerationState.Superseded)
+            await old_session.notify_end()
 
         # Start new session
         session = GenerationSession(conversation_id)

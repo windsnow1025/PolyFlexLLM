@@ -64,6 +64,9 @@ class GenerationSession:
     async def close(self, state: GenerationState) -> None:
         async with self._lock:
             self._state = state
+
+    async def notify_end(self) -> None:
+        async with self._lock:
             for queue in self._subscribers:
                 queue.put_nowait(None)
             self._subscribers.clear()

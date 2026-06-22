@@ -111,6 +111,7 @@ async def stream_handler(
 
                 generation_manager.finish(session)
 
+            await session.notify_end()
             session.mark_finalized()
 
     create_task(run())

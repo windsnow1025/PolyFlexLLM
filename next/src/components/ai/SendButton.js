@@ -249,7 +249,7 @@ function SendButton({
     clearUIStateRef.current = () => switchStatus(false);
   })
 
-  // Stream resume
+  // Stream Resume
   useEffect(() => {
     if (!selectedConversationId) return;
     if (isGeneratingRef.current) return;

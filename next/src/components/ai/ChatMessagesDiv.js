@@ -21,7 +21,6 @@ function ChatMessagesDiv({
 
                            // Generation
                            isGenerating,
-                           setIsGenerating,
                            isGeneratingRef,
                            abortGenerateRef,
 
@@ -112,8 +111,6 @@ function ChatMessagesDiv({
         messages={messages}
         setMessages={setMessages}
         index={-1}
-        setIsGenerating={setIsGenerating}
-        isGeneratingRef={isGeneratingRef}
         abortGenerateRef={abortGenerateRef}
         setConversationUpdateKey={setConversationUpdateKey}
         setScrollToIndex={setScrollToIndex}
@@ -140,8 +137,6 @@ function ChatMessagesDiv({
                     messages={messages}
                     setMessages={setMessages}
                     index={index}
-                    setIsGenerating={setIsGenerating}
-                    isGeneratingRef={isGeneratingRef}
                     abortGenerateRef={abortGenerateRef}
                     setConversationUpdateKey={setConversationUpdateKey}
                     setScrollToIndex={setScrollToIndex}

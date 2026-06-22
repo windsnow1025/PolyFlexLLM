@@ -211,7 +211,6 @@ function AIStudio({
 
               // Generation
               isGenerating={isGenerating}
-              setIsGenerating={setIsGenerating}
               isGeneratingRef={isGeneratingRef}
               abortGenerateRef={abortGenerateRef}
 

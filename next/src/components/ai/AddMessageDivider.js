@@ -17,8 +17,6 @@ function AddMessageDivider({
                              messages,
                              setMessages,
                              index,
-                             setIsGenerating,
-                             isGeneratingRef,
                              abortGenerateRef,
                              setConversationUpdateKey,
                              setScrollToIndex,

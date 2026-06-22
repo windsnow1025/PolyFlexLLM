@@ -68,6 +68,14 @@ export default function useChatGeneration({
     setCreditRefreshKey(prev => prev + 1);
   };
 
+  const warnFilesInTemporaryChat = (files) => {
+    if (files && files.length > 0 && selectedConversationId === null) {
+      setAlertMessage('File generation is not supported in Temporary Chat mode. Please create a new conversation to save files.');
+      setAlertSeverity('warning');
+      setAlertOpen(true);
+    }
+  };
+
   const consumeStreamChunks = async (currentReqIndex, generator) => {
     let isFirstChunk = true;
     for await (const chunk of generator) {
@@ -89,11 +97,7 @@ export default function useChatGeneration({
         setIsLastChunkThought(false);
       }
 
-      if (chunk.files && chunk.files.length > 0 && selectedConversationId === null) {
-        setAlertMessage('File generation is not supported in Temporary Chat mode. Please create a new conversation to save files.');
-        setAlertSeverity('warning');
-        setAlertOpen(true);
-      }
+      warnFilesInTemporaryChat(chunk.files);
 
       setMessages(prevMessages => ChatLogic.updateMessage(
         prevMessages, prevMessages.length - 1, chunk
@@ -120,13 +124,7 @@ export default function useChatGeneration({
       return false;
     }
 
-    if (content.files && content.files.length > 0) {
-      if (selectedConversationId === null) {
-        setAlertMessage('File generation is not supported in Temporary Chat mode. Please create a new conversation to save files.');
-        setAlertSeverity('warning');
-        setAlertOpen(true);
-      }
-    }
+    warnFilesInTemporaryChat(content.files);
 
     setMessages(prevMessages => [
       ...prevMessages,

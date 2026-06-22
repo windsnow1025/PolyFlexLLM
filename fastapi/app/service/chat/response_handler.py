@@ -42,6 +42,7 @@ async def non_stream_handler(
         token: str,
         conversation_id: int | None,
 ) -> ChatResponse:
+    # On non-stream mode error, HTTP Exception is thrown
     assert chat_response.input_tokens is not None and chat_response.output_tokens is not None
     cost = await reduce_credit(chat_response.input_tokens, chat_response.output_tokens)
 
@@ -86,9 +87,7 @@ async def stream_handler(
 
             result = response_transform.aggregate(session.buffer)
 
-            if result.error:
-                generation_manager.finish(session)
-            else:
+            if not result.error: # On stream mode error, ChatResponse.error is set
                 assert result.input_tokens is not None and result.output_tokens is not None
                 cost = await reduce_credit(result.input_tokens, result.output_tokens)
                 logging.info(f"content: {response_transform.to_log(result)}")
@@ -109,9 +108,8 @@ async def stream_handler(
                         display=result.display,
                     )
 
-                generation_manager.finish(session)
-
             await session.notify_end()
+            generation_manager.finish(session)
             session.mark_finalized()
 
     create_task(run())

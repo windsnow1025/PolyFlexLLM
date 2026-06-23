@@ -64,41 +64,38 @@ export default function OptionsMenu({ trigger }: { trigger?: React.ReactElement<
           },
         }}
       >
-        {session?.user ? (
-          <>
-            <MenuItem onClick={() => { handleClose(); router.push('/settings?tab=0'); }}>My account</MenuItem>
-            <Divider />
-            <MenuItem
-              onClick={() => { handleClose(); authentication?.signOut(); }}
-              sx={{
-                [`& .${listItemIconClasses.root}`]: {
-                  ml: 'auto',
-                  minWidth: 0,
-                },
-              }}
-            >
-              <ListItemText>Logout</ListItemText>
-              <ListItemIcon>
-                <LogoutRoundedIcon fontSize="small" />
-              </ListItemIcon>
-            </MenuItem>
-          </>
-        ) : (
-          <>
-            <MenuItem onClick={() => { handleClose(); authentication?.signIn(); }}>
-              <ListItemIcon>
-                <LoginRoundedIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>Sign in</ListItemText>
-            </MenuItem>
-            <MenuItem onClick={() => { handleClose(); router.push('/auth/signup'); }}>
-              <ListItemIcon>
-                <PersonAddRoundedIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>Sign up</ListItemText>
-            </MenuItem>
-          </>
-        )}
+        {session?.user ? [
+          <MenuItem key="account" onClick={() => { handleClose(); router.push('/settings?tab=0'); }}>My account</MenuItem>,
+          <Divider key="divider" />,
+          <MenuItem
+            key="logout"
+            onClick={() => { handleClose(); authentication?.signOut(); }}
+            sx={{
+              [`& .${listItemIconClasses.root}`]: {
+                ml: 'auto',
+                minWidth: 0,
+              },
+            }}
+          >
+            <ListItemText>Logout</ListItemText>
+            <ListItemIcon>
+              <LogoutRoundedIcon fontSize="small" />
+            </ListItemIcon>
+          </MenuItem>,
+        ] : [
+          <MenuItem key="signin" onClick={() => { handleClose(); authentication?.signIn(); }}>
+            <ListItemIcon>
+              <LoginRoundedIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText>Sign in</ListItemText>
+          </MenuItem>,
+          <MenuItem key="signup" onClick={() => { handleClose(); router.push('/auth/signup'); }}>
+            <ListItemIcon>
+              <PersonAddRoundedIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText>Sign up</ListItemText>
+          </MenuItem>,
+        ]}
       </Menu>
     </React.Fragment>
   );

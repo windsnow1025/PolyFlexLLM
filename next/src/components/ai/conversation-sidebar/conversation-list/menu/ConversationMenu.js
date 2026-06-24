@@ -66,9 +66,11 @@ function ConversationMenu({
   const deleteConversation = async (index) => {
     const conversationId = conversations[index].id;
 
-    // If the conversation is currently selected, stop generating
+    // If the conversation is currently selected, stop generating, unselect conversation
     if (conversationId === selectedConversationId) {
       abortGenerate();
+      setSelectedConversationId(null);
+      setMessages(ChatLogic.getInitMessages());
     }
 
     setLoadingConversationId(conversationId);
@@ -109,10 +111,6 @@ function ConversationMenu({
       setAlertSeverity('error');
     }
 
-    if (conversationId === selectedConversationId) {
-      setSelectedConversationId(null);
-      setMessages(ChatLogic.getInitMessages());
-    }
     setLoadingConversationId(null);
   };
 

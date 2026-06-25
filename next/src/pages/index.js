@@ -126,7 +126,13 @@ function Index() {
           </Container>
           <Box sx={{display: 'flex', gap: 1, justifyContent: 'center', flexWrap: 'wrap', my: 3}}>
             {providers.map((provider) => (
-              <Chip key={provider} label={provider} variant="outlined" size="small"/>
+              <Chip
+                key={provider}
+                label={provider}
+                variant="outlined"
+                size="small"
+                sx={{transition: "border-color 0.2s", "&:hover": {borderColor: "text.primary"}}}
+              />
             ))}
           </Box>
           <Button

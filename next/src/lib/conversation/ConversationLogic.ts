@@ -77,12 +77,7 @@ export default class ConversationLogic {
         result.push(server);
         continue;
       }
-      if (local.id === server.id) {
-        // Same UUID, keep local
-        result.push(local);
-        continue;
-      }
-      // Different UUID: check if content is equivalent (ignore id)
+      // Check if content is equivalent (ignore id)
       if (isEqual(normalize(local), normalize(server))) {
         // Same content, keep local to preserve TransitionGroup key
         result.push(local);

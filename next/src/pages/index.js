@@ -19,6 +19,7 @@ import EmailIcon from "@mui/icons-material/Email";
 import PolicyIcon from '@mui/icons-material/Policy';
 import RuleIcon from '@mui/icons-material/Rule';
 import GavelIcon from '@mui/icons-material/Gavel';
+import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import SmartToyIcon from '@mui/icons-material/SmartToy';
 import CodeIcon from '@mui/icons-material/Code';
 import StreamIcon from '@mui/icons-material/Stream';
@@ -27,7 +28,6 @@ import ImageIcon from '@mui/icons-material/Image';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import LocalOfferIcon from '@mui/icons-material/LocalOffer';
 import Head from "next/head";
-import {useRouter} from "next/router";
 import {AuthorEmail} from "@/lib/common/Constants";
 import Copyright from "@/components/common/dashboard/internals/components/Copyright";
 
@@ -94,9 +94,6 @@ const features = [
 const providers = ["OpenAI", "Gemini", "Claude", "Grok"];
 
 function Index() {
-  const theme = useTheme();
-  const router = useRouter();
-
   return (
     <div className="local-scroll-container">
       <Head>
@@ -107,6 +104,16 @@ function Index() {
         />
       </Head>
       <div className="local-scroll-scrollable flex-column gap-y-8 p-4">
+        {/* Authentication Strip */}
+        <div className="flex-end-center">
+          <Button href="/auth/signin">
+            Sign in
+          </Button>
+          <Button variant="outlined" href="/auth/signup">
+            Sign up
+          </Button>
+        </div>
+
         {/* Hero Section */}
         <div className="text-center">
           <Typography variant="h2" color="primary" gutterBottom>
@@ -117,19 +124,19 @@ function Index() {
               A full-stack web platform for interacting with various LLMs, featuring full conversation context control and Markdown + LaTeX rendering.
             </Typography>
           </Container>
-          <Box sx={{display: 'flex', gap: 1, justifyContent: 'center', flexWrap: 'wrap', mt: 3}}>
+          <Box sx={{display: 'flex', gap: 1, justifyContent: 'center', flexWrap: 'wrap', my: 3}}>
             {providers.map((provider) => (
               <Chip key={provider} label={provider} variant="outlined" size="small"/>
             ))}
           </Box>
-          <div className="flex-center gap-4 mt-6">
-            <Button variant="contained" href="/auth/signin">
-              Sign in
-            </Button>
-            <Button variant="outlined" href="/auth/signup">
-              Sign up
-            </Button>
-          </div>
+          <Button
+            variant="contained"
+            size="large"
+            startIcon={<AutoAwesomeIcon/>}
+            href="/ai"
+          >
+            Open AI Studio
+          </Button>
         </div>
 
         <Divider/>
@@ -157,16 +164,20 @@ function Index() {
 
         {/* Pricing CTA Section */}
         <div className="text-center">
-          <LocalOfferIcon sx={{fontSize: 48, color: theme.vars.palette.primary.main, mb: 1}}/>
           <Typography variant="h4" gutterBottom>
-            Simple, Transparent Pricing
+            Pricing
           </Typography>
-          <Container maxWidth="md" sx={{mb: 3}}>
+          <Container maxWidth="md" sx={{mb: 4}}>
             <Typography variant="body1" color="textSecondary">
-              Pay only for what you use. Check out our pricing details to find the plan that works for you.
+              Pay as you go. Check out our pricing details.
             </Typography>
           </Container>
-          <Button variant="contained" size="large" onClick={() => router.push('/pricing/pricing')}>
+          <Button
+            variant="contained"
+            size="large"
+            startIcon={<LocalOfferIcon/>}
+            href="/pricing/pricing"
+          >
             View Pricing
           </Button>
         </div>

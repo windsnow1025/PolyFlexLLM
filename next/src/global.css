@@ -80,6 +80,13 @@ nextjs-portal {
     flex-wrap: wrap;
 }
 
+.flex-end-center {
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
 .flex-column {
     display: flex;
     flex-direction: column;

@@ -61,22 +61,22 @@ function FeatureCard({title, description, icon}) {
 const features = [
   {
     title: "Multi-Model Support",
-    description: "Unified interface to access OpenAI, Gemini, Claude, and Grok through a single platform.",
+    description: "Access OpenAI, Gemini, Claude, Grok models by various providers through a unified graphic interface.",
     icon: <SmartToyIcon/>,
   },
   {
     title: "Markdown + LaTeX Rendering",
-    description: "Native rendering of rich text, code blocks, and mathematical formulas in AI responses.",
+    description: "Independently togglable Markdown and LaTeX rendering feature across all message types.",
     icon: <CodeIcon/>,
   },
   {
     title: "Stream Output",
-    description: "Real-time streaming of AI responses for a smooth, interactive experience.",
+    description: "Resumable streaming of AI responses for a smooth experience.",
     icon: <StreamIcon/>,
   },
   {
     title: "Full Context Control",
-    description: "Manage conversation context with system, user, and assistant messages for precise interactions.",
+    description: "Provide full control over conversation context and allow prompt storage.",
     icon: <TuneIcon/>,
   },
   {

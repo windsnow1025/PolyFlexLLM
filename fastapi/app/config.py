@@ -1,6 +1,5 @@
 import logging
 import os
-from typing import Optional
 
 from dotenv import load_dotenv
 
@@ -20,7 +19,7 @@ def init_env():
     logging.info(f"Using {'production' if is_production else 'development'} setting.")
 
 
-def get_client(token: Optional[str] = None) -> Client | AuthenticatedClient:
+def get_client(token: str | None = None) -> Client | AuthenticatedClient:
     base_url = os.environ["NEST_API_BASE_URL"]
     if token:
         return AuthenticatedClient(

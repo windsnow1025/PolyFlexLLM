@@ -1,5 +1,5 @@
 import logging
-from typing import Any, Optional
+from typing import Any
 
 from fastapi import APIRouter, HTTPException, Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
@@ -28,8 +28,8 @@ class ChatRequest(BaseModel):
     thought: bool
     web_search: bool
     code_execution: bool
-    structured_output_schema: Optional[dict[str, Any]] = None
-    conversation_id: Optional[int] = None
+    structured_output_schema: dict[str, Any] | None = None
+    conversation_id: int | None = None
 
 
 class AbortRequest(BaseModel):

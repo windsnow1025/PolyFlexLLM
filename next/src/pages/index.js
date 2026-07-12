@@ -71,7 +71,7 @@ const features = [
   },
   {
     title: "Stream Output",
-    description: "Resumable streaming of AI responses for a smooth experience.",
+    description: "Resumable streaming for text and audio responses.",
     icon: <StreamIcon/>,
   },
   {
@@ -81,7 +81,7 @@ const features = [
   },
   {
     title: "Multimodal I/O",
-    description: "Support for images and other media types as both input and output.",
+    description: "Support for image, audio, video, and other media types as both input and output.",
     icon: <ImageIcon/>,
   },
   {

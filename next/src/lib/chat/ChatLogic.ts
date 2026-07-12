@@ -1,4 +1,3 @@
-import {v4 as uuidv4} from 'uuid';
 import ChatClient from "./ChatClient";
 import {ApiTypeModel, ChatResponse} from "@/lib/chat/ChatResponse";
 import {Content, ContentTypeEnum, Message, MessageRoleEnum} from "@/client/nest";
@@ -9,7 +8,7 @@ export default class ChatLogic {
   private chatClient: ChatClient;
   static getInitMessages = (): Message[] => [
     {
-      id: uuidv4(),
+      id: crypto.randomUUID(),
       role: MessageRoleEnum.System,
       contents: [
         {
@@ -19,7 +18,7 @@ export default class ChatLogic {
       ],
     },
     {
-      id: uuidv4(),
+      id: crypto.randomUUID(),
       role: MessageRoleEnum.User,
       contents: [
         {
@@ -30,7 +29,7 @@ export default class ChatLogic {
     }
   ];
   static getEmptyUserMessage = (): Message => ({
-    id: uuidv4(),
+    id: crypto.randomUUID(),
     role: MessageRoleEnum.User,
     contents: [
       {
@@ -40,7 +39,7 @@ export default class ChatLogic {
     ],
   });
   static getEmptyAssistantMessage = (): Message => ({
-    id: uuidv4(),
+    id: crypto.randomUUID(),
     role: MessageRoleEnum.Assistant,
     contents: [],
   });
@@ -91,7 +90,7 @@ export default class ChatLogic {
     }
 
     return {
-      id: uuidv4(),
+      id: crypto.randomUUID(),
       role: MessageRoleEnum.Assistant,
       contents: contents,
       thought: chatResponse.thought,
@@ -116,7 +115,7 @@ export default class ChatLogic {
     currentMessage.contents = [...currentMessage.contents];
 
     const appendOrCreateContent = (type: ContentTypeEnum, data: string) => {
-      const lastContent = currentMessage.contents[currentMessage.contents.length - 1];
+      const lastContent = currentMessage.contents.at(-1);
       if (lastContent && lastContent.type === type) {
         lastContent.data += data;
       } else {

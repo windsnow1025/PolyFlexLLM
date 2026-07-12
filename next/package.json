@@ -33,7 +33,6 @@
     "@react-spring/web": "^10.0.3",
     "axios": "^1.16.0",
     "clsx": "^2.1.1",
-    "crypto-js": "^4.2.0",
     "dayjs": "^1.11.20",
     "lodash": "^4.18.1",
     "markdown-latex-renderer": "^1.6.3",
@@ -42,15 +41,13 @@
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "react-joyride": "^3.0.0",
-    "react-transition-group": "^4.4.5",
-    "uuid": "^14.0.1"
+    "react-transition-group": "^4.4.5"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
-    "@types/crypto-js": "^4.2.2",
     "@types/lodash": "^4.17.24",
     "@types/node": "^20",
     "@types/react": "^19",

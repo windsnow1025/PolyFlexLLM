@@ -160,7 +160,7 @@ function PromptSelect({
           contents: [{type: ContentTypeEnum.Text, data: ''}],
         });
       } else {
-        const newContents = JSON.parse(JSON.stringify(message.contents));
+        const newContents = structuredClone(message.contents);
         const fileUrls = newContents
           .filter(content => content.type === ContentTypeEnum.File)
           .map(content => content.data);

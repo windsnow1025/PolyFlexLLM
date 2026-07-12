@@ -284,16 +284,15 @@ function CustomDataGrid({
   const handleAddRow = () => {
     const id = Math.max(0, ...rows.map((row) => row.id)) + 1;
 
-    const newRowDefaults = columns.reduce((acc, col) => {
+    const newRowDefaults = Object.fromEntries(columns.map((col) => {
       let defaultValue = '';
       if (col.type === 'number') {
         defaultValue = 0;
       } else if (col.type === 'boolean') {
         defaultValue = false;
       }
-      acc[col.field] = defaultValue;
-      return acc;
-    }, {});
+      return [col.field, defaultValue];
+    }));
 
     setRows((prevRows) => [
       {

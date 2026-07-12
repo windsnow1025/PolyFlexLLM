@@ -108,8 +108,8 @@ function ConversationList({
 
       const currentVersions = conversations.map(conv => ({id: conv.id, version: conv.version}));
       const sortById = (a, b) => a.id - b.id;
-      if (isEqual([...newVersions].sort(sortById), [...currentVersions].sort(sortById))) {
-        return JSON.parse(JSON.stringify(conversations));
+      if (isEqual(newVersions.toSorted(sortById), currentVersions.toSorted(sortById))) {
+        return structuredClone(conversations);
       }
 
       if (conversationUpdatePromiseRef?.current) {
@@ -148,7 +148,7 @@ function ConversationList({
         }
       }
 
-      return JSON.parse(JSON.stringify(mergedConversations));
+      return structuredClone(mergedConversations);
     } catch (err) {
       showAlert(err.message, 'error');
     } finally {
@@ -236,12 +236,10 @@ function ConversationList({
     : conversations;
 
   // Group conversations by label.id
-  const groups = filteredConversations.reduce((acc, conv, idx) => {
-    const key = conv.label?.id ?? 'no-label';
-    if (!acc[key]) acc[key] = [];
-    acc[key].push({conv, idx});
-    return acc;
-  }, {});
+  const groups = Object.groupBy(
+    filteredConversations.map((conv, idx) => ({conv, idx})),
+    ({conv}) => conv.label?.id ?? 'no-label',
+  );
   Object.keys(groups).forEach(key => {
     groups[key].sort((a, b) => Temporal.Instant.compare(Temporal.Instant.from(b.conv.updatedAt), Temporal.Instant.from(a.conv.updatedAt)));
   });

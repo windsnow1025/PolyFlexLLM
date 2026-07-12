@@ -73,7 +73,7 @@ function ChatMessagesDiv({
 
   const handleMessageDelete = useCallback(async (id) => {
     let fileUrlsToDelete = [];
-    const isDeletingLastMessage = messages.length > 0 && messages[messages.length - 1].id === id;
+    const isDeletingLastMessage = messages.length > 0 && messages.at(-1).id === id;
     if (isDeletingLastMessage && isGeneratingRef.current) {
       abortGenerate();
     }

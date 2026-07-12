@@ -38,7 +38,7 @@ function ConversationSidebar({
   const getMessagesForUpdate = useCallback(() => {
     const strippedMessages = ConversationLogic.stripPromptContents(messages);
     if (isGeneratingRef?.current && strippedMessages.length > 0) {
-      const lastMessage = strippedMessages[strippedMessages.length - 1];
+      const lastMessage = strippedMessages.at(-1);
       if (lastMessage?.role === 'assistant') {
         return strippedMessages.slice(0, -1);
       }

@@ -249,7 +249,7 @@ export default function useChatGeneration({
     // Clear stale assistant message
     const onOpen = () => {
       setMessages(prevMessages => {
-        const lastMessage = prevMessages[prevMessages.length - 1];
+        const lastMessage = prevMessages.at(-1);
         if (lastMessage && lastMessage.role === 'assistant') {
           return prevMessages.slice(0, -1);
         }

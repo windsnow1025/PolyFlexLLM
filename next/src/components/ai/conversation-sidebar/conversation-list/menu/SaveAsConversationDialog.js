@@ -51,7 +51,7 @@ function SaveAsConversationDialog({
     try {
       const conversation = await conversationLogic.fetchConversation(conversationId);
 
-      const newMessages = JSON.parse(JSON.stringify(conversation.messages));
+      const newMessages = structuredClone(conversation.messages);
 
       // 1) Collect all file urls from messages
       const fileUrls = [];

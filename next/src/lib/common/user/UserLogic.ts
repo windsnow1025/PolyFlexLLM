@@ -19,7 +19,8 @@ export default class UserLogic {
 
     try {
       const payloadBase64 = token.split('.')[1];
-      const payloadJson = atob(payloadBase64);
+      const payloadBytes = Uint8Array.fromBase64(payloadBase64, {alphabet: 'base64url'});
+      const payloadJson = new TextDecoder().decode(payloadBytes);
       const payload = JSON.parse(payloadJson);
 
       const exp = payload.exp;

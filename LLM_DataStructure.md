@@ -79,6 +79,7 @@ export interface ResponseFile {
 
 export interface ChatResponse {
   text?: string;
+  audio?: string;
   thought?: string;
   code?: string;
   code_output?: string;

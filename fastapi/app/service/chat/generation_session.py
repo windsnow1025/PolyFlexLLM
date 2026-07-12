@@ -1,5 +1,5 @@
 import asyncio
-from enum import Enum
+from enum import Enum, StrEnum
 
 from llm_bridge import ChatResponse
 
@@ -12,7 +12,7 @@ class GenerationState(Enum):
     Superseded = "superseded"
 
 
-class AbortIntent(str, Enum):
+class AbortIntent(StrEnum):
     Discard = "discard"
     Keep = "keep"
 

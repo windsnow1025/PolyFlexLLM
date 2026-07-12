@@ -87,8 +87,8 @@ importers:
         specifier: ^4.18.1
         version: 4.18.1
       markdown-latex-renderer:
-        specifier: ^1.6.2
-        version: 1.6.2
+        specifier: ^1.6.3
+        version: 1.6.3
       mime:
         specifier: ^4.1.0
         version: 4.1.0
@@ -3393,8 +3393,8 @@ packages:
     resolution: {integrity: sha512-BuU2qnTti9YKgK5N+IeMubp14ZUKUUw7yeJbkjtosvHiP0AZ5c8IAgEMk79D0eC8F23r4Ac/q8cAIFdm2FtyoA==}
     hasBin: true
 
-  markdown-latex-renderer@1.6.2:
-    resolution: {integrity: sha512-MTfZWSFzRIBY3MFH/AkzlrQxGi7Z4y1AMllEIoayKdxA3s5EFiE/x2N1lliZZpYoSm0NdXpbCw84NSI3BJTx9g==}
+  markdown-latex-renderer@1.6.3:
+    resolution: {integrity: sha512-GbwnvcRV/WWsS5Vp9WeP3Zz0VMC30MC8nme6VtB+aIxmsKnuRtftz03nYfRAfNNe2Zgt2vk+6ooNCO7ZuXs5cA==}
 
   math-intrinsics@1.1.0:
     resolution: {integrity: sha512-/IXtbwEk5HTPyEwyKX6hGkYXxM9nbj64B+ilVJnC/R6B0pH5G4V3b0pVbL7DBj4tkhBAppbQUlf6F6Xl9LHu1g==}
@@ -8045,7 +8045,7 @@ snapshots:
       punycode.js: 2.3.1
       uc.micro: 2.1.0
 
-  markdown-latex-renderer@1.6.2:
+  markdown-latex-renderer@1.6.3:
     dependencies:
       '@mdit/plugin-katex': 0.23.2(markdown-it@14.1.1)
       highlight.js: 11.11.1

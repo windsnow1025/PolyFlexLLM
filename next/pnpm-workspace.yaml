@@ -2,3 +2,5 @@ allowBuilds:
   '@mui/x-telemetry': false
   sharp: false
   unrs-resolver: false
+minimumReleaseAgeExclude:
+  - markdown-latex-renderer@1.6.3

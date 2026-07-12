@@ -1,3 +1,4 @@
-ignoredBuiltDependencies:
-  - sharp
-  - unrs-resolver
+allowBuilds:
+  '@mui/x-telemetry': false
+  sharp: false
+  unrs-resolver: false

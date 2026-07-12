@@ -223,6 +223,7 @@ export default class ChatLogic {
 
       return {
         text: content.text,
+        audio: content.audio,
         code: content.code,
         code_output: content.code_output,
         thought: content.thought,
@@ -260,6 +261,7 @@ export default class ChatLogic {
 
         yield {
           text: chunk.text,
+          audio: chunk.audio,
           code: chunk.code,
           code_output: chunk.code_output,
           thought: chunk.thought,
@@ -289,6 +291,7 @@ export default class ChatLogic {
 
         yield {
           text: chunk.text,
+          audio: chunk.audio,
           code: chunk.code,
           code_output: chunk.code_output,
           thought: chunk.thought,

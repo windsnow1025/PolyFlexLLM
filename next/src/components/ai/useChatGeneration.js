@@ -1,5 +1,6 @@
 import {useEffect, useMemo, useRef, useState} from 'react';
 import {AbortIntent} from "@/client/fastapi";
+import AudioPlayer from "@/lib/chat/AudioPlayer";
 import ChatLogic from "@/lib/chat/ChatLogic";
 import ConversationLogic from "@/lib/conversation/ConversationLogic";
 import {StorageKeys} from "@/lib/common/Constants";
@@ -46,6 +47,11 @@ export default function useChatGeneration({
 
   const chatLogic = useMemo(() => new ChatLogic(), []);
   const conversationLogic = useMemo(() => new ConversationLogic(), []);
+  const audioPlayer = useMemo(() => new AudioPlayer(), []);
+
+  useEffect(() => {
+    return () => audioPlayer.stop();
+  }, [audioPlayer]);
 
   const latestRequestIndexRef = useRef(0);
   const abortControllerRef = useRef(null);
@@ -94,8 +100,12 @@ export default function useChatGeneration({
       // Thought loading status
       if (chunk.thought) {
         setIsLastChunkThought(true);
-      } else if (chunk.text || (chunk.files && chunk.files.length !== 0) || chunk.display) {
+      } else if (chunk.text || chunk.audio || (chunk.files && chunk.files.length !== 0) || chunk.display) {
         setIsLastChunkThought(false);
+      }
+
+      if (chunk.audio) {
+        audioPlayer.playPcm16Chunk(chunk.audio);
       }
 
       warnFilesInTemporaryChat(chunk.files);
@@ -124,6 +134,10 @@ export default function useChatGeneration({
 
     if (!isActiveRequest(currentReqIndex)) {
       return false;
+    }
+
+    if (content.audio) {
+      audioPlayer.playWav(content.audio);
     }
 
     warnFilesInTemporaryChat(content.files);
@@ -166,6 +180,9 @@ export default function useChatGeneration({
     latestRequestIndexRef.current += 1;
     const currentReqIndex = latestRequestIndexRef.current;
 
+    audioPlayer.stop();
+    audioPlayer.ensureRunning();
+
     try {
       // Conversation Sync
       if (selectedConversationId) {
@@ -201,6 +218,7 @@ export default function useChatGeneration({
   };
 
   const abortGenerate = async (intent = AbortIntent.Discard) => {
+    audioPlayer.stop();
     switchStatus(false);
     if (selectedConversationId) {
       try {
@@ -214,7 +232,10 @@ export default function useChatGeneration({
     }
   };
 
-  const clearUIState = () => switchStatus(false);
+  const clearUIState = () => {
+    audioPlayer.stop();
+    switchStatus(false);
+  };
 
   // Stream Resume
   useEffect(() => {

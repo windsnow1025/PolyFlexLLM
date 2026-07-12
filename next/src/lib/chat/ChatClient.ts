@@ -66,21 +66,16 @@ export default class ChatClient {
           resolveQueue = null;
         }
       },
-      onclose() {
-        isDone = true;
-        if (resolveQueue) {
-          resolveQueue();
-        }
-      },
       onerror(err) {
         errorOccurred = err;
-        isDone = true;
-        if (resolveQueue) {
-          resolveQueue();
-        }
         throw err;
       }
-    }).catch(() => {});
+    }).catch(() => {}).finally(() => {
+      isDone = true;
+      if (resolveQueue) {
+        resolveQueue();
+      }
+    });
 
     while (!isDone || queue.length > 0) {
       if (queue.length > 0) {

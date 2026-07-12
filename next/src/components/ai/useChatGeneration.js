@@ -50,6 +50,8 @@ export default function useChatGeneration({
   const latestRequestIndexRef = useRef(0);
   const abortControllerRef = useRef(null);
 
+  const isActiveRequest = (reqIndex) => reqIndex === latestRequestIndexRef.current && isGeneratingRef.current;
+
   const switchStatus = (status) => {
     isGeneratingRef.current = status;
     setIsGenerating(status);
@@ -79,8 +81,7 @@ export default function useChatGeneration({
   const consumeStreamChunks = async (currentReqIndex, generator) => {
     let isFirstChunk = true;
     for await (const chunk of generator) {
-      // Frontend Abort
-      if (!(currentReqIndex === latestRequestIndexRef.current && isGeneratingRef.current)) {
+      if (!isActiveRequest(currentReqIndex)) {
         return false;
       }
 
@@ -111,7 +112,8 @@ export default function useChatGeneration({
         }, 0);
       }
     }
-    return true;
+
+    return isActiveRequest(currentReqIndex);
   };
 
   const handleNonStreamGenerate = async (currentReqIndex) => {
@@ -120,7 +122,7 @@ export default function useChatGeneration({
       selectedConversationId ?? undefined
     );
 
-    if (latestRequestIndexRef.current !== currentReqIndex || !isGeneratingRef.current) {
+    if (!isActiveRequest(currentReqIndex)) {
       return false;
     }
 

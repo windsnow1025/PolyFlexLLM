@@ -1,7 +1,7 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Client } from 'minio';
-import { Readable } from 'stream';
+import { Readable } from 'node:stream';
 import { AppConfig } from '../../config/config.interface';
 
 @Injectable()

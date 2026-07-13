@@ -3,4 +3,4 @@ allowBuilds:
   sharp: false
   unrs-resolver: false
 minimumReleaseAgeExclude:
-  - markdown-latex-renderer@1.6.4
+  - markdown-latex-renderer@1.7.1

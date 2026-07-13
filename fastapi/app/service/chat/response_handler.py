@@ -1,8 +1,7 @@
 import json
 import logging
 from asyncio import Queue, create_task
-from collections.abc import AsyncGenerator
-from typing import Callable, Awaitable
+from collections.abc import AsyncGenerator, Awaitable, Callable
 
 from fastapi import HTTPException
 from fastapi.responses import StreamingResponse

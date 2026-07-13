@@ -1,6 +1,6 @@
 import logging
 import os
-from typing import AsyncGenerator
+from collections.abc import AsyncGenerator
 
 from llm_bridge import *
 from starlette.responses import StreamingResponse

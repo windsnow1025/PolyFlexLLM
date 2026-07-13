@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "FastAPI for PolyFlexLLM"
 readme = "README.md"
 dependencies = [
-    "llm_bridge==2.1.1",
+    "llm_bridge==2.1.2",
     "fastapi[standard]==0.128.0", # fastapi
     "python-dotenv==1.2.2", # dotenv
     "python-jose[cryptography]==3.5.0", # jose

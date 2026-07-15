@@ -23,14 +23,7 @@ function RetryButton({
 
     if (messages.length === 0) return false;
 
-    // Find the last assistant message
-    let lastAssistantIndex = -1;
-    for (let i = messages.length - 1; i >= 0; i--) {
-      if (messages[i].role === 'assistant') {
-        lastAssistantIndex = i;
-        break;
-      }
-    }
+    const lastAssistantIndex = messages.findLastIndex(message => message.role === 'assistant');
 
     if (lastAssistantIndex === -1) return false;
 
@@ -54,13 +47,7 @@ function RetryButton({
 
     // 2. Remove empty messages after the last assistant message and remove the last assistant message
     setMessages(prevMessages => {
-      let lastAssistantIndex = -1;
-      for (let i = prevMessages.length - 1; i >= 0; i--) {
-        if (prevMessages[i].role === 'assistant') {
-          lastAssistantIndex = i;
-          break;
-        }
-      }
+      const lastAssistantIndex = prevMessages.findLastIndex(message => message.role === 'assistant');
 
       if (lastAssistantIndex === -1) return prevMessages;
 

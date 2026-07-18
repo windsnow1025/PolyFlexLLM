@@ -10,7 +10,6 @@ export default class ChatClient {
     url: string,
     method: string,
     body: string | undefined,
-    onOpenCallback?: () => void,
     signal?: AbortSignal,
   ): AsyncGenerator<ChatResponse, void, unknown> {
     const token = localStorage.getItem(StorageKeys.Token)!;
@@ -49,10 +48,6 @@ export default class ChatClient {
             },
           );
           throw err;
-        }
-
-        if (onOpenCallback) {
-          onOpenCallback();
         }
       },
       onmessage(event: EventSourceMessage) {
@@ -133,7 +128,6 @@ export default class ChatClient {
     code_execution: boolean,
     conversation_id?: number,
     assistant_message_id?: string,
-    onOpenCallback?: () => void,
     signal?: AbortSignal,
   ): AsyncGenerator<ChatResponse, void, unknown> {
     const requestData: ChatRequest = {
@@ -153,21 +147,18 @@ export default class ChatClient {
       `${getAPIBaseURLs().fastAPI}/chat`,
       "POST",
       JSON.stringify(requestData),
-      onOpenCallback,
       signal,
     );
   }
 
   async* resumeStream(
     conversation_id: number,
-    onOpenCallback?: () => void,
     signal?: AbortSignal,
   ): AsyncGenerator<ChatResponse, void, unknown> {
     yield* this.consumeStream(
       `${getAPIBaseURLs().fastAPI}/chat/stream/${conversation_id}`,
       "GET",
       undefined,
-      onOpenCallback,
       signal,
     );
   }

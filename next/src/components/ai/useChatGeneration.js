@@ -158,7 +158,7 @@ export default function useChatGeneration({
     const assistantMessageId = crypto.randomUUID();
     const generator = chatLogic.streamGenerate(
       messages, apiType, model, temperature, thought, webSearch, codeExecution,
-      selectedConversationId ?? undefined, assistantMessageId, undefined, abortControllerRef.current.signal
+      selectedConversationId ?? undefined, assistantMessageId, abortControllerRef.current.signal
     );
 
     const success = await consumeStreamChunks(currentReqIndex, generator, assistantMessageId);
@@ -248,15 +248,8 @@ export default function useChatGeneration({
     let tookOver = false;
     const controller = new AbortController();
 
-    // Clear stale assistant message
-    const onOpen = () => {
-      setMessages(prevMessages => {
-        const lastMessage = prevMessages.at(-1);
-        if (lastMessage && lastMessage.role === 'assistant') {
-          return prevMessages.slice(0, -1);
-        }
-        return prevMessages;
-      });
+    const takeOver = (assistantMessageId) => {
+      setMessages(prevMessages => prevMessages.filter(msg => msg.id !== assistantMessageId));
       latestRequestIndexRef.current += 1;
       abortControllerRef.current = controller;
       tookOver = true;
@@ -266,12 +259,16 @@ export default function useChatGeneration({
     const tryResume = async () => {
       try {
         const generator = chatLogic.resumeStream(
-          selectedConversationId, onOpen, controller.signal
+          selectedConversationId, controller.signal
         );
-        const currentReqIndex = latestRequestIndexRef.current + 1;
-        await consumeStreamChunks(currentReqIndex, generator);
+
+        const first = await generator.next();
+        if (first.done) return;
+        const assistantMessageId = first.value.assistant_message_id;
+
+        takeOver(assistantMessageId);
+        await consumeStreamChunks(latestRequestIndexRef.current, generator, assistantMessageId);
         if (aborted) return;
-        if (!tookOver) return;
         switchStatus(false);
         onGenerationEnded();
       } catch (err) {

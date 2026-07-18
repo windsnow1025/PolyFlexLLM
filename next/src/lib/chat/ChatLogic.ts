@@ -245,14 +245,13 @@ export default class ChatLogic {
     code_execution: boolean,
     conversation_id?: number,
     assistant_message_id?: string,
-    onOpenCallback?: () => void,
     signal?: AbortSignal,
   ): AsyncGenerator<ChatResponse, void, unknown> {
     try {
       const filteredMessages = ChatLogic.convertMessagesFromUIToReq(messages);
       const response = this.chatClient.streamGenerate(
         filteredMessages, api_type, model, temperature, thought, web_search, code_execution,
-        conversation_id, assistant_message_id, onOpenCallback, signal
+        conversation_id, assistant_message_id, signal
       );
 
       for await (const chunk of response) {
@@ -277,12 +276,11 @@ export default class ChatLogic {
 
   async* resumeStream(
     conversation_id: number,
-    onOpenCallback?: () => void,
     signal?: AbortSignal,
   ): AsyncGenerator<ChatResponse, void, unknown> {
     try {
       const response = this.chatClient.resumeStream(
-        conversation_id, onOpenCallback, signal
+        conversation_id, signal
       );
 
       for await (const chunk of response) {
@@ -291,6 +289,7 @@ export default class ChatLogic {
         }
 
         yield {
+          assistant_message_id: chunk.assistant_message_id,
           text: chunk.text,
           audio: chunk.audio,
           code: chunk.code,

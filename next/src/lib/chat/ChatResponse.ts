@@ -12,6 +12,7 @@ export interface ResponseFile {
 }
 
 export interface ChatResponse {
+  assistant_message_id?: string;
   text?: string;
   audio?: string;
   thought?: string;

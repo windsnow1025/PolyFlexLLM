@@ -1,7 +1,6 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {IconButton, Tooltip} from "@mui/material";
 import ReplayIcon from '@mui/icons-material/Replay';
-import {wait} from "@/components/common/utils/Wait";
 
 function RetryButton({
                        // Messages
@@ -41,7 +40,9 @@ function RetryButton({
     return true;
   };
 
-  const handleRetry = async () => {
+  const [retryKey, setRetryKey] = useState(0);
+
+  const handleRetry = () => {
     // 1. Stop sending if it is sending
     abortGenerate();
 
@@ -59,10 +60,14 @@ function RetryButton({
     }
 
     // 3. Trigger sending
-    // Wait for setMessages
-    await wait(0);
-    handleGenerate();
+    setRetryKey(prev => prev + 1);
   };
+
+  useEffect(() => {
+    if (retryKey === 0) return;
+    handleGenerate();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [retryKey]);
 
   return (
     <div>

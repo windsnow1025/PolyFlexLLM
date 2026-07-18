@@ -4,6 +4,7 @@ import ConversationList from './conversation-list/ConversationList';
 import NewConversationButton from "./NewConversationButton";
 import TemporaryChatButton from "../TemporaryChatButton";
 import ConversationLogic from "@/lib/conversation/ConversationLogic";
+import {getErrorStatus} from "@/lib/common/ErrorHandler";
 
 function ConversationSidebar({
                                // Messages
@@ -83,6 +84,10 @@ function ConversationSidebar({
           setConversationsReloadKey(prev => prev + 1);
         }
       } catch (err) {
+        if (getErrorStatus(err) === 412) {
+          setConversationsReloadKey(prev => prev + 1);
+          return;
+        }
         setAlertOpen(true);
         setAlertMessage(err.message);
         setAlertSeverity('error');

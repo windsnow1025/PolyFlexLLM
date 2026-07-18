@@ -193,13 +193,11 @@ export default function useChatGeneration({
         }
         const latestConversation = await conversationLogic.fetchConversation(selectedConversationId);
         const currentVersion = conversationVersionRef.current[selectedConversationId];
-        if (latestConversation.version > currentVersion) {
-          throw new Error("Conversation is stale. Please reload the conversation.")
-        }
-        if (latestConversation.version < currentVersion) {
-          setAlertMessage("Local conversation is ahead of server. Continuing generation.");
-          setAlertSeverity("warning");
-          setAlertOpen(true);
+        if (latestConversation.version !== currentVersion) {
+          await ConversationLogic.populatePromptContents(latestConversation.messages);
+          conversationVersionRef.current[selectedConversationId] = latestConversation.version;
+          setMessages(prevMessages => ConversationLogic.mergeMessages(prevMessages, latestConversation.messages));
+          return;
         }
       }
       if (stream) {

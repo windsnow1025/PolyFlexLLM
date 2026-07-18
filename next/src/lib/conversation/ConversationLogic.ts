@@ -1,6 +1,6 @@
 import {Temporal} from "@js-temporal/polyfill";
 import {isEqual} from "lodash";
-import {handleError} from "@/lib/common/ErrorHandler";
+import {getErrorStatus, handleError} from "@/lib/common/ErrorHandler";
 import ConversationClient from "./ConversationClient";
 import {ConversationReqDto, ConversationResDto, ConversationVersionResDto, Message} from "@/client/nest";
 import PromptLogic from "@/lib/prompt/PromptLogic";
@@ -146,6 +146,7 @@ export default class ConversationLogic {
     try {
       return await this.conversationService.updateConversation(id, etag, conversation);
     } catch (error) {
+      if (getErrorStatus(error) === 412) throw error;
       handleError(error, 'Failed to update conversation');
     }
   }

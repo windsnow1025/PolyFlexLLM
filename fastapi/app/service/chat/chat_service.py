@@ -22,6 +22,7 @@ async def handle_chat_interaction(
         code_execution: bool,
         structured_output_schema: dict | None,
         conversation_id: int | None,
+        assistant_message_id: str | None,
 ):
     logging.info(f"User ID: {user_id}")
 
@@ -67,7 +68,7 @@ async def handle_chat_interaction(
                 generator: AsyncGenerator[ChatResponse, None]
         ) -> StreamingResponse:
             return await response_handler.stream_handler(
-                generator, reduce_credit, token, conversation_id
+                generator, reduce_credit, token, conversation_id, assistant_message_id
             )
     else:
         response = await chat_client.generate_non_stream_response()
@@ -76,7 +77,7 @@ async def handle_chat_interaction(
                 chat_response: ChatResponse
         ) -> ChatResponse:
             return await response_handler.non_stream_handler(
-                chat_response, reduce_credit, token, conversation_id
+                chat_response, reduce_credit, token, conversation_id, assistant_message_id
             )
 
     return await final_response_handler(response)

@@ -74,6 +74,7 @@ async def add_messages_to_conversation(
 async def save_response_to_conversation(
         token: str,
         conversation_id: int,
+        assistant_message_id: str,
         text: str | None,
         thought: str | None,
         code: str | None,
@@ -100,7 +101,7 @@ async def save_response_to_conversation(
             contents.append(Content(type_=ContentType.FILE, data=file_url))
 
         assistant_message = Message(
-            id=str(uuid.uuid4()),
+            id=assistant_message_id,
             role=MessageRole.ASSISTANT,
             contents=contents,
             thought=thought or UNSET,

@@ -30,6 +30,7 @@ class ChatRequest(BaseModel):
     code_execution: bool
     structured_output_schema: dict[str, Any] | None = None
     conversation_id: int | None = None
+    assistant_message_id: str | None = None
 
 
 class AbortRequest(BaseModel):
@@ -68,6 +69,7 @@ async def generate(
             code_execution=chat_request.code_execution,
             structured_output_schema=chat_request.structured_output_schema,
             conversation_id=chat_request.conversation_id,
+            assistant_message_id=chat_request.assistant_message_id,
         )
     except HTTPException as e:
         raise e

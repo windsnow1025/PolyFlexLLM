@@ -40,6 +40,7 @@ async def non_stream_handler(
         reduce_credit: ReduceCredit,
         token: str,
         conversation_id: int | None,
+        assistant_message_id: str | None,
 ) -> ChatResponse:
     # On non-stream mode error, HTTP Exception is thrown
     assert chat_response.input_tokens is not None and chat_response.output_tokens is not None
@@ -48,10 +49,11 @@ async def non_stream_handler(
     logging.info(f"content: {response_transform.to_log(chat_response)}")
     logging.info(f"cost: {cost}")
 
-    if conversation_id is not None:
+    if conversation_id is not None and assistant_message_id is not None:
         await save_response_to_conversation(
             token=token,
             conversation_id=conversation_id,
+            assistant_message_id=assistant_message_id,
             text=chat_response.text,
             thought=chat_response.thought,
             code=chat_response.code,
@@ -68,6 +70,7 @@ async def stream_handler(
         reduce_credit: ReduceCredit,
         token: str,
         conversation_id: int | None,
+        assistant_message_id: str | None,
 ) -> StreamingResponse:
     session = await generation_manager.start(conversation_id)
 
@@ -92,13 +95,14 @@ async def stream_handler(
                 logging.info(f"content: {response_transform.to_log(result)}")
                 logging.info(f"cost: {cost}")
 
-                if session.conversation_id is not None and session.state in (
+                if session.conversation_id is not None and assistant_message_id is not None and session.state in (
                         GenerationState.Completed,
                         GenerationState.StoppedKept,
                 ):
                     await save_response_to_conversation(
                         token=token,
                         conversation_id=session.conversation_id,
+                        assistant_message_id=assistant_message_id,
                         text=result.text,
                         thought=result.thought,
                         code=result.code,

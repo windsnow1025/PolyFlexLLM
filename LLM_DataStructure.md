@@ -44,6 +44,9 @@ export interface ChatRequest {
   thought: boolean;
   web_search: boolean;
   code_execution: boolean;
+  structured_output_schema?: { [key: string]: any } | null;
+  conversation_id?: number | null;
+  assistant_message_id?: string | null;
 }
 
 export interface Content {

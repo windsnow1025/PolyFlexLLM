@@ -5,10 +5,14 @@ class GenerationManager:
     def __init__(self) -> None:
         self._sessions: dict[int, GenerationSession] = {}  # conversation_id → current session
 
-    async def start(self, conversation_id: int | None) -> GenerationSession:
+    async def start(
+            self, conversation_id: int | None, assistant_message_id: str | None
+    ) -> GenerationSession:
+        session = GenerationSession(conversation_id, assistant_message_id)
+
         # Not resumable in anonymous conversation
         if conversation_id is None:
-            return GenerationSession(conversation_id)
+            return session
 
         # Close existing session
         old_session = self._sessions.get(conversation_id)
@@ -16,8 +20,7 @@ class GenerationManager:
             await old_session.close(GenerationState.Superseded)
             await old_session.notify_end()
 
-        # Start new session
-        session = GenerationSession(conversation_id)
+        # Register new session
         self._sessions[conversation_id] = session
         return session
 

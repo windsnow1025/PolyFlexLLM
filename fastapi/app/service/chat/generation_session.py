@@ -18,8 +18,9 @@ class AbortIntent(StrEnum):
 
 
 class GenerationSession:
-    def __init__(self, conversation_id: int | None) -> None:
+    def __init__(self, conversation_id: int | None, assistant_message_id: str | None) -> None:
         self._conversation_id: int | None = conversation_id
+        self._assistant_message_id: str | None = assistant_message_id
         self._state: GenerationState = GenerationState.Running
         self._buffer: list[ChatResponse] = []
         self._subscribers: set[asyncio.Queue] = set()
@@ -29,6 +30,10 @@ class GenerationSession:
     @property
     def conversation_id(self) -> int | None:
         return self._conversation_id
+
+    @property
+    def assistant_message_id(self) -> str | None:
+        return self._assistant_message_id
 
     @property
     def state(self) -> GenerationState:

@@ -16,11 +16,13 @@ ChunkGenerator = AsyncGenerator[ChatResponse, None]
 ReduceCredit = Callable[[int, int], Awaitable[float]]
 
 
-async def _stream_response(session: GenerationSession) -> StreamingResponse:
+async def _stream_response(session: GenerationSession, send_id_frame: bool = False) -> StreamingResponse:
     queue = await session.subscribe()
 
     async def sse_generator(session: GenerationSession, queue: Queue) -> AsyncGenerator[str, None]:
         try:
+            if send_id_frame:
+                yield f"data: {json.dumps({'assistant_message_id': session.assistant_message_id})}\n\n"
             while True:
                 chunk = await queue.get()
                 if chunk is None:
@@ -72,7 +74,7 @@ async def stream_handler(
         conversation_id: int | None,
         assistant_message_id: str | None,
 ) -> StreamingResponse:
-    session = await generation_manager.start(conversation_id)
+    session = await generation_manager.start(conversation_id, assistant_message_id)
 
     async def run():
         try:
@@ -123,7 +125,7 @@ async def resume_handler(conversation_id: int) -> StreamingResponse:
     session = generation_manager.get(conversation_id)
     if session is None:
         raise HTTPException(status_code=404, detail="No active generation")
-    return await _stream_response(session)
+    return await _stream_response(session, send_id_frame=True)
 
 
 async def abort_handler(conversation_id: int, intent: AbortIntent) -> None:

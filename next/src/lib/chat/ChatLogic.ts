@@ -38,8 +38,8 @@ export default class ChatLogic {
       }
     ],
   });
-  static getEmptyAssistantMessage = (): Message => ({
-    id: crypto.randomUUID(),
+  static getEmptyAssistantMessage = (id?: string): Message => ({
+    id: id ?? crypto.randomUUID(),
     role: MessageRoleEnum.Assistant,
     contents: [],
   });
@@ -65,7 +65,7 @@ export default class ChatLogic {
   }
 
   // For non-stream response
-  static createAssistantMessage(chatResponse: ChatResponse): Message {
+  static createAssistantMessage(chatResponse: ChatResponse, id?: string): Message {
     const contents: Content[] = [];
 
     if (chatResponse.code) {
@@ -90,7 +90,7 @@ export default class ChatLogic {
     }
 
     return {
-      id: crypto.randomUUID(),
+      id: id ?? crypto.randomUUID(),
       role: MessageRoleEnum.Assistant,
       contents: contents,
       thought: chatResponse.thought,
@@ -209,12 +209,13 @@ export default class ChatLogic {
     web_search: boolean,
     code_execution: boolean,
     conversation_id?: number,
+    assistant_message_id?: string,
   ): Promise<ChatResponse> {
     try {
       const filteredMessages = ChatLogic.convertMessagesFromUIToReq(messages);
       const content = await this.chatClient.nonStreamGenerate(
         filteredMessages, api_type, model, temperature, thought, web_search, code_execution,
-        conversation_id
+        conversation_id, assistant_message_id
       );
       if (content.error) {
         throw new Error(content.error);
@@ -243,6 +244,7 @@ export default class ChatLogic {
     web_search: boolean,
     code_execution: boolean,
     conversation_id?: number,
+    assistant_message_id?: string,
     onOpenCallback?: () => void,
     signal?: AbortSignal,
   ): AsyncGenerator<ChatResponse, void, unknown> {
@@ -250,7 +252,7 @@ export default class ChatLogic {
       const filteredMessages = ChatLogic.convertMessagesFromUIToReq(messages);
       const response = this.chatClient.streamGenerate(
         filteredMessages, api_type, model, temperature, thought, web_search, code_execution,
-        conversation_id, onOpenCallback, signal
+        conversation_id, assistant_message_id, onOpenCallback, signal
       );
 
       for await (const chunk of response) {

@@ -15,6 +15,7 @@ Name | Type | Description | Notes
 **code_execution** | **boolean** |  | [default to undefined]
 **structured_output_schema** | **{ [key: string]: any; }** |  | [optional] [default to undefined]
 **conversation_id** | **number** |  | [optional] [default to undefined]
+**assistant_message_id** | **string** |  | [optional] [default to undefined]
 
 ## Example
 
@@ -32,6 +33,7 @@ const instance: ChatRequest = {
     code_execution,
     structured_output_schema,
     conversation_id,
+    assistant_message_id,
 };
 ```
 

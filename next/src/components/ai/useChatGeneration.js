@@ -84,7 +84,7 @@ export default function useChatGeneration({
     }
   };
 
-  const consumeStreamChunks = async (currentReqIndex, generator) => {
+  const consumeStreamChunks = async (currentReqIndex, generator, assistantMessageId) => {
     let isFirstChunk = true;
     for await (const chunk of generator) {
       if (!isActiveRequest(currentReqIndex)) {
@@ -93,7 +93,7 @@ export default function useChatGeneration({
 
       // Create Empty Assistant Message on First Chunk
       if (isFirstChunk) {
-        setMessages(prevMessages => [...prevMessages, ChatLogic.getEmptyAssistantMessage()]);
+        setMessages(prevMessages => [...prevMessages, ChatLogic.getEmptyAssistantMessage(assistantMessageId)]);
         isFirstChunk = false;
       }
 
@@ -127,9 +127,10 @@ export default function useChatGeneration({
   };
 
   const handleNonStreamGenerate = async (currentReqIndex) => {
+    const assistantMessageId = crypto.randomUUID();
     const content = await chatLogic.nonStreamGenerate(
       messages, apiType, model, temperature, thought, webSearch, codeExecution,
-      selectedConversationId ?? undefined
+      selectedConversationId ?? undefined, assistantMessageId
     );
 
     if (!isActiveRequest(currentReqIndex)) {
@@ -144,7 +145,7 @@ export default function useChatGeneration({
 
     setMessages(prevMessages => [
       ...prevMessages,
-      ChatLogic.createAssistantMessage(content),
+      ChatLogic.createAssistantMessage(content, assistantMessageId),
       ...(selectedConversationId === null ? [ChatLogic.getEmptyUserMessage()] : []),
     ]);
 
@@ -154,12 +155,13 @@ export default function useChatGeneration({
   const handleStreamGenerate = async (currentReqIndex) => {
     abortControllerRef.current = new AbortController();
 
+    const assistantMessageId = crypto.randomUUID();
     const generator = chatLogic.streamGenerate(
       messages, apiType, model, temperature, thought, webSearch, codeExecution,
-      selectedConversationId ?? undefined, undefined, abortControllerRef.current.signal
+      selectedConversationId ?? undefined, assistantMessageId, undefined, abortControllerRef.current.signal
     );
 
-    const success = await consumeStreamChunks(currentReqIndex, generator);
+    const success = await consumeStreamChunks(currentReqIndex, generator, assistantMessageId);
 
     if (success && selectedConversationId === null) {
       setMessages(prevMessages => [...prevMessages, ChatLogic.getEmptyUserMessage()]);

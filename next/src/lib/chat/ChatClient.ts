@@ -99,6 +99,7 @@ export default class ChatClient {
     web_search: boolean,
     code_execution: boolean,
     conversation_id?: number,
+    assistant_message_id?: string,
   ): Promise<ChatResponse> {
     const requestData: ChatRequest = {
       messages: messages,
@@ -110,6 +111,7 @@ export default class ChatClient {
       web_search: web_search,
       code_execution: code_execution,
       conversation_id: conversation_id,
+      assistant_message_id: assistant_message_id,
     };
 
     try {
@@ -130,6 +132,7 @@ export default class ChatClient {
     web_search: boolean,
     code_execution: boolean,
     conversation_id?: number,
+    assistant_message_id?: string,
     onOpenCallback?: () => void,
     signal?: AbortSignal,
   ): AsyncGenerator<ChatResponse, void, unknown> {
@@ -143,6 +146,7 @@ export default class ChatClient {
       web_search: web_search,
       code_execution: code_execution,
       conversation_id: conversation_id,
+      assistant_message_id: assistant_message_id,
     };
 
     yield* this.consumeStream(

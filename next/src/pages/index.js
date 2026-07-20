@@ -27,6 +27,19 @@ import TuneIcon from '@mui/icons-material/Tune';
 import ImageIcon from '@mui/icons-material/Image';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import LocalOfferIcon from '@mui/icons-material/LocalOffer';
+import TextFieldsIcon from '@mui/icons-material/TextFields';
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
+import AudiotrackIcon from '@mui/icons-material/Audiotrack';
+import VideocamIcon from '@mui/icons-material/Videocam';
+import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
+import DescriptionIcon from '@mui/icons-material/Description';
+import TableChartIcon from '@mui/icons-material/TableChart';
+import SlideshowIcon from '@mui/icons-material/Slideshow';
+import PsychologyIcon from '@mui/icons-material/Psychology';
+import TravelExploreIcon from '@mui/icons-material/TravelExplore';
+import LanguageIcon from '@mui/icons-material/Language';
+import TerminalIcon from '@mui/icons-material/Terminal';
+import DataObjectIcon from '@mui/icons-material/DataObject';
 import Head from "next/head";
 import {AuthorEmail} from "@/lib/common/Constants";
 import Copyright from "@/components/common/dashboard/internals/components/Copyright";
@@ -93,6 +106,7 @@ function ApiCapabilityCard({apiType, inputs, capabilities, outputs}) {
                   <Chip
                     key={item}
                     label={item}
+                    icon={apiCapabilityIcons[item]}
                     variant="outlined"
                     size="small"
                     color={group.chipColor}
@@ -142,6 +156,23 @@ const features = [
 ];
 
 const providers = ["OpenAI", "Gemini", "Claude", "Grok"];
+
+const apiCapabilityIcons = {
+  "Text": <TextFieldsIcon/>,
+  "Image": <ImageIcon/>,
+  "PDF": <PictureAsPdfIcon/>,
+  "Audio": <AudiotrackIcon/>,
+  "Video": <VideocamIcon/>,
+  "File": <InsertDriveFileIcon/>,
+  "docx": <DescriptionIcon/>,
+  "xlsx": <TableChartIcon/>,
+  "pptx": <SlideshowIcon/>,
+  "Thinking": <PsychologyIcon/>,
+  "Web Search": <TravelExploreIcon/>,
+  "Web Fetch": <LanguageIcon/>,
+  "Code Execution": <TerminalIcon/>,
+  "Structured Output": <DataObjectIcon/>,
+};
 
 const apiCapabilities = [
   {

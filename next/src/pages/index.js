@@ -49,12 +49,12 @@ function FeatureCard({title, description, icon}) {
 
   return (
     <Card
+      variant="outlined"
       sx={{
         height: '100%',
-        transition: 'transform 0.2s',
+        transition: 'border-color 0.2s',
         '&:hover': {
-          transform: 'scale(1.02)',
-          boxShadow: theme.shadows[4],
+          borderColor: 'text.primary',
         }
       }}
     >
@@ -72,8 +72,6 @@ function FeatureCard({title, description, icon}) {
 }
 
 function ApiCapabilityCard({apiType, inputs, capabilities, outputs}) {
-  const theme = useTheme();
-
   const chipGroups = [
     {label: "Input", items: inputs, chipColor: "default"},
     {label: "Capabilities", items: capabilities, chipColor: "primary"},
@@ -82,12 +80,12 @@ function ApiCapabilityCard({apiType, inputs, capabilities, outputs}) {
 
   return (
     <Card
+      variant="outlined"
       sx={{
         height: '100%',
-        transition: 'transform 0.2s',
+        transition: 'border-color 0.2s',
         '&:hover': {
-          transform: 'scale(1.02)',
-          boxShadow: theme.shadows[4],
+          borderColor: 'text.primary',
         }
       }}
     >
@@ -110,7 +108,7 @@ function ApiCapabilityCard({apiType, inputs, capabilities, outputs}) {
                     variant="outlined"
                     size="small"
                     color={group.chipColor}
-                    sx={{transition: "border-color 0.2s", "&:hover": {borderColor: "text.primary"}}}
+                    sx={{transition: "border-color 0.2s", "&:hover": {borderColor: "text.primary"}, "& .MuiChip-icon": {marginLeft: "8px"}}}
                   />
                 ))}
               </Box>

@@ -58,6 +58,56 @@ function FeatureCard({title, description, icon}) {
   );
 }
 
+function ApiCapabilityCard({apiType, inputs, capabilities, outputs}) {
+  const theme = useTheme();
+
+  const chipGroups = [
+    {label: "Input", items: inputs, chipColor: "default"},
+    {label: "Capabilities", items: capabilities, chipColor: "primary"},
+    {label: "Output", items: outputs, chipColor: "default"},
+  ];
+
+  return (
+    <Card
+      sx={{
+        height: '100%',
+        transition: 'transform 0.2s',
+        '&:hover': {
+          transform: 'scale(1.02)',
+          boxShadow: theme.shadows[4],
+        }
+      }}
+    >
+      <CardContent className="text-center">
+        <Typography gutterBottom variant="h6" component="h2">
+          {apiType}
+        </Typography>
+        <Stack spacing={1.5}>
+          {chipGroups.map((group) => (
+            <div key={group.label}>
+              <Typography variant="overline" color="textSecondary">
+                {group.label}
+              </Typography>
+              <Box sx={{display: 'flex', gap: 0.5, justifyContent: 'center', flexWrap: 'wrap'}}>
+                {group.items.map((item) => (
+                  <Chip
+                    key={item}
+                    label={item}
+                    variant="outlined"
+                    size="small"
+                    color={group.chipColor}
+                    sx={{transition: "border-color 0.2s", "&:hover": {borderColor: "text.primary"}}}
+                  />
+                ))}
+              </Box>
+            </div>
+          ))}
+        </Stack>
+      </CardContent>
+    </Card>
+  );
+}
+
 const features = [
   {
     title: "Multi-Model Support",
@@ -92,6 +142,39 @@ const features = [
 ];
 
 const providers = ["OpenAI", "Gemini", "Claude", "Grok"];
+
+const apiCapabilities = [
+  {
+    apiType: "OpenAI Completion API",
+    inputs: ["Text", "Image", "PDF", "Audio"],
+    capabilities: ["Thinking", "Structured Output"],
+    outputs: ["Text", "Audio"],
+  },
+  {
+    apiType: "OpenAI Responses API",
+    inputs: ["Text", "Image", "PDF"],
+    capabilities: ["Thinking", "Web Search", "Code Execution", "Structured Output"],
+    outputs: ["Text", "Image"],
+  },
+  {
+    apiType: "Google GenAI",
+    inputs: ["Text", "Image", "PDF", "Audio", "Video"],
+    capabilities: ["Thinking", "Web Search", "Web Fetch", "Code Execution", "Structured Output"],
+    outputs: ["Text", "Image", "File"],
+  },
+  {
+    apiType: "Anthropic",
+    inputs: ["Text", "Image", "PDF"],
+    capabilities: ["Thinking", "Web Search", "Web Fetch", "Code Execution", "Structured Output"],
+    outputs: ["Text", "File"],
+  },
+  {
+    apiType: "xAI",
+    inputs: ["Text", "Image", "PDF", "Audio", "Video", "docx", "xlsx", "pptx"],
+    capabilities: ["Thinking", "Web Search", "Code Execution", "Structured Output"],
+    outputs: ["Text"],
+  },
+];
 
 function Index() {
   return (
@@ -161,6 +244,27 @@ function Index() {
             {features.map((feature) => (
               <Grid key={feature.title} size={{xs: 12, sm: 6, md: 4}}>
                 <FeatureCard {...feature} />
+              </Grid>
+            ))}
+          </Grid>
+        </div>
+
+        <Divider/>
+
+        {/* API Capabilities Section */}
+        <div>
+          <Typography variant="h4" align="center" gutterBottom>
+            API Capabilities
+          </Typography>
+          <Container maxWidth="md" sx={{mb: 4}}>
+            <Typography variant="body1" color="textSecondary" align="center">
+              The features listed represent the maximum capabilities of each API type supported by PolyFlexLLM.
+            </Typography>
+          </Container>
+          <Grid container spacing={3} justifyContent="center">
+            {apiCapabilities.map((api) => (
+              <Grid key={api.apiType} size={{xs: 12, sm: 6, md: 4}}>
+                <ApiCapabilityCard {...api} />
               </Grid>
             ))}
           </Grid>

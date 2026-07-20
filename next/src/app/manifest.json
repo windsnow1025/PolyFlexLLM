@@ -1,16 +1,16 @@
 {
   "name": "PolyFlexLLM",
   "short_name": "PolyFlexLLM",
-  "description": "A full-stack web platform for interacting with various LLMs (OpenAI, Gemini, Claude), featuring full conversation context control, and Markdown + LaTeX rendering.",
+  "description": "A full-stack web platform for interacting with various LLMs (OpenAI, Gemini, Claude, Grok), featuring full conversation context control, and Markdown + LaTeX rendering.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#fff",
   "theme_color": "#fff",
   "icons": [
     {
-      "src": "/favicon.ico",
+      "src": "/favicon.svg",
       "sizes": "any",
-      "type": "image/x-icon"
+      "type": "image/svg+xml"
     }
   ]
 }

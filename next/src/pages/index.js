@@ -100,7 +100,7 @@ function Index() {
         <title>PolyFlexLLM</title>
         <meta
           name="description"
-          content="PolyFlexLLM, A full-stack web platform for interacting with various LLMs (OpenAI, Gemini, Claude), featuring full conversation context control, and Markdown + LaTeX rendering."
+          content="PolyFlexLLM, A full-stack web platform for interacting with various LLMs (OpenAI, Gemini, Claude, Grok), featuring full conversation context control, and Markdown + LaTeX rendering."
         />
       </Head>
       <div className="local-scroll-scrollable flex-column gap-y-8 p-4">

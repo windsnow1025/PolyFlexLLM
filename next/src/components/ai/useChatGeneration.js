@@ -53,6 +53,7 @@ export default function useChatGeneration({
 
   const latestRequestIndexRef = useRef(0);
   const abortControllerRef = useRef(null);
+  const assistantMessageIdRef = useRef(null);
 
   const isActiveRequest = (reqIndex) => reqIndex === latestRequestIndexRef.current && isGeneratingRef.current;
 
@@ -124,8 +125,7 @@ export default function useChatGeneration({
     return isActiveRequest(currentReqIndex);
   };
 
-  const handleNonStreamGenerate = async (currentReqIndex) => {
-    const assistantMessageId = crypto.randomUUID();
+  const handleNonStreamGenerate = async (currentReqIndex, assistantMessageId) => {
     const content = await chatLogic.nonStreamGenerate(
       messages, apiType, model, temperature, thought, webSearch, codeExecution,
       selectedConversationId ?? undefined, assistantMessageId
@@ -150,10 +150,9 @@ export default function useChatGeneration({
     return true;
   };
 
-  const handleStreamGenerate = async (currentReqIndex) => {
+  const handleStreamGenerate = async (currentReqIndex, assistantMessageId) => {
     abortControllerRef.current = new AbortController();
 
-    const assistantMessageId = crypto.randomUUID();
     const generator = chatLogic.streamGenerate(
       messages, apiType, model, temperature, thought, webSearch, codeExecution,
       selectedConversationId ?? undefined, assistantMessageId, abortControllerRef.current.signal
@@ -179,6 +178,8 @@ export default function useChatGeneration({
     switchStatus(true);
     latestRequestIndexRef.current += 1;
     const currentReqIndex = latestRequestIndexRef.current;
+    assistantMessageIdRef.current = crypto.randomUUID();
+    const assistantMessageId = assistantMessageIdRef.current;
 
     audioPlayer.stop();
     audioPlayer.ensureRunning();
@@ -200,9 +201,9 @@ export default function useChatGeneration({
       }
 
       if (stream) {
-        await handleStreamGenerate(currentReqIndex);
+        await handleStreamGenerate(currentReqIndex, assistantMessageId);
       } else {
-        await handleNonStreamGenerate(currentReqIndex);
+        await handleNonStreamGenerate(currentReqIndex, assistantMessageId);
       }
     } catch (err) {
       setAlertMessage(err.message);
@@ -231,6 +232,17 @@ export default function useChatGeneration({
     }
   };
 
+  // Keep only when the assistant message has content beyond thought
+  const stopGenerate = () => {
+    const assistantMessageId = assistantMessageIdRef.current;
+    const assistantMessage = messages.find(msg => msg.id === assistantMessageId);
+    const hasContent = assistantMessage !== undefined && assistantMessage.contents.length > 0;
+    if (!hasContent) {
+      setMessages(prevMessages => prevMessages.filter(msg => msg.id !== assistantMessageId));
+    }
+    abortGenerate(hasContent ? AbortIntent.Keep : AbortIntent.Discard);
+  };
+
   const clearUIState = () => {
     audioPlayer.stop();
     switchStatus(false);
@@ -248,6 +260,7 @@ export default function useChatGeneration({
     const takeOver = (assistantMessageId) => {
       setMessages(prevMessages => prevMessages.filter(msg => msg.id !== assistantMessageId));
       latestRequestIndexRef.current += 1;
+      assistantMessageIdRef.current = assistantMessageId;
       abortControllerRef.current = controller;
       tookOver = true;
       switchStatus(true);
@@ -294,6 +307,7 @@ export default function useChatGeneration({
     isGeneratingRef,
     handleGenerate,
     abortGenerate,
+    stopGenerate,
     clearUIState,
     alertOpen,
     alertMessage,

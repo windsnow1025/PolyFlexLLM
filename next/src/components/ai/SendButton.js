@@ -1,12 +1,11 @@
 import React, {useEffect, useRef} from 'react';
 import {Button, CircularProgress, Tooltip} from "@mui/material";
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import {AbortIntent} from "@/client/fastapi";
 
 function SendButton({
                       isGenerating,
                       handleGenerate,
-                      abortGenerate,
+                      stopGenerate,
                       disabled,
                     }) {
   const sendButtonRef = useRef(null);
@@ -28,7 +27,7 @@ function SendButton({
     if (!isGenerating) {
       handleGenerate();
     } else {
-      abortGenerate(AbortIntent.Keep);
+      stopGenerate();
     }
   };
 

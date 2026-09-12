@@ -255,7 +255,7 @@ function AIStudio({
               <SendButton
                 isGenerating={chat.isGenerating}
                 handleGenerate={chat.handleGenerate}
-                abortGenerate={chat.abortGenerate}
+                stopGenerate={chat.stopGenerate}
                 disabled={!messages || isUploading}
               />
               <RetryButton

@@ -65,7 +65,7 @@ function AIStudio({
   // Credit refresh
   const [creditRefreshKey, setCreditRefreshKey] = useState(0);
 
-  // Whether user is at bottom of chat scroll container
+  // Scroll Position Tracker
   const isAtBottomRef = useRef(true);
 
   useEffect(() => {

@@ -18,7 +18,7 @@ function AIStudio({
                   }) {
   const screenSize = useScreenSize();
   const [drawerOpen, setDrawerOpen] = useState(() => {
-    return screenSize === 'xs' || screenSize === 'sm' ? false : true;
+    return !(screenSize === 'xs' || screenSize === 'sm');
   });
 
   // Chat Parameters
@@ -105,9 +105,6 @@ function AIStudio({
     conversationUpdatePromiseRef,
     conversationVersionRef,
 
-    // Conversations
-    setConversationsReloadKey,
-
     // Chat config
     apiType,
     model,
@@ -118,6 +115,7 @@ function AIStudio({
     codeExecution,
 
     // Side-effect setters
+    setConversationsReloadKey,
     setIsLastChunkThought,
     setCreditRefreshKey,
 

@@ -16,9 +16,6 @@ export default function useChatGeneration({
                                             conversationUpdatePromiseRef,
                                             conversationVersionRef,
 
-                                            // Conversations
-                                            setConversationsReloadKey,
-
                                             // Chat config
                                             apiType,
                                             model,
@@ -29,6 +26,7 @@ export default function useChatGeneration({
                                             codeExecution,
 
                                             // Side-effect setters
+                                            setConversationsReloadKey,
                                             setIsLastChunkThought,
                                             setCreditRefreshKey,
 
@@ -200,6 +198,7 @@ export default function useChatGeneration({
           return;
         }
       }
+
       if (stream) {
         await handleStreamGenerate(currentReqIndex);
       } else {

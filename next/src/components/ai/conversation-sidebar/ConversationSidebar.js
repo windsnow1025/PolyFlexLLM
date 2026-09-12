@@ -95,9 +95,7 @@ function ConversationSidebar({
     };
 
     const previous = conversationUpdatePromiseRef.current ?? Promise.resolve();
-    const updatePromise = previous
-      .catch(() => {})
-      .then(updateConversation);
+    const updatePromise = previous.then(updateConversation);
 
     currentPromise = updatePromise;
     conversationUpdatePromiseRef.current = updatePromise;

@@ -113,7 +113,7 @@ function ConversationList({
       }
 
       if (conversationUpdatePromiseRef?.current) {
-        await conversationUpdatePromiseRef.current.catch(() => {});
+        await conversationUpdatePromiseRef.current;
       }
 
       // Fetch only changed/new conversations

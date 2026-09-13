@@ -1,4 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
+import {useRouter} from "next/router";
 import {Alert, Collapse, Drawer, Paper, Snackbar} from "@mui/material";
 
 import ChatLogic from "@/lib/chat/ChatLogic";
@@ -16,10 +17,20 @@ import ScrollToBottomButton from './ScrollToBottomButton';
 function AIStudio({
                     initMessages = null,
                   }) {
+  const router = useRouter();
   const screenSize = useScreenSize();
   const [drawerOpen, setDrawerOpen] = useState(() => {
     return !(screenSize === 'xs' || screenSize === 'sm');
   });
+
+  // Open the conversation drawer on small screens when searching
+  useEffect(() => {
+    if (!router.query.search) return;
+    if (screenSize === 'xs' || screenSize === 'sm') {
+      setDrawerOpen(true);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router.query.search]);
 
   // Chat Parameters
   const [messages, setMessages] = useState(initMessages ?? ChatLogic.getInitMessages());

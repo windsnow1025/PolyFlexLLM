@@ -6,10 +6,13 @@ import Stack from '@mui/material/Stack';
 import MuiToolbar from '@mui/material/Toolbar';
 import {tabsClasses} from '@mui/material/Tabs';
 import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
+import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
+import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import DashboardRoundedIcon from '@mui/icons-material/DashboardRounded';
 import Brand from '@/components/common/components/Brand';
 import SideMenuMobile from './SideMenuMobile';
 import MenuButton from './MenuButton';
+import Search from './Search';
 import ColorModeIconDropdown from '../../shared-theme/ColorModeIconDropdown';
 
 const Toolbar = styled(MuiToolbar)({
@@ -35,6 +38,32 @@ export default function AppNavbar() {
     setOpen(newOpen);
   };
 
+  const [searchOpen, setSearchOpen] = React.useState(false);
+  const searchRef = React.useRef<HTMLDivElement>(null);
+
+  const openSearch = () => {
+    searchRef.current!.querySelector('input')!.focus();
+  };
+
+  const closeSearch = () => {
+    setSearchOpen(false);
+    searchRef.current!.querySelector('input')!.blur();
+  };
+
+  const handleSearchFocus = () => {
+    setSearchOpen(true);
+  };
+
+  const handleSearchBlur = (e: React.FocusEvent<HTMLDivElement>) => {
+    if (e.currentTarget.contains(e.relatedTarget)) return;
+    setSearchOpen(false);
+  };
+
+  const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key !== 'Enter' && e.key !== 'Escape') return;
+    closeSearch();
+  };
+
   return (
     <AppBar
       position="fixed"
@@ -58,17 +87,46 @@ export default function AppNavbar() {
             gap: 1,
           }}
         >
-          <Stack
-            direction="row"
-            spacing={1}
-            sx={{ justifyContent: 'center', alignItems: 'center', mr: 'auto' }}
+          {!searchOpen && (
+            <>
+              <Stack
+                direction="row"
+                spacing={1}
+                sx={{ justifyContent: 'center', alignItems: 'center', mr: 'auto' }}
+              >
+                <Brand variant="h4" />
+              </Stack>
+              <ColorModeIconDropdown />
+            </>
+          )}
+          <Box
+            ref={searchRef}
+            onBlur={handleSearchBlur}
+            onKeyDown={handleSearchKeyDown}
+            sx={{ display: 'flex', alignItems: 'center', flexGrow: searchOpen ? 1 : 0 }}
           >
-            <Brand variant="h4" />
-          </Stack>
-          <ColorModeIconDropdown />
-          <MenuButton aria-label="menu" onClick={toggleDrawer(true)}>
-            <MenuRoundedIcon />
-          </MenuButton>
+            {!searchOpen && (
+              <MenuButton aria-label="Open search" onClick={openSearch}>
+                <SearchRoundedIcon />
+              </MenuButton>
+            )}
+            <Box
+              onFocus={handleSearchFocus}
+              sx={{ flexGrow: searchOpen ? 1 : 0, width: searchOpen ? 'auto' : 0, overflow: searchOpen ? 'visible' : 'hidden' }}
+            >
+              <Search />
+            </Box>
+            {searchOpen && (
+              <MenuButton aria-label="Close search" onClick={closeSearch} sx={{ ml: 1 }}>
+                <CloseRoundedIcon />
+              </MenuButton>
+            )}
+          </Box>
+          {!searchOpen && (
+            <MenuButton aria-label="menu" onClick={toggleDrawer(true)}>
+              <MenuRoundedIcon />
+            </MenuButton>
+          )}
           <SideMenuMobile open={open} toggleDrawer={toggleDrawer} />
         </Stack>
       </Toolbar>

@@ -36,7 +36,6 @@ export default function Search() {
       <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
         <OutlinedInput
           size="small"
-          id="search"
           placeholder="Search…"
           sx={{ flexGrow: 1 }}
           value={value}

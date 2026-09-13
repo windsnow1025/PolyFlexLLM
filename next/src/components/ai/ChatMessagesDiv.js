@@ -39,15 +39,15 @@ function ChatMessagesDiv({
   }, []);
 
   const handleCollapseEntered = useCallback((node) => {
-    // Manual add via AddMessageDivider: always scroll
+    // Manual add: always scroll
     if (scrollPendingRef.current) {
       scrollPendingRef.current = false;
       node.scrollIntoView({behavior: 'smooth', block: 'nearest'});
       return;
     }
-    // Auto-added messages: scroll if user was at bottom
+    // Scroll if at bottom
     if (isAtBottomRef.current) {
-      node.scrollIntoView({behavior: 'smooth', block: 'nearest'});
+      node.scrollIntoView({behavior: 'smooth', block: 'end'});
     }
   }, [isAtBottomRef]);
 

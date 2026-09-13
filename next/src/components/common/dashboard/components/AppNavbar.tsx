@@ -7,7 +7,6 @@ import MuiToolbar from '@mui/material/Toolbar';
 import {tabsClasses} from '@mui/material/Tabs';
 import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
-import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import DashboardRoundedIcon from '@mui/icons-material/DashboardRounded';
 import Brand from '@/components/common/components/Brand';
 import SideMenuMobile from './SideMenuMobile';
@@ -60,7 +59,7 @@ export default function AppNavbar() {
   };
 
   const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
-    if (e.key !== 'Enter' && e.key !== 'Escape') return;
+    if (e.key !== 'Escape') return;
     closeSearch();
   };
 
@@ -114,13 +113,8 @@ export default function AppNavbar() {
               onFocus={handleSearchFocus}
               sx={{ flexGrow: searchOpen ? 1 : 0, width: searchOpen ? 'auto' : 0, overflow: searchOpen ? 'visible' : 'hidden' }}
             >
-              <Search />
+              <Search onSubmitted={closeSearch} />
             </Box>
-            {searchOpen && (
-              <MenuButton aria-label="Close search" onClick={closeSearch} sx={{ ml: 1 }}>
-                <CloseRoundedIcon />
-              </MenuButton>
-            )}
           </Box>
           {!searchOpen && (
             <MenuButton aria-label="menu" onClick={toggleDrawer(true)}>

@@ -8,14 +8,14 @@ import Alert from '@mui/material/Alert';
 import {useRouter} from 'next/router';
 import {usePathname} from 'next/navigation';
 
-export default function Search() {
+export default function Search({ onSubmitted }: { onSubmitted?: () => void }) {
   const router = useRouter();
   const pathname = usePathname();
   const [value, setValue] = React.useState('');
   const [alertOpen, setAlertOpen] = React.useState(false);
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key !== 'Enter') return;
+  const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
+    e.preventDefault();
 
     if (pathname !== '/ai') {
       setAlertOpen(true);
@@ -23,6 +23,7 @@ export default function Search() {
     }
 
     router.replace({ pathname: '/ai', query: value ? { search: value } : {} }, undefined, { shallow: true });
+    onSubmitted?.();
   };
 
   React.useEffect(() => {
@@ -33,14 +34,14 @@ export default function Search() {
 
   return (
     <>
-      <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
+      <FormControl component="form" role="search" onSubmit={handleSubmit} sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
         <OutlinedInput
+          type="search"
           size="small"
           placeholder="Search…"
           sx={{ flexGrow: 1 }}
           value={value}
           onChange={(e) => setValue(e.target.value)}
-          onKeyDown={handleKeyDown}
           startAdornment={
             <InputAdornment position="start" sx={{ color: 'text.primary' }}>
               <SearchRoundedIcon fontSize="small" />
@@ -48,6 +49,7 @@ export default function Search() {
           }
           inputProps={{
             'aria-label': 'search',
+            enterKeyHint: 'search',
           }}
         />
       </FormControl>

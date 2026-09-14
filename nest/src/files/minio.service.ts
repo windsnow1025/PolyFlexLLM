@@ -1,6 +1,6 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Client } from 'minio';
+import { BucketItem, Client } from 'minio';
 import { Readable } from 'node:stream';
 import { AppConfig } from '../../config/config.interface';
 
@@ -27,7 +27,7 @@ export class MinioService implements OnModuleInit {
         this.config.minio.bucketName,
       );
     } catch (error) {
-      console.error('Unable to connect to MinIO:', error.message);
+      console.error('Unable to connect to MinIO:', (error as Error).message);
       return;
     }
 
@@ -71,9 +71,9 @@ export class MinioService implements OnModuleInit {
   }
 
   async getTotalSize(prefix: string): Promise<number> {
-    const objects = await this.minioClient
+    const objects = (await this.minioClient
       .listObjects(this.config.minio.bucketName, prefix, true)
-      .toArray();
+      .toArray()) as BucketItem[];
     return objects.reduce((acc, obj) => acc + (obj.size || 0), 0);
   }
 
@@ -116,10 +116,10 @@ export class MinioService implements OnModuleInit {
   }
 
   async listObjects(prefix: string): Promise<string[]> {
-    const objects = await this.minioClient
+    const objects = (await this.minioClient
       .listObjects(this.config.minio.bucketName, prefix, true)
-      .toArray();
-    return objects.map((object) => object.name);
+      .toArray()) as BucketItem[];
+    return objects.map((object) => object.name!);
   }
 
   async removeObject(fileName: string): Promise<void> {

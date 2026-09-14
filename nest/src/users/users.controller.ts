@@ -45,7 +45,7 @@ export class UsersController {
 
   @AllowUnverifiedEmail()
   @Get('user')
-  async find(@Request() req: RequestWithUser): Promise<UserResDto> {
+  find(@Request() req: RequestWithUser): UserResDto {
     return req.user;
   }
 

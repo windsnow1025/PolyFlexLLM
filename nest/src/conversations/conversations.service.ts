@@ -33,7 +33,9 @@ export class ConversationsService {
       name: conversation.name,
       messages: conversation.messages,
       isPublic: conversation.isPublic,
-      users: conversation.users.map(this.usersCoreService.toUserDto),
+      users: conversation.users.map((user) =>
+        this.usersCoreService.toUserDto(user),
+      ),
       label: conversation.label
         ? this.labelsCoreService.toLabelDto(conversation.label)
         : null,

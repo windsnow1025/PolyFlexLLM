@@ -4,7 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtModule } from '@nestjs/jwt';
 import { APP_GUARD } from '@nestjs/core';
 import { CacheModule } from '@nestjs/cache-manager';
-import { createKeyv } from '@keyv/redis';
+import KeyvRedis, { createKeyv } from '@keyv/redis';
 import configuration from '../config/configuration';
 import { AppConfig } from '../config/config.interface';
 import { AuthGuard } from './common/guards/auth.guard';
@@ -52,30 +52,28 @@ import { PaymentModule } from './payment/payment.module';
         };
       },
     }),
+    // https://docs.nestjs.com/techniques/caching
     CacheModule.registerAsync({
       isGlobal: true,
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: async (configService: ConfigService) => {
+      useFactory: (configService: ConfigService) => {
         const config = configService.get<AppConfig>('app')!;
         const redisUrl = `redis://:${encodeURIComponent(config.redis.password)}@${config.redis.host}:${config.redis.port}`;
 
-        const store = createKeyv(redisUrl);
+        const keyv = createKeyv(redisUrl);
+        const redisClient = (keyv.store as KeyvRedis<unknown>).client;
 
-        const redisClient = (store as any).opts.store.client;
+        redisClient.on('error', (error: Error) =>
+          console.error('error', error.message),
+        );
 
-        if (redisClient) {
-          redisClient.on('error', (error: any) =>
-            console.error('error', error.message),
-          );
-        }
-
-        store.on('error', (error) => {
+        keyv.on('error', (error) => {
           console.error('error', error);
         });
 
         return {
-          stores: [store],
+          stores: [keyv],
         };
       },
     }),

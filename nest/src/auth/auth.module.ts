@@ -12,9 +12,7 @@ import { AppConfig } from '../../config/config.interface';
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: async (
-        configService: ConfigService,
-      ): Promise<JwtModuleOptions> => {
+      useFactory: (configService: ConfigService): JwtModuleOptions => {
         const config = configService.get<AppConfig>('app')!;
         return {
           global: true,

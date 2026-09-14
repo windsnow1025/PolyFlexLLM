@@ -10,9 +10,11 @@ import { ConfigService } from '@nestjs/config';
 import { Reflector } from '@nestjs/core';
 import { IS_PUBLIC_KEY } from '../decorators/public.decorator';
 import { JwtPayload } from '../../auth/interfaces/jwt-payload.interface';
+import { RequestWithUser } from '../../auth/interfaces/request-with-user.interface';
 import { UsersCoreService } from '../../users/users.core.service';
 import { AppConfig } from '../../../config/config.interface';
 
+// https://docs.nestjs.com/security/authentication
 @Injectable()
 export class AuthGuard implements CanActivate {
   private readonly config: AppConfig;
@@ -36,7 +38,7 @@ export class AuthGuard implements CanActivate {
       return true;
     }
 
-    const request = context.switchToHttp().getRequest();
+    const request = context.switchToHttp().getRequest<Request>();
     const token = this.extractTokenFromHeader(request);
     if (!token) {
       throw new UnauthorizedException();
@@ -58,7 +60,7 @@ export class AuthGuard implements CanActivate {
       if (user.email && !user.emailVerified) {
         user = await this.usersCoreService.updateEmailVerified(user.email);
       }
-      request['user'] = this.usersCoreService.toUserDto(user);
+      (request as RequestWithUser).user = this.usersCoreService.toUserDto(user);
     } catch {
       throw new UnauthorizedException();
     }

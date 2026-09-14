@@ -55,7 +55,9 @@ export class UsersService {
   async sendEmailVerification(email: string) {
     try {
       await this.firebaseAdminService.deleteUserByEmail(email);
-    } catch {}
+    } catch {
+      /* empty */
+    }
     await this.firebaseService.createFirebaseUser(email);
     await this.firebaseService.sendFirebaseEmailVerification(email);
   }
@@ -63,7 +65,9 @@ export class UsersService {
   async sendPasswordResetEmail(email: string) {
     try {
       await this.firebaseAdminService.deleteUserByEmail(email);
-    } catch {}
+    } catch {
+      /* empty */
+    }
     await this.firebaseService.createFirebaseUser(email);
     await this.firebaseService.sendFirebasePasswordResetEmail(email);
   }

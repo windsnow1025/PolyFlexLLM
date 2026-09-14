@@ -19,8 +19,8 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
 
   // 	https://docs.nestjs.com/faq/raw-body
-  app.useBodyParser('json', { limit: 'Infinity' });
-  app.useBodyParser('urlencoded', { limit: 'Infinity', extended: true });
+  app.useBodyParser('json', { limit: Infinity });
+  app.useBodyParser('urlencoded', { limit: Infinity, extended: true });
 
   // https://docs.nestjs.com/openapi/introduction
   const swaggerConfig = new DocumentBuilder()

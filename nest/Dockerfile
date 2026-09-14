@@ -8,21 +8,16 @@ RUN corepack enable
 WORKDIR /app
 
 FROM base AS build
-COPY pnpm-lock.yaml /app
+COPY package.json pnpm-workspace.yaml pnpm-lock.yaml /app/
 RUN pnpm fetch
-
-COPY package.json pnpm-workspace.yaml /app/
 RUN pnpm install --offline
 
 COPY . /app
 RUN pnpm run build
 
 FROM base AS prod
-
-COPY pnpm-lock.yaml /app
+COPY package.json pnpm-workspace.yaml pnpm-lock.yaml /app/
 RUN pnpm fetch --prod
-
-COPY package.json pnpm-workspace.yaml /app/
 RUN pnpm install --offline --prod
 
 FROM base

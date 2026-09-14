@@ -6,6 +6,6 @@ data:
   ENV: "production"
   NEST_HOST: "nest-service"
   POSTGRES_HOST: "postgresql-service"
-  MINIO_HOST: "minio-service"
+  S3_HOST: "minio-service"
   REDIS_HOST: "redis-service"
   FASTAPI_PATH_PREFIX: "/api/fastapi"

@@ -39,14 +39,14 @@ export default registerAs('app', (): AppConfig => {
       password: process.env.POSTGRES_PASSWORD!,
       database: process.env.POSTGRES_DB!,
     },
-    minio: {
-      endPoint: process.env.MINIO_HOST!,
+    s3: {
+      host: process.env.S3_HOST!,
       port: 9000,
       useSSL: false,
-      accessKey: process.env.MINIO_ACCESS_KEY!,
-      secretKey: process.env.MINIO_SECRET_KEY!,
-      bucketName: process.env.MINIO_BUCKET_NAME!,
-      webUrl: process.env.MINIO_WEB_URL!,
+      accessKey: process.env.S3_ACCESS_KEY!,
+      secretKey: process.env.S3_SECRET_KEY!,
+      bucketName: process.env.S3_BUCKET_NAME!,
+      webUrl: process.env.S3_WEB_URL!,
     },
     redis: {
       host: process.env.REDIS_HOST!,

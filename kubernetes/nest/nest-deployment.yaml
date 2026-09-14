@@ -54,31 +54,31 @@ spec:
                 secretKeyRef:
                   name: app-secret
                   key: POSTGRES_DB
-            - name: MINIO_HOST
+            - name: S3_HOST
               valueFrom:
                 configMapKeyRef:
                   name: app-configmap
-                  key: MINIO_HOST
-            - name: MINIO_ACCESS_KEY
+                  key: S3_HOST
+            - name: S3_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
                   name: app-secret
-                  key: MINIO_ACCESS_KEY
-            - name: MINIO_SECRET_KEY
+                  key: S3_ACCESS_KEY
+            - name: S3_SECRET_KEY
               valueFrom:
                 secretKeyRef:
                   name: app-secret
-                  key: MINIO_SECRET_KEY
-            - name: MINIO_BUCKET_NAME
+                  key: S3_SECRET_KEY
+            - name: S3_BUCKET_NAME
               valueFrom:
                 secretKeyRef:
                   name: app-secret
-                  key: MINIO_BUCKET_NAME
-            - name: MINIO_WEB_URL
+                  key: S3_BUCKET_NAME
+            - name: S3_WEB_URL
               valueFrom:
                 secretKeyRef:
                   name: app-secret
-                  key: MINIO_WEB_URL
+                  key: S3_WEB_URL
             - name: REDIS_HOST
               valueFrom:
                 configMapKeyRef:

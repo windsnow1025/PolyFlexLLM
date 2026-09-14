@@ -1,18 +1,18 @@
 import { Injectable } from '@nestjs/common';
-import { MinioService } from './minio.service';
+import { S3Service } from './s3.service';
 
 @Injectable()
 export class FilesService {
   public readonly maxTotalSize = 256 * 1024 * 1024; // 256MB
 
-  constructor(private readonly minioService: MinioService) {}
+  constructor(private readonly s3Service: S3Service) {}
 
   getWebUrl(): string {
-    return this.minioService.getWebUrl();
+    return this.s3Service.getWebUrl();
   }
 
   getFileUrl(fullFilename: string): string {
-    return this.minioService.getFileUrl(fullFilename);
+    return this.s3Service.getFileUrl(fullFilename);
   }
 
   getFileUrls(fullFilenames: string[]): string[] {
@@ -20,7 +20,7 @@ export class FilesService {
   }
 
   async getUserTotalSize(userId: number): Promise<number> {
-    return this.minioService.getTotalSize(`uploads/${userId}/`);
+    return this.s3Service.getTotalSize(`uploads/${userId}/`);
   }
 
   async getFilesSize(userId: number, fileNames: string[]): Promise<number> {
@@ -30,7 +30,7 @@ export class FilesService {
 
     let totalSize = 0;
     for (const fullFileName of fullFileNames) {
-      const size = await this.minioService.getObjectSize(fullFileName);
+      const size = await this.s3Service.getObjectSize(fullFileName);
       totalSize += size;
     }
 
@@ -44,7 +44,7 @@ export class FilesService {
     const filename = `${Date.now()}-${originalName}`;
     const fullFilename = `uploads/${userId}/${filename}`;
 
-    await this.minioService.uploadFile(
+    await this.s3Service.uploadFile(
       fullFilename,
       file.buffer,
       file.size,
@@ -72,7 +72,7 @@ export class FilesService {
     const newFilename = `${Date.now()}-${originalFilename}`;
     const targetFullFilename = `uploads/${userId}/${newFilename}`;
 
-    await this.minioService.copyObject(sourceFullFilename, targetFullFilename);
+    await this.s3Service.copyObject(sourceFullFilename, targetFullFilename);
 
     return targetFullFilename;
   }
@@ -89,7 +89,7 @@ export class FilesService {
   }
 
   async getUserFullFilenames(userId: number): Promise<string[]> {
-    return this.minioService.listObjects(`uploads/${userId}/`);
+    return this.s3Service.listObjects(`uploads/${userId}/`);
   }
 
   async deleteFiles(userId: number, fileNames: string[]): Promise<void> {
@@ -99,7 +99,7 @@ export class FilesService {
 
     await Promise.all(
       fullFileNames.map(async (fileName) => {
-        await this.minioService.removeObject(fileName);
+        await this.s3Service.removeObject(fileName);
       }),
     );
   }

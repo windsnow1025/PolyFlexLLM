@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { FilesController } from './files.controller';
 import { FilesService } from './files.service';
-import { MinioService } from './minio.service';
+import { S3Service } from './s3.service';
 
 @Module({
-  providers: [FilesService, MinioService],
+  providers: [FilesService, S3Service],
   controllers: [FilesController],
   exports: [],
 })

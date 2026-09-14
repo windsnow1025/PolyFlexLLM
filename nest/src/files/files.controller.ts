@@ -27,7 +27,7 @@ export class FilesController {
   constructor(private readonly filesService: FilesService) {}
 
   @Get('web-url')
-  getMinioWebUrl(): WebUrlResDto {
+  getWebUrl(): WebUrlResDto {
     return { webUrl: this.filesService.getWebUrl() };
   }
 

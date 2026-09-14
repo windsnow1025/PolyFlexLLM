@@ -9,8 +9,8 @@ export interface PostgresConfig {
   database: string;
 }
 
-export interface MinioConfig {
-  endPoint: string;
+export interface S3Config {
+  host: string;
   port: number;
   useSSL: boolean;
   accessKey: string;
@@ -41,7 +41,7 @@ export interface AppConfig {
   port: number;
   jwtSecret: string;
   postgres: PostgresConfig;
-  minio: MinioConfig;
+  s3: S3Config;
   redis: RedisConfig;
   firebase: FirebaseConfig;
   frontendUrl: string;

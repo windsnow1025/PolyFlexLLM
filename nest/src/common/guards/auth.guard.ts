@@ -12,7 +12,7 @@ import { IS_PUBLIC_KEY } from '../decorators/public.decorator';
 import { JwtPayload } from '../../auth/interfaces/jwt-payload.interface';
 import { RequestWithUser } from '../../auth/interfaces/request-with-user.interface';
 import { UsersCoreService } from '../../users/users.core.service';
-import { AppConfig } from '../../../config/config.interface';
+import { AppConfig } from '../../config/config.interface';
 
 // https://docs.nestjs.com/security/authentication
 @Injectable()

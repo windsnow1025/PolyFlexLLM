@@ -4,18 +4,25 @@ import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { AppConfig } from '../config/config.interface';
+import { AppConfig } from './config/config.interface';
 
 async function bootstrap() {
+  // https://docs.nestjs.com/faq/raw-body
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     rawBody: true,
   });
 
+  // https://docs.nestjs.com/security/cors
   app.enableCors();
+
+  // https://docs.nestjs.com/techniques/validation
   app.useGlobalPipes(new ValidationPipe());
+
+  // 	https://docs.nestjs.com/faq/raw-body
   app.useBodyParser('json', { limit: 'Infinity' });
   app.useBodyParser('urlencoded', { limit: 'Infinity', extended: true });
 
+  // https://docs.nestjs.com/openapi/introduction
   const swaggerConfig = new DocumentBuilder()
     .setTitle('Nest JS')
     .setDescription('Nest JS API description')

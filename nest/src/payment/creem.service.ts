@@ -1,7 +1,7 @@
 import { BadGatewayException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { createCreem } from 'creem_io';
-import { AppConfig } from '../../config/config.interface';
+import { AppConfig } from '../config/config.interface';
 
 @Injectable()
 export class CreemService {

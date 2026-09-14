@@ -5,8 +5,8 @@ import { JwtModule } from '@nestjs/jwt';
 import { APP_GUARD } from '@nestjs/core';
 import { CacheModule } from '@nestjs/cache-manager';
 import KeyvRedis, { createKeyv } from '@keyv/redis';
-import configuration from '../config/configuration';
-import { AppConfig } from '../config/config.interface';
+import configuration from './config/configuration';
+import { AppConfig } from './config/config.interface';
 import { AuthGuard } from './common/guards/auth.guard';
 import { RolesGuard } from './common/guards/roles.guard';
 import { EmailVerificationGuard } from './common/guards/email-verification.guard';
@@ -29,10 +29,12 @@ import { PaymentModule } from './payment/payment.module';
 
 @Module({
   imports: [
+    // https://docs.nestjs.com/techniques/configuration
     ConfigModule.forRoot({
       load: [configuration],
       isGlobal: true,
     }),
+    // https://docs.nestjs.com/techniques/database
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -91,6 +93,7 @@ import { PaymentModule } from './payment/payment.module';
   controllers: [AppController],
   providers: [
     AppService,
+    // https://docs.nestjs.com/guards
     {
       provide: APP_GUARD,
       useClass: AuthGuard,

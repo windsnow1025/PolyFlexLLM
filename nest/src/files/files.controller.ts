@@ -31,6 +31,7 @@ export class FilesController {
     return { webUrl: this.filesService.getWebUrl() };
   }
 
+  // https://docs.nestjs.com/techniques/file-upload
   @Post()
   @UseInterceptors(AnyFilesInterceptor(multerOptions))
   async uploadFiles(

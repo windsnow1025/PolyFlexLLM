@@ -6,6 +6,7 @@ import {
 } from './dto/auth.req.dto';
 import { AuthService } from './auth.service';
 
+// https://docs.nestjs.com/security/authentication
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}

@@ -2,7 +2,7 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { BucketItem, Client } from 'minio';
 import { Readable } from 'node:stream';
-import { AppConfig } from '../../config/config.interface';
+import { AppConfig } from '../config/config.interface';
 
 @Injectable()
 export class MinioService implements OnModuleInit {

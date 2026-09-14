@@ -2,26 +2,29 @@ import * as process from 'node:process';
 import * as path from 'node:path';
 import * as fs from 'node:fs';
 import { registerAs } from '@nestjs/config';
+import { FirebaseOptions } from 'firebase/app';
+import { ServiceAccount } from 'firebase-admin';
 import { AppConfig } from './config.interface';
 
-const loadJsonConfigFile = (filename: string, isProduction: boolean): any => {
+const loadJsonConfigFile = <T>(filename: string, isProduction: boolean): T => {
   const baseDirectory = isProduction ? '/app/config' : process.cwd();
 
   const filePath = path.resolve(baseDirectory, filename);
 
   const fileContent = fs.readFileSync(filePath, 'utf8');
-  return JSON.parse(fileContent);
+  return JSON.parse(fileContent) as T;
 };
 
+// https://docs.nestjs.com/techniques/configuration
 export default registerAs('app', (): AppConfig => {
   const isProduction = process.env.ENV !== 'development';
   console.log(`Using ${isProduction ? 'production' : 'development'} setting.`);
 
-  const firebaseConfig = loadJsonConfigFile(
+  const firebaseConfig = loadJsonConfigFile<FirebaseOptions>(
     'firebaseConfig.json',
     isProduction,
   );
-  const serviceAccountKey = loadJsonConfigFile(
+  const serviceAccountKey = loadJsonConfigFile<ServiceAccount>(
     'serviceAccountKey.json',
     isProduction,
   );
@@ -59,7 +62,10 @@ export default registerAs('app', (): AppConfig => {
       testMode: process.env.CREEM_TEST_MODE === 'true',
       apiKey: process.env.CREEM_API_KEY!,
       webhookSecret: process.env.CREEM_WEBHOOK_SECRET!,
-      products: JSON.parse(process.env.CREEM_PRODUCTS!),
+      products: JSON.parse(process.env.CREEM_PRODUCTS!) as Record<
+        string,
+        number
+      >,
     },
   };
 });

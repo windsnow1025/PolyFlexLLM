@@ -4,8 +4,9 @@ import { CoreModule } from '../core/core.module';
 import { JwtModule, JwtModuleOptions } from '@nestjs/jwt';
 import { AuthController } from './auth.controller';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { AppConfig } from '../../config/config.interface';
+import { AppConfig } from '../config/config.interface';
 
+// https://docs.nestjs.com/security/authentication
 @Module({
   imports: [
     CoreModule,

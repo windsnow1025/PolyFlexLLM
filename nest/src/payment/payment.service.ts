@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { UsersCoreService } from '../users/users.core.service';
 import { CreemService } from './creem.service';
 import { ProductResDto } from './dto/payment.res.dto';
-import { AppConfig } from '../../config/config.interface';
+import { AppConfig } from '../config/config.interface';
 
 @Injectable()
 export class PaymentService {

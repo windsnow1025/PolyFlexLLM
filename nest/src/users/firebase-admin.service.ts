@@ -2,7 +2,7 @@ import admin from 'firebase-admin';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Auth, UserRecord } from 'firebase-admin/auth';
-import { AppConfig } from '../../config/config.interface';
+import { AppConfig } from '../config/config.interface';
 
 @Injectable()
 export class FirebaseAdminService {

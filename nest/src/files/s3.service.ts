@@ -1,31 +1,42 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { BucketItem, Client } from 'minio';
-import { Readable } from 'node:stream';
+import {
+  _Object,
+  CopyObjectCommand,
+  CreateBucketCommand,
+  DeleteObjectCommand,
+  HeadBucketCommand,
+  HeadObjectCommand,
+  NotFound,
+  paginateListObjectsV2,
+  PutBucketPolicyCommand,
+  PutObjectCommand,
+  S3Client,
+} from '@aws-sdk/client-s3';
 import { AppConfig } from '../config/config.interface';
 
 @Injectable()
 export class S3Service implements OnModuleInit {
-  private readonly s3Client: Client;
+  private readonly s3Client: S3Client;
   private readonly config: AppConfig;
 
   constructor(private readonly configService: ConfigService) {
     this.config = this.configService.get<AppConfig>('app')!;
-    this.s3Client = new Client({
-      endPoint: this.config.s3.host,
-      port: this.config.s3.port,
-      useSSL: this.config.s3.useSSL,
-      accessKey: this.config.s3.accessKey,
-      secretKey: this.config.s3.secretKey,
+    this.s3Client = new S3Client({
+      endpoint: `${this.config.s3.useSSL ? 'https' : 'http'}://${this.config.s3.host}:${this.config.s3.port}`,
+      region: this.config.s3.region,
+      forcePathStyle: true,
+      credentials: {
+        accessKeyId: this.config.s3.accessKey,
+        secretAccessKey: this.config.s3.secretKey,
+      },
     });
   }
 
   async onModuleInit() {
     let bucketExists: boolean;
     try {
-      bucketExists = await this.s3Client.bucketExists(
-        this.config.s3.bucketName,
-      );
+      bucketExists = await this.bucketExists();
     } catch (error) {
       console.error('Unable to connect to S3:', (error as Error).message);
       return;
@@ -36,7 +47,9 @@ export class S3Service implements OnModuleInit {
       return;
     }
 
-    await this.s3Client.makeBucket(this.config.s3.bucketName);
+    await this.s3Client.send(
+      new CreateBucketCommand({ Bucket: this.config.s3.bucketName }),
+    );
     console.log(`Bucket "${this.config.s3.bucketName}" created.`);
 
     const policy = {
@@ -53,9 +66,11 @@ export class S3Service implements OnModuleInit {
       ],
     };
 
-    await this.s3Client.setBucketPolicy(
-      this.config.s3.bucketName,
-      JSON.stringify(policy),
+    await this.s3Client.send(
+      new PutBucketPolicyCommand({
+        Bucket: this.config.s3.bucketName,
+        Policy: JSON.stringify(policy),
+      }),
     );
     console.log(
       `Bucket policy for "${this.config.s3.bucketName}" set to public.`,
@@ -71,18 +86,18 @@ export class S3Service implements OnModuleInit {
   }
 
   async getTotalSize(prefix: string): Promise<number> {
-    const objects = (await this.s3Client
-      .listObjects(this.config.s3.bucketName, prefix, true)
-      .toArray()) as BucketItem[];
-    return objects.reduce((acc, obj) => acc + (obj.size || 0), 0);
+    const objects = await this.listAllObjects(prefix);
+    return objects.reduce((acc, obj) => acc + (obj.Size ?? 0), 0);
   }
 
   async getObjectSize(fullFilename: string): Promise<number> {
-    const stat = await this.s3Client.statObject(
-      this.config.s3.bucketName,
-      fullFilename,
+    const head = await this.s3Client.send(
+      new HeadObjectCommand({
+        Bucket: this.config.s3.bucketName,
+        Key: fullFilename,
+      }),
     );
-    return stat.size;
+    return head.ContentLength!;
   }
 
   async uploadFile(
@@ -91,15 +106,14 @@ export class S3Service implements OnModuleInit {
     size: number,
     mimetype: string,
   ): Promise<void> {
-    const fileStream = Readable.from(buffer);
-    await this.s3Client.putObject(
-      this.config.s3.bucketName,
-      fullFilename,
-      fileStream,
-      size,
-      {
-        'Content-Type': mimetype,
-      },
+    await this.s3Client.send(
+      new PutObjectCommand({
+        Bucket: this.config.s3.bucketName,
+        Key: fullFilename,
+        Body: buffer,
+        ContentLength: size,
+        ContentType: mimetype,
+      }),
     );
   }
 
@@ -107,22 +121,55 @@ export class S3Service implements OnModuleInit {
     sourceFullFilename: string,
     targetFullFilename: string,
   ): Promise<void> {
-    const srcPath = `/${this.config.s3.bucketName}/${sourceFullFilename}`;
-    await this.s3Client.copyObject(
-      this.config.s3.bucketName,
-      targetFullFilename,
-      srcPath,
+    const encodedSourceFullFilename = encodeURIComponent(
+      sourceFullFilename,
+    ).replace(/%2F/g, '/');
+    await this.s3Client.send(
+      new CopyObjectCommand({
+        Bucket: this.config.s3.bucketName,
+        Key: targetFullFilename,
+        CopySource: `${this.config.s3.bucketName}/${encodedSourceFullFilename}`,
+      }),
     );
   }
 
   async listObjects(prefix: string): Promise<string[]> {
-    const objects = (await this.s3Client
-      .listObjects(this.config.s3.bucketName, prefix, true)
-      .toArray()) as BucketItem[];
-    return objects.map((object) => object.name!);
+    const objects = await this.listAllObjects(prefix);
+    return objects.map((object) => object.Key!);
   }
 
   async removeObject(fileName: string): Promise<void> {
-    await this.s3Client.removeObject(this.config.s3.bucketName, fileName);
+    await this.s3Client.send(
+      new DeleteObjectCommand({
+        Bucket: this.config.s3.bucketName,
+        Key: fileName,
+      }),
+    );
+  }
+
+  private async bucketExists(): Promise<boolean> {
+    try {
+      await this.s3Client.send(
+        new HeadBucketCommand({ Bucket: this.config.s3.bucketName }),
+      );
+      return true;
+    } catch (error) {
+      if (error instanceof NotFound) {
+        return false;
+      }
+      throw error;
+    }
+  }
+
+  private async listAllObjects(prefix: string): Promise<_Object[]> {
+    const objects: _Object[] = [];
+    const pages = paginateListObjectsV2(
+      { client: this.s3Client },
+      { Bucket: this.config.s3.bucketName, Prefix: prefix },
+    );
+    for await (const page of pages) {
+      objects.push(...(page.Contents ?? []));
+    }
+    return objects;
   }
 }

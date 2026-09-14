@@ -13,6 +13,7 @@ export interface S3Config {
   host: string;
   port: number;
   useSSL: boolean;
+  region: string;
   accessKey: string;
   secretKey: string;
   bucketName: string;

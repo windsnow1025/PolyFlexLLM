@@ -23,7 +23,7 @@ export default class FileClient {
 
   async getStorageUrl(): Promise<string> {
     const api = new FilesApi(getNestOpenAPIConfiguration());
-    const response = await api.filesControllerGetMinioWebUrl();
+    const response = await api.filesControllerGetWebUrl();
     return response.data.webUrl;
   }
 

@@ -7,7 +7,7 @@ All URIs are relative to *http://localhost*
 |[**filesControllerCloneFiles**](#filescontrollerclonefiles) | **POST** /files/clone | |
 |[**filesControllerDeleteFiles**](#filescontrollerdeletefiles) | **DELETE** /files | |
 |[**filesControllerGetFiles**](#filescontrollergetfiles) | **GET** /files | |
-|[**filesControllerGetMinioWebUrl**](#filescontrollergetminioweburl) | **GET** /files/web-url | |
+|[**filesControllerGetWebUrl**](#filescontrollergetweburl) | **GET** /files/web-url | |
 |[**filesControllerUploadFiles**](#filescontrolleruploadfiles) | **POST** /files | |
 
 # **filesControllerCloneFiles**
@@ -155,8 +155,8 @@ This endpoint does not have any parameters.
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **filesControllerGetMinioWebUrl**
-> WebUrlResDto filesControllerGetMinioWebUrl()
+# **filesControllerGetWebUrl**
+> WebUrlResDto filesControllerGetWebUrl()
 
 
 ### Example
@@ -170,7 +170,7 @@ import {
 const configuration = new Configuration();
 const apiInstance = new FilesApi(configuration);
 
-const { status, data } = await apiInstance.filesControllerGetMinioWebUrl();
+const { status, data } = await apiInstance.filesControllerGetWebUrl();
 ```
 
 ### Parameters

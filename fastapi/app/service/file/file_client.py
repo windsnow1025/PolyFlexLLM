@@ -1,4 +1,4 @@
-from ...client.nest_js_client.api.files.files_controller_get_minio_web_url import asyncio as get_web_url_async
+from ...client.nest_js_client.api.files.files_controller_get_web_url import asyncio as get_web_url_async
 from ...config import get_client
 
 

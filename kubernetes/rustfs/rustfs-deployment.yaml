@@ -41,6 +41,8 @@ spec:
               value: "true"
             - name: RUSTFS_OBS_LOGGER_LEVEL
               value: "error"
+            - name: RUSTFS_CORS_ALLOWED_ORIGINS
+              value: "*"
           volumeMounts:
             - name: rustfs-persistent-storage
               mountPath: /data

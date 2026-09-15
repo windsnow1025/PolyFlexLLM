@@ -6,7 +6,7 @@ A full-stack web platform for interacting with various LLMs (OpenAI, Gemini, Cla
 
 - **Front End**: Node.js, React.js, Next.js, Tailwind CSS, MUI
 - **Back End**: Node.js (Nest.js), Python (FastAPI)
-- **Storage**: PostgreSQL, MinIO, Redis
+- **Storage**: PostgreSQL, RustFS, Redis
 - **Authentication**: Firebase (Email Verification)
 - **Infrastructure**: Linux (Debian 12), Kubernetes (K3S), Nginx
 - **DevOps**: GitHub Actions
@@ -122,7 +122,7 @@ stream {
 #### Usage
 
 - Main: `http://localhost:30080/`
-- MinIO: `http://localhost:30080/minio/ui/`
+- RustFS Console: `http://localhost:39001/`
 - Kubernetes Dashboard: `https://localhost:38443/`
 
 ### Development

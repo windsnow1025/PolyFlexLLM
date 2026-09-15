@@ -1,6 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: minio-configmap
-data:
-  MINIO_BROWSER_REDIRECT_URL: "http://localhost:30080/minio/ui"

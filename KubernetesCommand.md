@@ -11,11 +11,10 @@ kubectl apply -f ./postgresql/postgresql-pvc.yaml
 kubectl apply -f ./postgresql/postgresql-deployment.yaml
 kubectl apply -f ./postgresql/postgresql-service.yaml
 
-# MinIO
-kubectl apply -f ./minio/minio-configmap.yaml
-kubectl apply -f ./minio/minio-pvc.yaml
-kubectl apply -f ./minio/minio-deployment.yaml
-kubectl apply -f ./minio/minio-service.yaml
+# RustFS
+kubectl apply -f ./rustfs/rustfs-pvc.yaml
+kubectl apply -f ./rustfs/rustfs-deployment.yaml
+kubectl apply -f ./rustfs/rustfs-service.yaml
 
 # Redis
 kubectl apply -f ./redis/redis-deployment.yaml
@@ -77,8 +76,8 @@ kubectl rollout restart deployment -n kubernetes-dashboard
 # PostgreSQL
 kubectl rollout restart deployment postgresql-deployment
 
-# MinIO
-kubectl rollout restart deployment minio-deployment
+# RustFS
+kubectl rollout restart deployment rustfs-deployment
 
 # Redis
 kubectl rollout restart deployment redis-deployment

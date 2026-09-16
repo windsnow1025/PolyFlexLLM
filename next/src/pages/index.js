@@ -359,19 +359,19 @@ function Index() {
         />
         <BottomNavigationAction
           component="a"
-          href="/legal/privacy"
+          href="/about/privacy"
           label="Privacy"
           icon={<PolicyIcon/>}
         />
         <BottomNavigationAction
           component="a"
-          href="/legal/terms"
+          href="/about/terms"
           label="Terms"
           icon={<GavelIcon/>}
         />
         <BottomNavigationAction
           component="a"
-          href="/legal/policy"
+          href="/about/policy"
           label="Policy"
           icon={<RuleIcon/>}
         />

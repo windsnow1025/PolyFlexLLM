@@ -241,7 +241,7 @@ export default function SignUp() {
                 label={
                   <Typography variant="body2">
                     I agree to the{' '}
-                    <Link href="/legal/privacy" target="_blank">
+                    <Link href="/about/privacy" target="_blank">
                       Privacy Policy
                     </Link>
                   </Typography>
@@ -257,7 +257,7 @@ export default function SignUp() {
                 label={
                   <Typography variant="body2">
                     I agree to the{' '}
-                    <Link href="/legal/terms" target="_blank">
+                    <Link href="/about/terms" target="_blank">
                       Terms &amp; Conditions
                     </Link>
                   </Typography>
@@ -273,7 +273,7 @@ export default function SignUp() {
                 label={
                   <Typography variant="body2">
                     I agree to the{' '}
-                    <Link href="/legal/policy" target="_blank">
+                    <Link href="/about/policy" target="_blank">
                       Acceptable Use Policy
                     </Link>
                   </Typography>

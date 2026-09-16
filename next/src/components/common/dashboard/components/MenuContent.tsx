@@ -8,6 +8,7 @@ import Tooltip from '@mui/material/Tooltip';
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import SettingsRoundedIcon from '@mui/icons-material/SettingsRounded';
+import InfoRoundedIcon from '@mui/icons-material/InfoRounded';
 import Link from 'next/link';
 import {usePathname} from 'next/navigation';
 
@@ -18,6 +19,7 @@ const mainListItems = [
 
 const secondaryListItems = [
   { text: 'Settings', icon: <SettingsRoundedIcon />, href: '/settings' },
+  { text: 'About', icon: <InfoRoundedIcon />, href: '/about' },
 ];
 
 export default function MenuContent({ collapsed = false }: { collapsed?: boolean }) {

@@ -23,15 +23,19 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: new Date(),
     },
     {
-      url: `${baseUrl}/legal/privacy`,
+      url: `${baseUrl}/about`,
       lastModified: new Date(),
     },
     {
-      url: `${baseUrl}/legal/terms`,
+      url: `${baseUrl}/about/privacy`,
       lastModified: new Date(),
     },
     {
-      url: `${baseUrl}/legal/policy`,
+      url: `${baseUrl}/about/terms`,
+      lastModified: new Date(),
+    },
+    {
+      url: `${baseUrl}/about/policy`,
       lastModified: new Date(),
     },
     {

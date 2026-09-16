@@ -30,7 +30,7 @@ export class PaymentService {
     userId: number,
     email: string,
   ): Promise<string> {
-    const successUrl = `${this.config.frontendUrl}/billing/purchase`;
+    const successUrl = `${this.config.frontendUrl}/billing`;
     const metadata = { userId: userId };
 
     return this.creemService.createCheckout(

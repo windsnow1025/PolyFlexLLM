@@ -59,11 +59,8 @@ function ConfigDiv({
             transformOrigin={{vertical: 'top', horizontal: 'center'}}
           >
             <Box sx={{p: 2, display: 'flex', flexDirection: 'column', gap: 1}}>
-              <Link href="/billing/pricing" target="_blank">
-                Pricing
-              </Link>
-              <Link href="/billing/purchase" target="_blank">
-                Purchase Credit
+              <Link href="/billing" target="_blank">
+                Billing
               </Link>
             </Box>
           </Popover>

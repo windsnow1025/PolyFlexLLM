@@ -24,7 +24,7 @@ function AccountDiv() {
         <Link href="/billing/pricing" target="_blank">
           Pricing
         </Link>
-        <Link href="/billing/purchase" target="_blank">
+        <Link href="/billing" target="_blank">
           Purchase Credit
         </Link>
       </div>

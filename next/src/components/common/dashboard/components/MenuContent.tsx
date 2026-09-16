@@ -7,6 +7,7 @@ import Stack from '@mui/material/Stack';
 import Tooltip from '@mui/material/Tooltip';
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
+import AccountBalanceWalletRoundedIcon from '@mui/icons-material/AccountBalanceWalletRounded';
 import SettingsRoundedIcon from '@mui/icons-material/SettingsRounded';
 import InfoRoundedIcon from '@mui/icons-material/InfoRounded';
 import Link from 'next/link';
@@ -18,6 +19,7 @@ const mainListItems = [
 ];
 
 const secondaryListItems = [
+  { text: 'Billing', icon: <AccountBalanceWalletRoundedIcon />, href: '/billing' },
   { text: 'Settings', icon: <SettingsRoundedIcon />, href: '/settings' },
   { text: 'About', icon: <InfoRoundedIcon />, href: '/about' },
 ];

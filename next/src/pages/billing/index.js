@@ -6,15 +6,17 @@ import {
   CardActions,
   CardContent,
   CircularProgress,
+  Link,
   Paper,
   Snackbar,
   Typography,
 } from "@mui/material";
 import Head from "next/head";
+import NextLink from "next/link";
 import PaymentLogic from "@/lib/payment/PaymentLogic";
 import CreditSection from "@/components/common/settings/auth/signed-in/CreditSection";
 
-function Purchase() {
+function Billing() {
   const [products, setProducts] = useState([]);
   const [loadingProducts, setLoadingProducts] = useState(true);
   const [purchasing, setPurchasing] = useState(null);
@@ -59,15 +61,20 @@ function Purchase() {
   return (
     <div className="local-scroll-container">
       <Head>
-        <title>Purchase Credit</title>
+        <title>Billing</title>
       </Head>
       <div className="local-scroll-scrollable flex-center">
         <Paper elevation={4} className="p-6">
           <Typography variant="h5" gutterBottom>
-            Purchase Credit
+            Billing
           </Typography>
 
-          <CreditSection/>
+          <div className="flex-between gap-4">
+            <CreditSection/>
+            <Link component={NextLink} href="/billing/pricing">
+              Pricing
+            </Link>
+          </div>
 
           {loadingProducts ? (
             <div className="text-center mt-4">
@@ -117,4 +124,4 @@ function Purchase() {
   );
 }
 
-export default Purchase;
+export default Billing;

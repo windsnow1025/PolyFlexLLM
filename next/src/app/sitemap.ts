@@ -31,6 +31,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: new Date(),
     },
     {
+      url: `${baseUrl}/legal/policy`,
+      lastModified: new Date(),
+    },
+    {
       url: `${baseUrl}/settings`,
       lastModified: new Date(),
     },

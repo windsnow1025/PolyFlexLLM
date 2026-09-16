@@ -315,7 +315,7 @@ function Index() {
             variant="contained"
             size="large"
             startIcon={<LocalOfferIcon/>}
-            href="/pricing/pricing"
+            href="/billing/pricing"
           >
             View Pricing
           </Button>

@@ -21,10 +21,10 @@ function AccountDiv() {
       {/* Credit and Pricing Row */}
       <div className="flex-normal gap-4 mb-2">
         <CreditSection/>
-        <Link href="/pricing/pricing" target="_blank">
+        <Link href="/billing/pricing" target="_blank">
           Pricing
         </Link>
-        <Link href="/pricing/purchase" target="_blank">
+        <Link href="/billing/purchase" target="_blank">
           Purchase Credit
         </Link>
       </div>

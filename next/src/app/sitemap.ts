@@ -43,11 +43,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: new Date(),
     },
     {
-      url: `${baseUrl}/pricing/pricing`,
+      url: `${baseUrl}/billing/pricing`,
       lastModified: new Date(),
     },
     {
-      url: `${baseUrl}/pricing/purchase`,
+      url: `${baseUrl}/billing/purchase`,
       lastModified: new Date(),
     },
     {

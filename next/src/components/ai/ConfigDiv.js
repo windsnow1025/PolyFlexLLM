@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Box, Chip, FormControlLabel, IconButton, Link, Popover, Slider, Switch, Typography} from "@mui/material";
+import {Chip, FormControlLabel, IconButton, Slider, Switch, Tooltip, Typography} from "@mui/material";
 import {InfoOutlined} from "@mui/icons-material";
 import {StorageKeys} from "@/lib/common/Constants";
 import useScreenSize from "@/hooks/useScreenSize";
@@ -28,8 +28,6 @@ function ConfigDiv({
 
   const [developerMode, setDeveloperMode] = useState(false);
 
-  const [anchorEl, setAnchorEl] = useState(null);
-
   useEffect(() => {
     const storedDeveloperMode = localStorage.getItem(StorageKeys.DeveloperMode);
     if (storedDeveloperMode !== null) {
@@ -48,22 +46,11 @@ function ConfigDiv({
         />
         <div className="flex-center gap-1">
           <CreditSection refreshKey={refreshKey} decimalPlaces={5}/>
-          <IconButton size="small" onClick={(e) => setAnchorEl(e.currentTarget)}>
-            <InfoOutlined fontSize="small"/>
-          </IconButton>
-          <Popover
-            open={Boolean(anchorEl)}
-            anchorEl={anchorEl}
-            onClose={() => setAnchorEl(null)}
-            anchorOrigin={{vertical: 'bottom', horizontal: 'center'}}
-            transformOrigin={{vertical: 'top', horizontal: 'center'}}
-          >
-            <Box sx={{p: 2, display: 'flex', flexDirection: 'column', gap: 1}}>
-              <Link href="/billing" target="_blank">
-                Billing
-              </Link>
-            </Box>
-          </Popover>
+          <Tooltip title="Billing">
+            <IconButton size="small" href="/billing" target="_blank">
+              <InfoOutlined fontSize="small"/>
+            </IconButton>
+          </Tooltip>
         </div>
         {developerMode && (
           <>

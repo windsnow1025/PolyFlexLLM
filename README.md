@@ -24,29 +24,86 @@ A full-stack web platform for interacting with various LLMs (OpenAI, Gemini, Cla
 
 ### Debian Production
 
-Log in as root user
+1. Create and configure a Debian VM with at least 4GB RAM
+2. JetBrains IDEA >> `Settings` >> `SSH Configurations`: login as root
 
-#### Set Config and Environment
+### Nginx Installation
 
-1. Compress `./kubernetes` to `./kubernetes.zip`
-2. Run
-   ```bash
-   mkdir /root/kubernetes
-   ```
-3. Install Dependencies
-   ```bash
-   apt update
-   apt install unzip
-   ```
-4. Upload `./kubernetes.zip` to `/root/kubernetes/`
-5. Create Configs
-   ```bash
-   cd /root/kubernetes
-   unzip kubernetes.zip
-   rm kubernetes.zip
-   mv kubernetes PolyFlexLLM
-   cd PolyFlexLLM/
-   ```
+1. Install Nginx with Stream module
+2. In `<nginx_config_path>`: create `./nginx.conf` and `./sites-available/default`
+
+    - Stream Block in `./nginx.conf`:
+      ```
+      stream {
+          server {
+              listen 3306;
+              proxy_pass localhost:33306;
+          }
+          server {
+              listen 6379;
+              proxy_pass localhost:36379;
+          }
+          server {
+              listen 9000;
+              proxy_pass localhost:39000;
+          }
+      }
+      ```
+    
+    - HTTP Block in `./sites-available/default`:
+      ```
+      server {
+      
+        server_name <domain_name>;
+      
+        client_max_body_size 100M;
+      
+          location / {
+              proxy_pass http://localhost:30080/;
+              
+              proxy_buffering off;
+              proxy_request_buffering off;
+      
+              proxy_set_header Host $http_host;
+              proxy_set_header X-Real-IP $remote_addr;
+              proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+              proxy_set_header X-Forwarded-Proto $scheme;
+              proxy_set_header X-Forwarded-Port $server_port;
+              proxy_set_header X-Forwarded-Host $host;
+      
+              proxy_http_version 1.1;
+              proxy_set_header Upgrade $http_upgrade;
+              proxy_set_header Connection "upgrade";
+          }
+      
+          location /kubernetes/ {
+              proxy_pass https://localhost:38443/;
+      
+              proxy_ssl_verify off;
+      
+              proxy_set_header Host $http_host;
+              proxy_set_header X-Real-IP $remote_addr;
+              proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+              proxy_set_header X-Forwarded-Proto $scheme;
+              proxy_set_header X-Forwarded-Port $server_port;
+              proxy_set_header X-Forwarded-Host $host;
+          }
+      }
+      ```
+
+#### Config and Environment Setup
+
+JetBrains IDEA >> `Settings` >> `Build, Execution, Deployment` >> `Deployment`
+1. Add `SFTP`
+2. Add `Mapping`
+    - Deployment Path: `/root/kubernetes`, Local Path: `./kubernetes`
+    - Deployment Path: `/etc/nginx`, Local Path: `<nginx_config_path>`
+3. Select `Deployment Path`s in `Remote Host`: `Sync with local...`
+
+#### Nginx Configuration
+
+1. Install Certbot
+2. Nginx `Sync with local`
 
 #### K3S Installation and Configuration
 
@@ -56,74 +113,14 @@ See `./K3S.md`
 
 See `./KubernetesCommand.md`
 
-#### Nginx (Optional)
-
-HTTP Block:
-
-```
-server {
-
-	server_name <domain_name>;
-
-	client_max_body_size 100M;
-
-    location / {
-        proxy_pass http://localhost:30080/;
-        
-        proxy_buffering off;
-        proxy_request_buffering off;
-
-        proxy_set_header Host $http_host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_set_header X-Forwarded-Port $server_port;
-        proxy_set_header X-Forwarded-Host $host;
-
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection "upgrade";
-    }
-
-    location /kubernetes/ {
-        proxy_pass https://localhost:38443/;
-
-        proxy_ssl_verify off;
-
-        proxy_set_header Host $http_host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_set_header X-Forwarded-Port $server_port;
-        proxy_set_header X-Forwarded-Host $host;
-    }
-}
-```
-
-Stream Block:
-
-```
-stream {
-    server {
-        listen 3306;
-        proxy_pass localhost:33306;
-    }
-    server {
-        listen 6379;
-        proxy_pass localhost:36379;
-    }
-    server {
-        listen 9000;
-        proxy_pass localhost:39000;
-    }
-}
-```
-
 #### Usage
 
-- Main: `http://localhost:30080/`
-- RustFS Console: `http://localhost:39001/`
-- Kubernetes Dashboard: `https://localhost:38443/`
+- Main
+  - `http://localhost:30080/`
+  - `https://<domain_name>/`
+- Kubernetes Dashboard
+  - `https://localhost:38443/`
+  - `https://<domain_name>/kubernetes/`
 
 ### Development
 
@@ -131,14 +128,14 @@ stream {
 
 1. Setup and run K3S in Test Server.
 2. Setup and run Next.js, Nest.js, FastAPI separately by JetBrains IDE according to their documentations.
-    - Configure Next.js backend URL in UI - Settings - Developer - API Base URL.
-    - Configure FastAPI related backend URL in environment variables.
+  - Configure Next.js backend URL in UI - Settings - Developer - API Base URL.
+  - Configure FastAPI related backend URL in environment variables.
 
 #### CI/CD
 
 GitHub >> Repository >> Settings >> Security >> Secrets and variables >> Actions
-  - Secrets >> Repository secrets: add `DOCKERHUB_TOKEN`
-  - Variables >> Repository variables: add `DOCKERHUB_USERNAME`
+- Secrets >> Repository secrets: add `DOCKERHUB_TOKEN`
+- Variables >> Repository variables: add `DOCKERHUB_USERNAME`
 
 ## Make Contributions
 

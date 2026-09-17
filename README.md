@@ -138,8 +138,8 @@ stream {
 
 GitHub >> Repository >> Settings >> Security >> Secrets and variables >> Actions >> Repository secrets: add
 
-- DOCKERHUB_TOKEN
 - DOCKERHUB_USERNAME
+- DOCKERHUB_TOKEN
 
 ## Make Contributions
 

@@ -136,10 +136,9 @@ stream {
 
 #### CI/CD
 
-GitHub >> Repository >> Settings >> Security >> Secrets and variables >> Actions >> Repository secrets: add
-
-- DOCKERHUB_USERNAME
-- DOCKERHUB_TOKEN
+GitHub >> Repository >> Settings >> Security >> Secrets and variables >> Actions
+  - Secrets >> Repository secrets: add `DOCKERHUB_TOKEN`
+  - Variables >> Repository variables: add `DOCKERHUB_USERNAME`
 
 ## Make Contributions
 

@@ -37,4 +37,4 @@ jobs:
           context: ./next
           file: ./next/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/next:${{ github.ref == 'refs/heads/test' && 'test' || 'latest' }}
+          tags: ${{ vars.DOCKERHUB_USERNAME }}/next:${{ github.ref == 'refs/heads/test' && 'test' || 'latest' }}

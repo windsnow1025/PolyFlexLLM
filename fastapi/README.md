@@ -17,6 +17,10 @@ Add New Interpreter >> Add Local Interpreter
   - Environment: Select existing
   - Type: uv
 
+### Environment Variables
+
+- Copy `./.env.example` and rename it to `.env`, then fill in the Env variables.
+
 ## OpenAPI
 
 ### Requirements

@@ -24,12 +24,6 @@ Settings >> Languages & Frameworks >> JavaScript Runtime >> Package manager: `~\
 - Copy `./firebaseConfig.example.json` and rename it to `./firebaseConfig.json`, then fill in the Env variables.
 - Copy `./serviceAccountKey.example.json` and rename it to `./serviceAccountKey.json`, then fill in the Env variables.
 
-### Run
-
-```bash
-pnpm run dev
-```
-
 ## OpenAPI
 
 ### Requirements

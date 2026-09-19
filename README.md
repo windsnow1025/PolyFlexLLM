@@ -152,18 +152,3 @@ See `./KubernetesCommand.md`
 GitHub >> Repository >> Settings >> Security >> Secrets and variables >> Actions
 - Secrets >> Repository secrets: add `DOCKERHUB_TOKEN`
 - Variables >> Repository variables: add `DOCKERHUB_USERNAME`
-
-## Make Contributions
-
-We welcome contributions! Please follow these steps:
-
-### Contributor Workflow:
-1. **Create a Branch**: Create a new branch based on `main` (e.g., `feat/xxx`).
-2. **Commit Changes**: Develop your feature and commit changes to the new branch.
-3. **Open a Pull Request (PR)**: Submit a PR targeting the `test` branch and wait for review.
-
-### Repository Owner Workflow:
-1. **Deploy to Test Environment**: The repository owner will deploy the changes to the test server via the Kubernetes Dashboard.
-2. **Verify in Test Environment**: The repository owner will test the changes in the test environment.
-3. **Merge to Production**: If everything works as expected, the repository owner will merge `test` into `main`.
-4. **Deploy to Production**: The repository owner will manually restart the deployment in the production server via the Kubernetes Dashboard.

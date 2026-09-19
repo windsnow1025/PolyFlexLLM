@@ -123,6 +123,8 @@ See `./KubernetesCommand.md`
 - Kubernetes Dashboard
   - `http://localhost:34466/kubernetes/`
   - `https://<domain_name>/kubernetes/`
+- S3 Dashboard
+  - `http://localhost:9001/`
 
 ### Development
 

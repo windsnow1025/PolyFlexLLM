@@ -44,17 +44,18 @@
 
 3. Deploy Dashboard
   ```bash
-  # Add kubernetes-dashboard repository
-  helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard/
-  # Deploy a Helm Release named "kubernetes-dashboard" using the kubernetes-dashboard chart
-  helm upgrade --install kubernetes-dashboard kubernetes-dashboard/kubernetes-dashboard --create-namespace --namespace kubernetes-dashboard
+  # first add our custom repo to your local helm repositories
+  helm repo add headlamp https://kubernetes-sigs.github.io/headlamp/
+  
+  # install headlamp by setting your values directly
+  helm install my-headlamp headlamp/headlamp --namespace kube-system --set config.baseURL=/kubernetes
   ```
 
 4. Remote Access (NodePort)
   ```bash
   kubectl apply -f ./dashboard/dashboard-service.yaml
   ```
-  Test: `curl -k https://localhost:38443`
+  Test: `curl http://localhost:34466/kubernetes/`
 
 5. Create admin-user
   ```bash
@@ -65,7 +66,7 @@
 
 6. Get a long-lived Bearer Token
   ```bash
-  kubectl get secret admin-user -n kubernetes-dashboard -o jsonpath={".data.token"} | base64 -d
+  kubectl get secret admin-user -n kube-system -o jsonpath={".data.token"} | base64 -d
   ```
 
 ## Private Docker Registry (Optional)

@@ -32,64 +32,66 @@ A full-stack web platform for interacting with various LLMs (OpenAI, Gemini, Cla
 1. Install Nginx with Stream module
 2. In `<nginx_config_path>`: create `./nginx.conf` and `./sites-available/default`
 
-    - Stream Block in `./nginx.conf`:
-      ```
-      stream {
-          server {
-              listen 3306;
-              proxy_pass localhost:33306;
-          }
-          server {
-              listen 6379;
-              proxy_pass localhost:36379;
-          }
-          server {
-              listen 9000;
-              proxy_pass localhost:39000;
-          }
-      }
-      ```
+  - Stream Block in `./nginx.conf`:
+    ```
+    stream {
+        server {
+            listen 3306;
+            proxy_pass localhost:33306;
+        }
+        server {
+            listen 6379;
+            proxy_pass localhost:36379;
+        }
+        server {
+            listen 9000;
+            proxy_pass localhost:39000;
+        }
+    }
+    ```
     
-    - HTTP Block in `./sites-available/default`:
-      ```
-      server {
-      
-        server_name <domain_name>;
-      
-        client_max_body_size 100M;
-      
-          location / {
-              proxy_pass http://localhost:30080/;
-              
-              proxy_buffering off;
-              proxy_request_buffering off;
-      
-              proxy_set_header Host $http_host;
-              proxy_set_header X-Real-IP $remote_addr;
-              proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-              proxy_set_header X-Forwarded-Proto $scheme;
-              proxy_set_header X-Forwarded-Port $server_port;
-              proxy_set_header X-Forwarded-Host $host;
-      
-              proxy_http_version 1.1;
-              proxy_set_header Upgrade $http_upgrade;
-              proxy_set_header Connection "upgrade";
-          }
-      
-          location /kubernetes/ {
-              proxy_pass https://localhost:38443/;
-      
-              proxy_ssl_verify off;
-      
-              proxy_set_header Host $http_host;
-              proxy_set_header X-Real-IP $remote_addr;
-              proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-              proxy_set_header X-Forwarded-Proto $scheme;
-              proxy_set_header X-Forwarded-Port $server_port;
-              proxy_set_header X-Forwarded-Host $host;
-          }
-      }
-      ```
+  - HTTP Block in `./sites-available/default`:
+    ```
+    server {
+    
+      server_name <domain_name>;
+    
+      client_max_body_size 100M;
+    
+        location / {
+            proxy_pass http://localhost:30080/;
+            
+            proxy_buffering off;
+            proxy_request_buffering off;
+    
+            proxy_set_header Host $http_host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+            proxy_set_header X-Forwarded-Port $server_port;
+            proxy_set_header X-Forwarded-Host $host;
+    
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection "upgrade";
+        }
+    
+        location /kubernetes/ {
+            proxy_pass http://localhost:34466;
+    
+            proxy_set_header Host $http_host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+            proxy_set_header X-Forwarded-Port $server_port;
+            proxy_set_header X-Forwarded-Host $host;
+    
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection "upgrade";
+        }
+    }
+    ```
 
 #### Config and Environment Setup
 
@@ -119,7 +121,7 @@ See `./KubernetesCommand.md`
   - `http://localhost:30080/`
   - `https://<domain_name>/`
 - Kubernetes Dashboard
-  - `https://localhost:38443/`
+  - `http://localhost:34466/kubernetes/`
   - `https://<domain_name>/kubernetes/`
 
 ### Development

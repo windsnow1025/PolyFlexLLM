@@ -126,12 +126,26 @@ See `./KubernetesCommand.md`
 
 ### Development
 
-#### Windows Develop Environment
+#### OpenSSH
 
-1. Setup and run K3S in Test Server.
-2. Setup and run Next.js, Nest.js, FastAPI separately by JetBrains IDE according to their documentations.
-  - Configure Next.js backend URL in UI - Settings - Developer - API Base URL.
-  - Configure FastAPI related backend URL in environment variables.
+1. Prepare Private Key
+  ```bash
+  dos2unix <id_rsa_filepath>
+  ```
+2. Add in OpenSSH config
+  ```config
+  Host <tunnel_name>
+      HostName <domain_name>
+      User root
+      IdentityFile <id_rsa_filepath>
+      LocalForward 5432 localhost:5432
+      LocalForward 6379 localhost:6379
+      LocalForward 9000 localhost:9000
+      LocalForward 9001 localhost:9001
+      ExitOnForwardFailure yes
+      ServerAliveInterval 30
+  ```
+3. Run JetBrains Tunnel configs
 
 #### CI/CD
 

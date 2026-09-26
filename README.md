@@ -47,6 +47,10 @@ A full-stack web platform for interacting with various LLMs (OpenAI, Gemini, Cla
             listen 9000;
             proxy_pass localhost:39000;
         }
+        server {
+            listen 9001;
+            proxy_pass localhost:39001;
+        }
     }
     ```
     

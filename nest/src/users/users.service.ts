@@ -6,6 +6,7 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { createHash, randomBytes } from 'node:crypto';
@@ -17,10 +18,12 @@ import { FirebaseAdminService } from './firebase-admin.service';
 import { Cache, CACHE_MANAGER } from '@nestjs/cache-manager';
 import { UsersCoreService } from './users.core.service';
 import { ConversationsCoreService } from '../conversations/conversations.core.service';
+import { AppConfig } from '../config/config.interface';
 
 @Injectable()
 export class UsersService {
-  private readonly emailVerificationTtl = 15 * 60 * 1000;
+  private readonly config: AppConfig;
+  private readonly emailVerificationTtl = 60 * 60 * 1000;
 
   constructor(
     @InjectRepository(User)
@@ -29,9 +32,12 @@ export class UsersService {
     private conversationsCoreService: ConversationsCoreService,
     @Inject(CACHE_MANAGER)
     private cacheManager: Cache,
+    private readonly configService: ConfigService,
     private readonly firebaseService: FirebaseService,
     private readonly firebaseAdminService: FirebaseAdminService,
-  ) {}
+  ) {
+    this.config = this.configService.get<AppConfig>('app')!;
+  }
 
   findAll() {
     return this.usersRepository.find({
@@ -52,9 +58,6 @@ export class UsersService {
     if (await this.usersCoreService.findOneByEmail(email)) {
       throw new ConflictException('Email already registered');
     }
-    if (!(await this.firebaseService.checkEmailVerified(email))) {
-      throw new ForbiddenException('Email not verified');
-    }
 
     const user = new User();
     user.username = username;
@@ -64,48 +67,36 @@ export class UsersService {
 
     const savedUser = await this.usersRepository.save(user);
     await this.cacheManager.del(this.getEmailVerificationCacheKey(email));
+    await this.deleteFirebaseUser(email);
     return savedUser;
   }
 
-  async sendEmailVerification(email: string): Promise<string> {
+  async sendEmailVerification(email: string) {
     if (await this.usersCoreService.findOneByEmail(email)) {
       throw new ConflictException('Email already registered');
     }
 
-    const cacheKey = this.getEmailVerificationCacheKey(email);
-    if (await this.cacheManager.get<string>(cacheKey)) {
-      throw new ConflictException('Email verification already pending');
-    }
-
     const token = randomBytes(32).toString('hex');
-    await this.cacheManager.set(
-      cacheKey,
-      this.hashToken(token),
-      this.emailVerificationTtl,
-    );
-
-    await this.deliverEmailVerification(email);
-
-    return token;
-  }
-
-  async resendEmailVerification(email: string, token: string) {
-    await this.checkEmailVerificationToken(email, token);
     await this.cacheManager.set(
       this.getEmailVerificationCacheKey(email),
       this.hashToken(token),
       this.emailVerificationTtl,
     );
 
-    await this.deliverEmailVerification(email);
+    const continueUrl = new URL('/auth/verify-email', this.config.frontendUrl);
+    continueUrl.searchParams.set('email', email);
+    continueUrl.searchParams.set('token', token);
+
+    await this.deleteFirebaseUser(email);
+    await this.firebaseService.createFirebaseUser(email);
+    await this.firebaseService.sendFirebaseEmailVerification(
+      email,
+      continueUrl.toString(),
+    );
   }
 
   async sendPasswordResetEmail(email: string) {
-    try {
-      await this.firebaseAdminService.deleteUserByEmail(email);
-    } catch {
-      /* empty */
-    }
+    await this.deleteFirebaseUser(email);
     await this.firebaseService.createFirebaseUser(email);
     await this.firebaseService.sendFirebasePasswordResetEmail(email);
   }
@@ -137,15 +128,13 @@ export class UsersService {
     if (await this.usersCoreService.findOneByEmail(email)) {
       throw new ConflictException('Email already registered');
     }
-    if (!(await this.firebaseService.checkEmailVerified(email))) {
-      throw new ForbiddenException('Email not verified');
-    }
 
     user.email = email;
 
     await this.cacheManager.del(this.usersCoreService.getUserCacheKey(id));
     const savedUser = await this.usersRepository.save(user);
     await this.cacheManager.del(this.getEmailVerificationCacheKey(email));
+    await this.deleteFirebaseUser(email);
     return savedUser;
   }
 
@@ -217,14 +206,12 @@ export class UsersService {
     await this.firebaseAdminService.deleteAllUsers();
   }
 
-  private async deliverEmailVerification(email: string) {
+  private async deleteFirebaseUser(email: string) {
     try {
       await this.firebaseAdminService.deleteUserByEmail(email);
     } catch {
       /* empty */
     }
-    await this.firebaseService.createFirebaseUser(email);
-    await this.firebaseService.sendFirebaseEmailVerification(email);
   }
 
   private getEmailVerificationCacheKey(email: string): string {

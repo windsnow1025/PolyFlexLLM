@@ -32,28 +32,12 @@ export class FirebaseService {
     return userCredential.user;
   }
 
-  async sendFirebaseEmailVerification(email: string) {
+  async sendFirebaseEmailVerification(email: string, continueUrl: string) {
     const user = await this.signInFirebaseUser(
       email,
       this.firebaseUserPassword,
     );
-    await sendEmailVerification(user);
-  }
-
-  async checkEmailVerified(email: string): Promise<boolean> {
-    try {
-      const user = await this.signInFirebaseUser(
-        email,
-        this.firebaseUserPassword,
-      );
-      if (!user.emailVerified) {
-        return false;
-      }
-      await deleteUser(user);
-    } catch {
-      return false;
-    }
-    return true;
+    await sendEmailVerification(user, { url: continueUrl });
   }
 
   async verifyFirebaseUser(email: string, password: string) {

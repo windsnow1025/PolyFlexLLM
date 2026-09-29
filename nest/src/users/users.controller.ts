@@ -27,7 +27,7 @@ import {
   UserRegistrationReqDto,
   UserUsernameReqDto,
 } from './dto/user.req.dto';
-import { EmailVerificationResDto, UserResDto } from './dto/user.res.dto';
+import { UserResDto } from './dto/user.res.dto';
 import { UsersCoreService } from './users.core.service';
 
 @Controller('users')
@@ -62,24 +62,8 @@ export class UsersController {
 
   @Public()
   @Post('user/email-verification')
-  async sendEmailVerification(
-    @Body() userEmailReqDto: UserEmailReqDto,
-  ): Promise<EmailVerificationResDto> {
-    const token = await this.usersService.sendEmailVerification(
-      userEmailReqDto.email,
-    );
-    return { token };
-  }
-
-  @Public()
-  @Put('user/email-verification')
-  async resendEmailVerification(
-    @Body() emailVerificationReqDto: EmailVerificationReqDto,
-  ) {
-    await this.usersService.resendEmailVerification(
-      emailVerificationReqDto.email,
-      emailVerificationReqDto.token,
-    );
+  async sendEmailVerification(@Body() userEmailReqDto: UserEmailReqDto) {
+    await this.usersService.sendEmailVerification(userEmailReqDto.email);
   }
 
   @Public()

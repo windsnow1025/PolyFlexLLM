@@ -8,7 +8,3 @@ export class UserResDto {
   avatar?: string;
   credit: number;
 }
-
-export class EmailVerificationResDto {
-  token: string;
-}

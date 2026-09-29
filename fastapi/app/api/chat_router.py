@@ -49,8 +49,6 @@ async def generate(
         raise HTTPException(status_code=400, detail="Invalid API Type and Model combination")
 
     user: UserResDto = await user_logic.get_user(token)
-    if not user.email_verified:
-        raise HTTPException(status_code=401, detail="Email not verified")
     if user.credit <= 0:
         raise HTTPException(status_code=402, detail="Insufficient credit")
 

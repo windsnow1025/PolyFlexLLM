@@ -16,18 +16,18 @@ import { RequestWithUser } from '../auth/interfaces/request-with-user.interface'
 import { UsersService } from './users.service';
 import { UserPrivilegesReqDto } from './dto/user.privileges.req.dto';
 import { Roles } from '../common/decorators/roles.decorator';
-import { AllowUnverifiedEmail } from '../common/decorators/allow-unverified-email.decorator';
 import { Role } from '../common/enums/role.enum';
 import {
+  EmailVerificationReqDto,
   ReduceCreditReqDto,
   UserAvatarReqDto,
   UserEmailPasswordReqDto,
   UserEmailReqDto,
   UserPasswordReqDto,
-  UserReqDto,
+  UserRegistrationReqDto,
   UserUsernameReqDto,
 } from './dto/user.req.dto';
-import { UserResDto } from './dto/user.res.dto';
+import { EmailVerificationResDto, UserResDto } from './dto/user.res.dto';
 import { UsersCoreService } from './users.core.service';
 
 @Controller('users')
@@ -43,7 +43,6 @@ export class UsersController {
     return users.map((user) => this.usersCoreService.toUserDto(user));
   }
 
-  @AllowUnverifiedEmail()
   @Get('user')
   find(@Request() req: RequestWithUser): UserResDto {
     return req.user;
@@ -51,34 +50,42 @@ export class UsersController {
 
   @Public()
   @Post('user')
-  async create(@Body() userReqDto: UserReqDto) {
+  async create(@Body() userRegistrationReqDto: UserRegistrationReqDto) {
     const user = await this.usersService.create(
-      userReqDto.username,
-      userReqDto.email,
-      userReqDto.password,
+      userRegistrationReqDto.username,
+      userRegistrationReqDto.email,
+      userRegistrationReqDto.password,
+      userRegistrationReqDto.token,
     );
     return this.usersCoreService.toUserDto(user);
   }
 
-  @AllowUnverifiedEmail()
+  @Public()
   @Post('user/email-verification')
-  async sendEmailVerification(@Body() userEmailReqDto: UserEmailReqDto) {
-    await this.usersService.sendEmailVerification(userEmailReqDto.email);
+  async sendEmailVerification(
+    @Body() userEmailReqDto: UserEmailReqDto,
+  ): Promise<EmailVerificationResDto> {
+    const token = await this.usersService.sendEmailVerification(
+      userEmailReqDto.email,
+    );
+    return { token };
+  }
+
+  @Public()
+  @Put('user/email-verification')
+  async resendEmailVerification(
+    @Body() emailVerificationReqDto: EmailVerificationReqDto,
+  ) {
+    await this.usersService.resendEmailVerification(
+      emailVerificationReqDto.email,
+      emailVerificationReqDto.token,
+    );
   }
 
   @Public()
   @Post('user/password-reset-email')
   async sendPasswordResetEmail(@Body() userEmailReqDto: UserEmailReqDto) {
     await this.usersService.sendPasswordResetEmail(userEmailReqDto.email);
-  }
-
-  @AllowUnverifiedEmail()
-  @Put('user/email-verified')
-  async updateEmailVerified(@Request() req: RequestWithUser) {
-    const user = await this.usersCoreService.updateEmailVerified(
-      req.user.email,
-    );
-    return this.usersCoreService.toUserDto(user);
   }
 
   @Public()
@@ -91,14 +98,17 @@ export class UsersController {
     return this.usersCoreService.toUserDto(user);
   }
 
-  @AllowUnverifiedEmail()
   @Put('user/email')
   async updateEmail(
     @Request() req: RequestWithUser,
-    @Body() userEmailReqDto: UserEmailReqDto,
+    @Body() emailVerificationReqDto: EmailVerificationReqDto,
   ): Promise<UserResDto> {
     const id = req.user.id;
-    const user = await this.usersService.updateEmail(id, userEmailReqDto.email);
+    const user = await this.usersService.updateEmail(
+      id,
+      emailVerificationReqDto.email,
+      emailVerificationReqDto.token,
+    );
     return this.usersCoreService.toUserDto(user);
   }
 
@@ -150,7 +160,6 @@ export class UsersController {
   async updatePrivileges(@Body() userPrivilegesReqDto: UserPrivilegesReqDto) {
     const user = await this.usersService.updatePrivileges(
       userPrivilegesReqDto.username,
-      userPrivilegesReqDto.emailVerified,
       userPrivilegesReqDto.roles,
       userPrivilegesReqDto.credit,
     );

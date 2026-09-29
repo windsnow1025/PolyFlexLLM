@@ -9,7 +9,6 @@ import { Repository } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
 import { User } from './user.entity';
 import { UserResDto } from './dto/user.res.dto';
-import { FirebaseService } from './firebase.service';
 import { Cache, CACHE_MANAGER } from '@nestjs/cache-manager';
 
 @Injectable()
@@ -21,7 +20,6 @@ export class UsersCoreService {
     private usersRepository: Repository<User>,
     @Inject(CACHE_MANAGER)
     private cacheManager: Cache,
-    private readonly firebaseService: FirebaseService,
   ) {}
 
   public toUserDto(user: User) {
@@ -29,7 +27,6 @@ export class UsersCoreService {
       id: user.id,
       username: user.username,
       email: user.email,
-      emailVerified: user.emailVerified,
       roles: user.roles,
       avatar: user.avatar,
       credit: user.credit,
@@ -76,25 +73,6 @@ export class UsersCoreService {
       throw new UnauthorizedException();
     }
     return this.usersRepository.findOneBy({ email });
-  }
-
-  async updateEmailVerified(email: string) {
-    const user = await this.findOneByEmail(email);
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
-    if (user.emailVerified) {
-      return user;
-    }
-
-    if (!(await this.firebaseService.checkEmailVerified(email))) {
-      return user;
-    }
-
-    user.emailVerified = true;
-
-    await this.cacheManager.del(this.getUserCacheKey(user.id));
-    return await this.usersRepository.save(user);
   }
 
   async adjustCredit(id: number, amount: number) {

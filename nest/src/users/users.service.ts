@@ -1,5 +1,6 @@
 import {
   ConflictException,
+  ForbiddenException,
   Inject,
   Injectable,
   NotFoundException,
@@ -7,6 +8,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { createHash, randomBytes } from 'node:crypto';
 import * as bcrypt from 'bcryptjs';
 import { User } from './user.entity';
 import { Role } from '../common/enums/role.enum';
@@ -18,6 +20,8 @@ import { ConversationsCoreService } from '../conversations/conversations.core.se
 
 @Injectable()
 export class UsersService {
+  private readonly emailVerificationTtl = 15 * 60 * 1000;
+
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
@@ -35,12 +39,21 @@ export class UsersService {
     });
   }
 
-  async create(username: string, email: string, password: string) {
-    if (
-      (await this.usersCoreService.findOneByUsername(username)) ||
-      (await this.usersCoreService.findOneByEmail(email))
-    ) {
-      throw new ConflictException();
+  async create(
+    username: string,
+    email: string,
+    password: string,
+    token: string,
+  ) {
+    await this.checkEmailVerificationToken(email, token);
+    if (await this.usersCoreService.findOneByUsername(username)) {
+      throw new ConflictException('Username already registered');
+    }
+    if (await this.usersCoreService.findOneByEmail(email)) {
+      throw new ConflictException('Email already registered');
+    }
+    if (!(await this.firebaseService.checkEmailVerified(email))) {
+      throw new ForbiddenException('Email not verified');
     }
 
     const user = new User();
@@ -49,17 +62,42 @@ export class UsersService {
     user.password = await this.hashPassword(password);
     user.roles = [Role.User];
 
-    return await this.usersRepository.save(user);
+    const savedUser = await this.usersRepository.save(user);
+    await this.cacheManager.del(this.getEmailVerificationCacheKey(email));
+    return savedUser;
   }
 
-  async sendEmailVerification(email: string) {
-    try {
-      await this.firebaseAdminService.deleteUserByEmail(email);
-    } catch {
-      /* empty */
+  async sendEmailVerification(email: string): Promise<string> {
+    if (await this.usersCoreService.findOneByEmail(email)) {
+      throw new ConflictException('Email already registered');
     }
-    await this.firebaseService.createFirebaseUser(email);
-    await this.firebaseService.sendFirebaseEmailVerification(email);
+
+    const cacheKey = this.getEmailVerificationCacheKey(email);
+    if (await this.cacheManager.get<string>(cacheKey)) {
+      throw new ConflictException('Email verification already pending');
+    }
+
+    const token = randomBytes(32).toString('hex');
+    await this.cacheManager.set(
+      cacheKey,
+      this.hashToken(token),
+      this.emailVerificationTtl,
+    );
+
+    await this.deliverEmailVerification(email);
+
+    return token;
+  }
+
+  async resendEmailVerification(email: string, token: string) {
+    await this.checkEmailVerificationToken(email, token);
+    await this.cacheManager.set(
+      this.getEmailVerificationCacheKey(email),
+      this.hashToken(token),
+      this.emailVerificationTtl,
+    );
+
+    await this.deliverEmailVerification(email);
   }
 
   async sendPasswordResetEmail(email: string) {
@@ -85,7 +123,7 @@ export class UsersService {
     return await this.updatePassword(user, password);
   }
 
-  async updateEmail(id: number, email: string) {
+  async updateEmail(id: number, email: string, token: string) {
     const user = await this.usersCoreService.findOneById(id);
     if (!user) {
       throw new NotFoundException('User not found');
@@ -95,15 +133,20 @@ export class UsersService {
       return user;
     }
 
+    await this.checkEmailVerificationToken(email, token);
     if (await this.usersCoreService.findOneByEmail(email)) {
-      throw new ConflictException();
+      throw new ConflictException('Email already registered');
+    }
+    if (!(await this.firebaseService.checkEmailVerified(email))) {
+      throw new ForbiddenException('Email not verified');
     }
 
     user.email = email;
-    user.emailVerified = false;
 
     await this.cacheManager.del(this.usersCoreService.getUserCacheKey(id));
-    return await this.usersRepository.save(user);
+    const savedUser = await this.usersRepository.save(user);
+    await this.cacheManager.del(this.getEmailVerificationCacheKey(email));
+    return savedUser;
   }
 
   async updateUsername(id: number, username: string) {
@@ -146,18 +189,12 @@ export class UsersService {
     return await this.usersRepository.save(user);
   }
 
-  async updatePrivileges(
-    username: string,
-    emailVerified: boolean,
-    roles: Role[],
-    credit: number,
-  ) {
+  async updatePrivileges(username: string, roles: Role[], credit: number) {
     const user = await this.usersCoreService.findOneByUsername(username);
     if (!user) {
       throw new NotFoundException('User not found');
     }
 
-    user.emailVerified = emailVerified;
     user.roles = roles;
     user.credit = credit;
 
@@ -178,6 +215,36 @@ export class UsersService {
 
   async deleteAllFirebaseUsers() {
     await this.firebaseAdminService.deleteAllUsers();
+  }
+
+  private async deliverEmailVerification(email: string) {
+    try {
+      await this.firebaseAdminService.deleteUserByEmail(email);
+    } catch {
+      /* empty */
+    }
+    await this.firebaseService.createFirebaseUser(email);
+    await this.firebaseService.sendFirebaseEmailVerification(email);
+  }
+
+  private getEmailVerificationCacheKey(email: string): string {
+    return `email-verification:${email}`;
+  }
+
+  private hashToken(token: string): string {
+    return createHash('sha256').update(token).digest('hex');
+  }
+
+  private async checkEmailVerificationToken(email: string, token: string) {
+    const tokenHash = await this.cacheManager.get<string>(
+      this.getEmailVerificationCacheKey(email),
+    );
+    if (!tokenHash) {
+      throw new NotFoundException('Email verification not found or expired');
+    }
+    if (this.hashToken(token) !== tokenHash) {
+      throw new ForbiddenException('Invalid email verification token');
+    }
   }
 
   private async hashPassword(password: string) {

@@ -9,7 +9,6 @@ import configuration from './config/configuration';
 import { AppConfig } from './config/config.interface';
 import { AuthGuard } from './common/guards/auth.guard';
 import { RolesGuard } from './common/guards/roles.guard';
-import { EmailVerificationGuard } from './common/guards/email-verification.guard';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { CoreModule } from './core/core.module';
@@ -97,10 +96,6 @@ import { PaymentModule } from './payment/payment.module';
     {
       provide: APP_GUARD,
       useClass: AuthGuard,
-    },
-    {
-      provide: APP_GUARD,
-      useClass: EmailVerificationGuard,
     },
     {
       provide: APP_GUARD,

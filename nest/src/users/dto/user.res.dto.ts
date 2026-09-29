@@ -4,8 +4,11 @@ export class UserResDto {
   id: number;
   username: string;
   email: string;
-  emailVerified: boolean;
   roles: Role[];
   avatar?: string;
   credit: number;
+}
+
+export class EmailVerificationResDto {
+  token: string;
 }

@@ -18,17 +18,9 @@ export class User extends BaseEntity {
   @Column({
     type: 'varchar',
     length: 255,
-    // unique: true,
-    nullable: true,
+    unique: true,
   })
   email: string;
-
-  @Column({
-    type: 'boolean',
-    default: false,
-    name: 'email_verified',
-  })
-  emailVerified: boolean;
 
   @Column({
     type: 'varchar',

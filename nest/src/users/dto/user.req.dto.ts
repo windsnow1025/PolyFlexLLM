@@ -1,6 +1,6 @@
 import { IsNumber, IsString, IsUrl, Min } from 'class-validator';
 
-export class UserReqDto {
+export class UserRegistrationReqDto {
   @IsString()
   username: string;
 
@@ -9,6 +9,9 @@ export class UserReqDto {
 
   @IsString()
   password: string;
+
+  @IsString()
+  token: string;
 }
 
 export class UserEmailPasswordReqDto {
@@ -17,6 +20,14 @@ export class UserEmailPasswordReqDto {
 
   @IsString()
   password: string;
+}
+
+export class EmailVerificationReqDto {
+  @IsString()
+  email: string;
+
+  @IsString()
+  token: string;
 }
 
 export class UserEmailReqDto {

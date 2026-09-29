@@ -1,6 +1,5 @@
 .gitignore
 .npmignore
-.openapi-generator-ignore
 api.ts
 base.ts
 common.ts
@@ -43,10 +42,11 @@ docs/UserEmailPasswordReqDto.md
 docs/UserEmailReqDto.md
 docs/UserPasswordReqDto.md
 docs/UserPrivilegesReqDto.md
-docs/UserRegistrationReqDto.md
 docs/UserResDto.md
+docs/UserSignUpReqDto.md
 docs/UserUsernameReqDto.md
 docs/UsersApi.md
+docs/VerifiedEmailReqDto.md
 docs/WebUrlResDto.md
 git_push.sh
 index.ts

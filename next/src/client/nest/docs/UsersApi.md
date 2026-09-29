@@ -21,7 +21,7 @@ All URIs are relative to *http://localhost*
 |[**usersControllerUpdateUsername**](#userscontrollerupdateusername) | **PUT** /users/user/username | |
 
 # **usersControllerCreate**
-> UserResDto usersControllerCreate(userRegistrationReqDto)
+> UserResDto usersControllerCreate(userSignUpReqDto)
 
 
 ### Example
@@ -30,16 +30,16 @@ All URIs are relative to *http://localhost*
 import {
     UsersApi,
     Configuration,
-    UserRegistrationReqDto
+    UserSignUpReqDto
 } from './api';
 
 const configuration = new Configuration();
 const apiInstance = new UsersApi(configuration);
 
-let userRegistrationReqDto: UserRegistrationReqDto; //
+let userSignUpReqDto: UserSignUpReqDto; //
 
 const { status, data } = await apiInstance.usersControllerCreate(
-    userRegistrationReqDto
+    userSignUpReqDto
 );
 ```
 
@@ -47,7 +47,7 @@ const { status, data } = await apiInstance.usersControllerCreate(
 
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
-| **userRegistrationReqDto** | **UserRegistrationReqDto**|  | |
+| **userSignUpReqDto** | **UserSignUpReqDto**|  | |
 
 
 ### Return type
@@ -345,7 +345,7 @@ const { status, data } = await apiInstance.usersControllerReduceCredit(
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **usersControllerSendEmailVerification**
-> usersControllerSendEmailVerification(userEmailReqDto)
+> usersControllerSendEmailVerification(emailVerificationReqDto)
 
 
 ### Example
@@ -354,16 +354,16 @@ const { status, data } = await apiInstance.usersControllerReduceCredit(
 import {
     UsersApi,
     Configuration,
-    UserEmailReqDto
+    EmailVerificationReqDto
 } from './api';
 
 const configuration = new Configuration();
 const apiInstance = new UsersApi(configuration);
 
-let userEmailReqDto: UserEmailReqDto; //
+let emailVerificationReqDto: EmailVerificationReqDto; //
 
 const { status, data } = await apiInstance.usersControllerSendEmailVerification(
-    userEmailReqDto
+    emailVerificationReqDto
 );
 ```
 
@@ -371,7 +371,7 @@ const { status, data } = await apiInstance.usersControllerSendEmailVerification(
 
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
-| **userEmailReqDto** | **UserEmailReqDto**|  | |
+| **emailVerificationReqDto** | **EmailVerificationReqDto**|  | |
 
 
 ### Return type
@@ -498,7 +498,7 @@ const { status, data } = await apiInstance.usersControllerUpdateAvatar(
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **usersControllerUpdateEmail**
-> UserResDto usersControllerUpdateEmail(emailVerificationReqDto)
+> UserResDto usersControllerUpdateEmail(verifiedEmailReqDto)
 
 
 ### Example
@@ -507,16 +507,16 @@ const { status, data } = await apiInstance.usersControllerUpdateAvatar(
 import {
     UsersApi,
     Configuration,
-    EmailVerificationReqDto
+    VerifiedEmailReqDto
 } from './api';
 
 const configuration = new Configuration();
 const apiInstance = new UsersApi(configuration);
 
-let emailVerificationReqDto: EmailVerificationReqDto; //
+let verifiedEmailReqDto: VerifiedEmailReqDto; //
 
 const { status, data } = await apiInstance.usersControllerUpdateEmail(
-    emailVerificationReqDto
+    verifiedEmailReqDto
 );
 ```
 
@@ -524,7 +524,7 @@ const { status, data } = await apiInstance.usersControllerUpdateEmail(
 
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
-| **emailVerificationReqDto** | **EmailVerificationReqDto**|  | |
+| **verifiedEmailReqDto** | **VerifiedEmailReqDto**|  | |
 
 
 ### Return type

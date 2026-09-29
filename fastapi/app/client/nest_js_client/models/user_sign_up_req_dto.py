@@ -6,34 +6,42 @@ from typing import Any, TypeVar
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-from ..models.email_verification_req_dto_purpose import EmailVerificationReqDtoPurpose
-
-T = TypeVar("T", bound="EmailVerificationReqDto")
+T = TypeVar("T", bound="UserSignUpReqDto")
 
 
 @_attrs_define
-class EmailVerificationReqDto:
+class UserSignUpReqDto:
     """
     Attributes:
+        username (str):
         email (str):
-        purpose (EmailVerificationReqDtoPurpose):
+        password (str):
+        token (str):
     """
 
+    username: str
     email: str
-    purpose: EmailVerificationReqDtoPurpose
+    password: str
+    token: str
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
+        username = self.username
+
         email = self.email
 
-        purpose = self.purpose.value
+        password = self.password
+
+        token = self.token
 
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
         field_dict.update(
             {
+                "username": username,
                 "email": email,
-                "purpose": purpose,
+                "password": password,
+                "token": token,
             }
         )
 
@@ -42,17 +50,23 @@ class EmailVerificationReqDto:
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         d = dict(src_dict)
+        username = d.pop("username")
+
         email = d.pop("email")
 
-        purpose = EmailVerificationReqDtoPurpose(d.pop("purpose"))
+        password = d.pop("password")
 
-        email_verification_req_dto = cls(
+        token = d.pop("token")
+
+        user_sign_up_req_dto = cls(
+            username=username,
             email=email,
-            purpose=purpose,
+            password=password,
+            token=token,
         )
 
-        email_verification_req_dto.additional_properties = d
-        return email_verification_req_dto
+        user_sign_up_req_dto.additional_properties = d
+        return user_sign_up_req_dto
 
     @property
     def additional_keys(self) -> list[str]:

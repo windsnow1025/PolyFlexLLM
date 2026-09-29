@@ -90,8 +90,16 @@ export interface ConversationVersionResDto {
 }
 export interface EmailVerificationReqDto {
     'email': string;
-    'token': string;
+    'purpose': EmailVerificationReqDtoPurposeEnum;
 }
+
+export const EmailVerificationReqDtoPurposeEnum = {
+    SignUp: 'sign-up',
+    EmailChange: 'email-change'
+} as const;
+
+export type EmailVerificationReqDtoPurposeEnum = typeof EmailVerificationReqDtoPurposeEnum[keyof typeof EmailVerificationReqDtoPurposeEnum];
+
 export interface FilesReqDto {
     'filenames': Array<string>;
 }
@@ -172,12 +180,6 @@ export const UserPrivilegesReqDtoRolesEnum = {
 
 export type UserPrivilegesReqDtoRolesEnum = typeof UserPrivilegesReqDtoRolesEnum[keyof typeof UserPrivilegesReqDtoRolesEnum];
 
-export interface UserRegistrationReqDto {
-    'username': string;
-    'email': string;
-    'password': string;
-    'token': string;
-}
 export interface UserResDto {
     'id': number;
     'username': string;
@@ -194,8 +196,18 @@ export const UserResDtoRolesEnum = {
 
 export type UserResDtoRolesEnum = typeof UserResDtoRolesEnum[keyof typeof UserResDtoRolesEnum];
 
+export interface UserSignUpReqDto {
+    'username': string;
+    'email': string;
+    'password': string;
+    'token': string;
+}
 export interface UserUsernameReqDto {
     'username': string;
+}
+export interface VerifiedEmailReqDto {
+    'email': string;
+    'token': string;
 }
 export interface WebUrlResDto {
     'webUrl': string;
@@ -3022,13 +3034,13 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
     return {
         /**
          * 
-         * @param {UserRegistrationReqDto} userRegistrationReqDto 
+         * @param {UserSignUpReqDto} userSignUpReqDto 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        usersControllerCreate: async (userRegistrationReqDto: UserRegistrationReqDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'userRegistrationReqDto' is not null or undefined
-            assertParamExists('usersControllerCreate', 'userRegistrationReqDto', userRegistrationReqDto)
+        usersControllerCreate: async (userSignUpReqDto: UserSignUpReqDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'userSignUpReqDto' is not null or undefined
+            assertParamExists('usersControllerCreate', 'userSignUpReqDto', userSignUpReqDto)
             const localVarPath = `/users/user`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -3052,7 +3064,7 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(userRegistrationReqDto, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(userSignUpReqDto, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -3269,13 +3281,13 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
         },
         /**
          * 
-         * @param {UserEmailReqDto} userEmailReqDto 
+         * @param {EmailVerificationReqDto} emailVerificationReqDto 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        usersControllerSendEmailVerification: async (userEmailReqDto: UserEmailReqDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'userEmailReqDto' is not null or undefined
-            assertParamExists('usersControllerSendEmailVerification', 'userEmailReqDto', userEmailReqDto)
+        usersControllerSendEmailVerification: async (emailVerificationReqDto: EmailVerificationReqDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'emailVerificationReqDto' is not null or undefined
+            assertParamExists('usersControllerSendEmailVerification', 'emailVerificationReqDto', emailVerificationReqDto)
             const localVarPath = `/users/user/email-verification`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -3299,7 +3311,7 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(userEmailReqDto, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(emailVerificationReqDto, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -3386,13 +3398,13 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
         },
         /**
          * 
-         * @param {EmailVerificationReqDto} emailVerificationReqDto 
+         * @param {VerifiedEmailReqDto} verifiedEmailReqDto 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        usersControllerUpdateEmail: async (emailVerificationReqDto: EmailVerificationReqDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'emailVerificationReqDto' is not null or undefined
-            assertParamExists('usersControllerUpdateEmail', 'emailVerificationReqDto', emailVerificationReqDto)
+        usersControllerUpdateEmail: async (verifiedEmailReqDto: VerifiedEmailReqDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'verifiedEmailReqDto' is not null or undefined
+            assertParamExists('usersControllerUpdateEmail', 'verifiedEmailReqDto', verifiedEmailReqDto)
             const localVarPath = `/users/user/email`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -3416,7 +3428,7 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(emailVerificationReqDto, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(verifiedEmailReqDto, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -3590,12 +3602,12 @@ export const UsersApiFp = function(configuration?: Configuration) {
     return {
         /**
          * 
-         * @param {UserRegistrationReqDto} userRegistrationReqDto 
+         * @param {UserSignUpReqDto} userSignUpReqDto 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async usersControllerCreate(userRegistrationReqDto: UserRegistrationReqDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UserResDto>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.usersControllerCreate(userRegistrationReqDto, options);
+        async usersControllerCreate(userSignUpReqDto: UserSignUpReqDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UserResDto>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.usersControllerCreate(userSignUpReqDto, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['UsersApi.usersControllerCreate']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -3670,12 +3682,12 @@ export const UsersApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @param {UserEmailReqDto} userEmailReqDto 
+         * @param {EmailVerificationReqDto} emailVerificationReqDto 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async usersControllerSendEmailVerification(userEmailReqDto: UserEmailReqDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.usersControllerSendEmailVerification(userEmailReqDto, options);
+        async usersControllerSendEmailVerification(emailVerificationReqDto: EmailVerificationReqDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.usersControllerSendEmailVerification(emailVerificationReqDto, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['UsersApi.usersControllerSendEmailVerification']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -3706,12 +3718,12 @@ export const UsersApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @param {EmailVerificationReqDto} emailVerificationReqDto 
+         * @param {VerifiedEmailReqDto} verifiedEmailReqDto 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async usersControllerUpdateEmail(emailVerificationReqDto: EmailVerificationReqDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UserResDto>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.usersControllerUpdateEmail(emailVerificationReqDto, options);
+        async usersControllerUpdateEmail(verifiedEmailReqDto: VerifiedEmailReqDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UserResDto>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.usersControllerUpdateEmail(verifiedEmailReqDto, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['UsersApi.usersControllerUpdateEmail']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -3775,12 +3787,12 @@ export const UsersApiFactory = function (configuration?: Configuration, basePath
     return {
         /**
          * 
-         * @param {UserRegistrationReqDto} userRegistrationReqDto 
+         * @param {UserSignUpReqDto} userSignUpReqDto 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        usersControllerCreate(userRegistrationReqDto: UserRegistrationReqDto, options?: RawAxiosRequestConfig): AxiosPromise<UserResDto> {
-            return localVarFp.usersControllerCreate(userRegistrationReqDto, options).then((request) => request(axios, basePath));
+        usersControllerCreate(userSignUpReqDto: UserSignUpReqDto, options?: RawAxiosRequestConfig): AxiosPromise<UserResDto> {
+            return localVarFp.usersControllerCreate(userSignUpReqDto, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -3834,12 +3846,12 @@ export const UsersApiFactory = function (configuration?: Configuration, basePath
         },
         /**
          * 
-         * @param {UserEmailReqDto} userEmailReqDto 
+         * @param {EmailVerificationReqDto} emailVerificationReqDto 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        usersControllerSendEmailVerification(userEmailReqDto: UserEmailReqDto, options?: RawAxiosRequestConfig): AxiosPromise<void> {
-            return localVarFp.usersControllerSendEmailVerification(userEmailReqDto, options).then((request) => request(axios, basePath));
+        usersControllerSendEmailVerification(emailVerificationReqDto: EmailVerificationReqDto, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.usersControllerSendEmailVerification(emailVerificationReqDto, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -3861,12 +3873,12 @@ export const UsersApiFactory = function (configuration?: Configuration, basePath
         },
         /**
          * 
-         * @param {EmailVerificationReqDto} emailVerificationReqDto 
+         * @param {VerifiedEmailReqDto} verifiedEmailReqDto 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        usersControllerUpdateEmail(emailVerificationReqDto: EmailVerificationReqDto, options?: RawAxiosRequestConfig): AxiosPromise<UserResDto> {
-            return localVarFp.usersControllerUpdateEmail(emailVerificationReqDto, options).then((request) => request(axios, basePath));
+        usersControllerUpdateEmail(verifiedEmailReqDto: VerifiedEmailReqDto, options?: RawAxiosRequestConfig): AxiosPromise<UserResDto> {
+            return localVarFp.usersControllerUpdateEmail(verifiedEmailReqDto, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -3913,12 +3925,12 @@ export const UsersApiFactory = function (configuration?: Configuration, basePath
 export class UsersApi extends BaseAPI {
     /**
      * 
-     * @param {UserRegistrationReqDto} userRegistrationReqDto 
+     * @param {UserSignUpReqDto} userSignUpReqDto 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    public usersControllerCreate(userRegistrationReqDto: UserRegistrationReqDto, options?: RawAxiosRequestConfig) {
-        return UsersApiFp(this.configuration).usersControllerCreate(userRegistrationReqDto, options).then((request) => request(this.axios, this.basePath));
+    public usersControllerCreate(userSignUpReqDto: UserSignUpReqDto, options?: RawAxiosRequestConfig) {
+        return UsersApiFp(this.configuration).usersControllerCreate(userSignUpReqDto, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -3979,12 +3991,12 @@ export class UsersApi extends BaseAPI {
 
     /**
      * 
-     * @param {UserEmailReqDto} userEmailReqDto 
+     * @param {EmailVerificationReqDto} emailVerificationReqDto 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    public usersControllerSendEmailVerification(userEmailReqDto: UserEmailReqDto, options?: RawAxiosRequestConfig) {
-        return UsersApiFp(this.configuration).usersControllerSendEmailVerification(userEmailReqDto, options).then((request) => request(this.axios, this.basePath));
+    public usersControllerSendEmailVerification(emailVerificationReqDto: EmailVerificationReqDto, options?: RawAxiosRequestConfig) {
+        return UsersApiFp(this.configuration).usersControllerSendEmailVerification(emailVerificationReqDto, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -4009,12 +4021,12 @@ export class UsersApi extends BaseAPI {
 
     /**
      * 
-     * @param {EmailVerificationReqDto} emailVerificationReqDto 
+     * @param {VerifiedEmailReqDto} verifiedEmailReqDto 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    public usersControllerUpdateEmail(emailVerificationReqDto: EmailVerificationReqDto, options?: RawAxiosRequestConfig) {
-        return UsersApiFp(this.configuration).usersControllerUpdateEmail(emailVerificationReqDto, options).then((request) => request(this.axios, this.basePath));
+    public usersControllerUpdateEmail(verifiedEmailReqDto: VerifiedEmailReqDto, options?: RawAxiosRequestConfig) {
+        return UsersApiFp(this.configuration).usersControllerUpdateEmail(verifiedEmailReqDto, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

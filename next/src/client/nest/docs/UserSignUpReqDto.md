@@ -1,21 +1,25 @@
-# EmailVerificationReqDto
+# UserSignUpReqDto
 
 
 ## Properties
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
+**username** | **string** |  | [default to undefined]
 **email** | **string** |  | [default to undefined]
-**purpose** | **string** |  | [default to undefined]
+**password** | **string** |  | [default to undefined]
+**token** | **string** |  | [default to undefined]
 
 ## Example
 
 ```typescript
-import { EmailVerificationReqDto } from './api';
+import { UserSignUpReqDto } from './api';
 
-const instance: EmailVerificationReqDto = {
+const instance: UserSignUpReqDto = {
+    username,
     email,
-    purpose,
+    password,
+    token,
 };
 ```
 

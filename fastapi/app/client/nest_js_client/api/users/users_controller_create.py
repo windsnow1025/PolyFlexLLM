@@ -5,14 +5,14 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
-from ...models.user_registration_req_dto import UserRegistrationReqDto
 from ...models.user_res_dto import UserResDto
+from ...models.user_sign_up_req_dto import UserSignUpReqDto
 from ...types import Response
 
 
 def _get_kwargs(
     *,
-    body: UserRegistrationReqDto,
+    body: UserSignUpReqDto,
 ) -> dict[str, Any]:
     headers: dict[str, Any] = {}
 
@@ -53,11 +53,11 @@ def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Res
 def sync_detailed(
     *,
     client: AuthenticatedClient | Client,
-    body: UserRegistrationReqDto,
+    body: UserSignUpReqDto,
 ) -> Response[UserResDto]:
     """
     Args:
-        body (UserRegistrationReqDto):
+        body (UserSignUpReqDto):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -81,11 +81,11 @@ def sync_detailed(
 def sync(
     *,
     client: AuthenticatedClient | Client,
-    body: UserRegistrationReqDto,
+    body: UserSignUpReqDto,
 ) -> UserResDto | None:
     """
     Args:
-        body (UserRegistrationReqDto):
+        body (UserSignUpReqDto):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -104,11 +104,11 @@ def sync(
 async def asyncio_detailed(
     *,
     client: AuthenticatedClient | Client,
-    body: UserRegistrationReqDto,
+    body: UserSignUpReqDto,
 ) -> Response[UserResDto]:
     """
     Args:
-        body (UserRegistrationReqDto):
+        body (UserSignUpReqDto):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -130,11 +130,11 @@ async def asyncio_detailed(
 async def asyncio(
     *,
     client: AuthenticatedClient | Client,
-    body: UserRegistrationReqDto,
+    body: UserSignUpReqDto,
 ) -> UserResDto | None:
     """
     Args:
-        body (UserRegistrationReqDto):
+        body (UserSignUpReqDto):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.

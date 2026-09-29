@@ -1,24 +1,20 @@
-# UserRegistrationReqDto
+# VerifiedEmailReqDto
 
 
 ## Properties
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**username** | **string** |  | [default to undefined]
 **email** | **string** |  | [default to undefined]
-**password** | **string** |  | [default to undefined]
 **token** | **string** |  | [default to undefined]
 
 ## Example
 
 ```typescript
-import { UserRegistrationReqDto } from './api';
+import { VerifiedEmailReqDto } from './api';
 
-const instance: UserRegistrationReqDto = {
-    username,
+const instance: VerifiedEmailReqDto = {
     email,
-    password,
     token,
 };
 ```

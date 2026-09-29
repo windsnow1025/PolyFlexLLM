@@ -16,7 +16,6 @@ from .conversation_req_dto import ConversationReqDto
 from .conversation_res_dto import ConversationResDto
 from .conversation_version_res_dto import ConversationVersionResDto
 from .email_verification_req_dto import EmailVerificationReqDto
-from .email_verification_res_dto import EmailVerificationResDto
 from .files_req_dto import FilesReqDto
 from .files_res_dto import FilesResDto
 from .label_req_dto import LabelReqDto
@@ -57,7 +56,6 @@ __all__ = (
     "ConversationResDto",
     "ConversationVersionResDto",
     "EmailVerificationReqDto",
-    "EmailVerificationResDto",
     "FilesReqDto",
     "FilesResDto",
     "LabelReqDto",

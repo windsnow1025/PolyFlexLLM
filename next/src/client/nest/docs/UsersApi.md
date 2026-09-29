@@ -11,7 +11,6 @@ All URIs are relative to *http://localhost*
 |[**usersControllerFind**](#userscontrollerfind) | **GET** /users/user | |
 |[**usersControllerFindAll**](#userscontrollerfindall) | **GET** /users | |
 |[**usersControllerReduceCredit**](#userscontrollerreducecredit) | **PATCH** /users/user/reduce-credit | |
-|[**usersControllerResendEmailVerification**](#userscontrollerresendemailverification) | **PUT** /users/user/email-verification | |
 |[**usersControllerSendEmailVerification**](#userscontrollersendemailverification) | **POST** /users/user/email-verification | |
 |[**usersControllerSendPasswordResetEmail**](#userscontrollersendpasswordresetemail) | **POST** /users/user/password-reset-email | |
 |[**usersControllerUpdateAvatar**](#userscontrollerupdateavatar) | **PUT** /users/user/avatar | |
@@ -345,59 +344,8 @@ const { status, data } = await apiInstance.usersControllerReduceCredit(
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **usersControllerResendEmailVerification**
-> usersControllerResendEmailVerification(emailVerificationReqDto)
-
-
-### Example
-
-```typescript
-import {
-    UsersApi,
-    Configuration,
-    EmailVerificationReqDto
-} from './api';
-
-const configuration = new Configuration();
-const apiInstance = new UsersApi(configuration);
-
-let emailVerificationReqDto: EmailVerificationReqDto; //
-
-const { status, data } = await apiInstance.usersControllerResendEmailVerification(
-    emailVerificationReqDto
-);
-```
-
-### Parameters
-
-|Name | Type | Description  | Notes|
-|------------- | ------------- | ------------- | -------------|
-| **emailVerificationReqDto** | **EmailVerificationReqDto**|  | |
-
-
-### Return type
-
-void (empty response body)
-
-### Authorization
-
-[bearer](../README.md#bearer)
-
-### HTTP request headers
-
- - **Content-Type**: application/json
- - **Accept**: Not defined
-
-
-### HTTP response details
-| Status code | Description | Response headers |
-|-------------|-------------|------------------|
-|**200** |  |  -  |
-
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
-
 # **usersControllerSendEmailVerification**
-> EmailVerificationResDto usersControllerSendEmailVerification(userEmailReqDto)
+> usersControllerSendEmailVerification(userEmailReqDto)
 
 
 ### Example
@@ -428,7 +376,7 @@ const { status, data } = await apiInstance.usersControllerSendEmailVerification(
 
 ### Return type
 
-**EmailVerificationResDto**
+void (empty response body)
 
 ### Authorization
 
@@ -437,7 +385,7 @@ const { status, data } = await apiInstance.usersControllerSendEmailVerification(
 ### HTTP request headers
 
  - **Content-Type**: application/json
- - **Accept**: application/json
+ - **Accept**: Not defined
 
 
 ### HTTP response details

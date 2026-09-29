@@ -24,7 +24,6 @@ docs/ConversationResDto.md
 docs/ConversationVersionResDto.md
 docs/ConversationsApi.md
 docs/EmailVerificationReqDto.md
-docs/EmailVerificationResDto.md
 docs/FilesApi.md
 docs/FilesReqDto.md
 docs/FilesResDto.md

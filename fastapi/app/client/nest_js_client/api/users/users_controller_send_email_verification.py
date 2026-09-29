@@ -5,7 +5,6 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
-from ...models.email_verification_res_dto import EmailVerificationResDto
 from ...models.user_email_req_dto import UserEmailReqDto
 from ...types import Response
 
@@ -29,13 +28,9 @@ def _get_kwargs(
     return _kwargs
 
 
-def _parse_response(
-    *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> EmailVerificationResDto | None:
+def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Any | None:
     if response.status_code == 201:
-        response_201 = EmailVerificationResDto.from_dict(response.json())
-
-        return response_201
+        return None
 
     if client.raise_on_unexpected_status:
         raise errors.UnexpectedStatus(response.status_code, response.content)
@@ -43,9 +38,7 @@ def _parse_response(
         return None
 
 
-def _build_response(
-    *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[EmailVerificationResDto]:
+def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[Any]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -58,7 +51,7 @@ def sync_detailed(
     *,
     client: AuthenticatedClient | Client,
     body: UserEmailReqDto,
-) -> Response[EmailVerificationResDto]:
+) -> Response[Any]:
     """
     Args:
         body (UserEmailReqDto):
@@ -68,7 +61,7 @@ def sync_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[EmailVerificationResDto]
+        Response[Any]
     """
 
     kwargs = _get_kwargs(
@@ -82,34 +75,11 @@ def sync_detailed(
     return _build_response(client=client, response=response)
 
 
-def sync(
-    *,
-    client: AuthenticatedClient | Client,
-    body: UserEmailReqDto,
-) -> EmailVerificationResDto | None:
-    """
-    Args:
-        body (UserEmailReqDto):
-
-    Raises:
-        errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-        httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-    Returns:
-        EmailVerificationResDto
-    """
-
-    return sync_detailed(
-        client=client,
-        body=body,
-    ).parsed
-
-
 async def asyncio_detailed(
     *,
     client: AuthenticatedClient | Client,
     body: UserEmailReqDto,
-) -> Response[EmailVerificationResDto]:
+) -> Response[Any]:
     """
     Args:
         body (UserEmailReqDto):
@@ -119,7 +89,7 @@ async def asyncio_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[EmailVerificationResDto]
+        Response[Any]
     """
 
     kwargs = _get_kwargs(
@@ -129,28 +99,3 @@ async def asyncio_detailed(
     response = await client.get_async_httpx_client().request(**kwargs)
 
     return _build_response(client=client, response=response)
-
-
-async def asyncio(
-    *,
-    client: AuthenticatedClient | Client,
-    body: UserEmailReqDto,
-) -> EmailVerificationResDto | None:
-    """
-    Args:
-        body (UserEmailReqDto):
-
-    Raises:
-        errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-        httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-    Returns:
-        EmailVerificationResDto
-    """
-
-    return (
-        await asyncio_detailed(
-            client=client,
-            body=body,
-        )
-    ).parsed

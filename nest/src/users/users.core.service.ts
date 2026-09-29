@@ -14,6 +14,8 @@ import { Cache, CACHE_MANAGER } from '@nestjs/cache-manager';
 
 @Injectable()
 export class UsersCoreService {
+  private readonly userCacheTtl = 60 * 60 * 1000;
+
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
@@ -57,7 +59,7 @@ export class UsersCoreService {
 
     const user = await this.usersRepository.findOneBy({ id });
     if (user) {
-      await this.cacheManager.set(cacheKey, user, 3600000);
+      await this.cacheManager.set(cacheKey, user, this.userCacheTtl);
     }
     return user;
   }

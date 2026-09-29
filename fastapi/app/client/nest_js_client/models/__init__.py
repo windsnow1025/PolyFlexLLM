@@ -15,6 +15,8 @@ from .conversation_public_req_dto import ConversationPublicReqDto
 from .conversation_req_dto import ConversationReqDto
 from .conversation_res_dto import ConversationResDto
 from .conversation_version_res_dto import ConversationVersionResDto
+from .email_verification_req_dto import EmailVerificationReqDto
+from .email_verification_res_dto import EmailVerificationResDto
 from .files_req_dto import FilesReqDto
 from .files_res_dto import FilesResDto
 from .label_req_dto import LabelReqDto
@@ -32,7 +34,7 @@ from .user_email_req_dto import UserEmailReqDto
 from .user_password_req_dto import UserPasswordReqDto
 from .user_privileges_req_dto import UserPrivilegesReqDto
 from .user_privileges_req_dto_roles_item import UserPrivilegesReqDtoRolesItem
-from .user_req_dto import UserReqDto
+from .user_registration_req_dto import UserRegistrationReqDto
 from .user_res_dto import UserResDto
 from .user_res_dto_roles_item import UserResDtoRolesItem
 from .user_username_req_dto import UserUsernameReqDto
@@ -54,6 +56,8 @@ __all__ = (
     "ConversationReqDto",
     "ConversationResDto",
     "ConversationVersionResDto",
+    "EmailVerificationReqDto",
+    "EmailVerificationResDto",
     "FilesReqDto",
     "FilesResDto",
     "LabelReqDto",
@@ -71,7 +75,7 @@ __all__ = (
     "UserPasswordReqDto",
     "UserPrivilegesReqDto",
     "UserPrivilegesReqDtoRolesItem",
-    "UserReqDto",
+    "UserRegistrationReqDto",
     "UserResDto",
     "UserResDtoRolesItem",
     "UserUsernameReqDto",

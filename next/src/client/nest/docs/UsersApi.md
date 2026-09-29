@@ -11,18 +11,18 @@ All URIs are relative to *http://localhost*
 |[**usersControllerFind**](#userscontrollerfind) | **GET** /users/user | |
 |[**usersControllerFindAll**](#userscontrollerfindall) | **GET** /users | |
 |[**usersControllerReduceCredit**](#userscontrollerreducecredit) | **PATCH** /users/user/reduce-credit | |
+|[**usersControllerResendEmailVerification**](#userscontrollerresendemailverification) | **PUT** /users/user/email-verification | |
 |[**usersControllerSendEmailVerification**](#userscontrollersendemailverification) | **POST** /users/user/email-verification | |
 |[**usersControllerSendPasswordResetEmail**](#userscontrollersendpasswordresetemail) | **POST** /users/user/password-reset-email | |
 |[**usersControllerUpdateAvatar**](#userscontrollerupdateavatar) | **PUT** /users/user/avatar | |
 |[**usersControllerUpdateEmail**](#userscontrollerupdateemail) | **PUT** /users/user/email | |
-|[**usersControllerUpdateEmailVerified**](#userscontrollerupdateemailverified) | **PUT** /users/user/email-verified | |
 |[**usersControllerUpdatePassword**](#userscontrollerupdatepassword) | **PUT** /users/user/password | |
 |[**usersControllerUpdatePrivileges**](#userscontrollerupdateprivileges) | **PUT** /users/user/privileges | |
 |[**usersControllerUpdateResetPassword**](#userscontrollerupdateresetpassword) | **PUT** /users/user/reset-password | |
 |[**usersControllerUpdateUsername**](#userscontrollerupdateusername) | **PUT** /users/user/username | |
 
 # **usersControllerCreate**
-> UserResDto usersControllerCreate(userReqDto)
+> UserResDto usersControllerCreate(userRegistrationReqDto)
 
 
 ### Example
@@ -31,16 +31,16 @@ All URIs are relative to *http://localhost*
 import {
     UsersApi,
     Configuration,
-    UserReqDto
+    UserRegistrationReqDto
 } from './api';
 
 const configuration = new Configuration();
 const apiInstance = new UsersApi(configuration);
 
-let userReqDto: UserReqDto; //
+let userRegistrationReqDto: UserRegistrationReqDto; //
 
 const { status, data } = await apiInstance.usersControllerCreate(
-    userReqDto
+    userRegistrationReqDto
 );
 ```
 
@@ -48,7 +48,7 @@ const { status, data } = await apiInstance.usersControllerCreate(
 
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
-| **userReqDto** | **UserReqDto**|  | |
+| **userRegistrationReqDto** | **UserRegistrationReqDto**|  | |
 
 
 ### Return type
@@ -345,8 +345,59 @@ const { status, data } = await apiInstance.usersControllerReduceCredit(
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
+# **usersControllerResendEmailVerification**
+> usersControllerResendEmailVerification(emailVerificationReqDto)
+
+
+### Example
+
+```typescript
+import {
+    UsersApi,
+    Configuration,
+    EmailVerificationReqDto
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new UsersApi(configuration);
+
+let emailVerificationReqDto: EmailVerificationReqDto; //
+
+const { status, data } = await apiInstance.usersControllerResendEmailVerification(
+    emailVerificationReqDto
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **emailVerificationReqDto** | **EmailVerificationReqDto**|  | |
+
+
+### Return type
+
+void (empty response body)
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: Not defined
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** |  |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
 # **usersControllerSendEmailVerification**
-> usersControllerSendEmailVerification(userEmailReqDto)
+> EmailVerificationResDto usersControllerSendEmailVerification(userEmailReqDto)
 
 
 ### Example
@@ -377,7 +428,7 @@ const { status, data } = await apiInstance.usersControllerSendEmailVerification(
 
 ### Return type
 
-void (empty response body)
+**EmailVerificationResDto**
 
 ### Authorization
 
@@ -386,7 +437,7 @@ void (empty response body)
 ### HTTP request headers
 
  - **Content-Type**: application/json
- - **Accept**: Not defined
+ - **Accept**: application/json
 
 
 ### HTTP response details
@@ -499,7 +550,7 @@ const { status, data } = await apiInstance.usersControllerUpdateAvatar(
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **usersControllerUpdateEmail**
-> UserResDto usersControllerUpdateEmail(userEmailReqDto)
+> UserResDto usersControllerUpdateEmail(emailVerificationReqDto)
 
 
 ### Example
@@ -508,16 +559,16 @@ const { status, data } = await apiInstance.usersControllerUpdateAvatar(
 import {
     UsersApi,
     Configuration,
-    UserEmailReqDto
+    EmailVerificationReqDto
 } from './api';
 
 const configuration = new Configuration();
 const apiInstance = new UsersApi(configuration);
 
-let userEmailReqDto: UserEmailReqDto; //
+let emailVerificationReqDto: EmailVerificationReqDto; //
 
 const { status, data } = await apiInstance.usersControllerUpdateEmail(
-    userEmailReqDto
+    emailVerificationReqDto
 );
 ```
 
@@ -525,7 +576,7 @@ const { status, data } = await apiInstance.usersControllerUpdateEmail(
 
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
-| **userEmailReqDto** | **UserEmailReqDto**|  | |
+| **emailVerificationReqDto** | **EmailVerificationReqDto**|  | |
 
 
 ### Return type
@@ -539,49 +590,6 @@ const { status, data } = await apiInstance.usersControllerUpdateEmail(
 ### HTTP request headers
 
  - **Content-Type**: application/json
- - **Accept**: application/json
-
-
-### HTTP response details
-| Status code | Description | Response headers |
-|-------------|-------------|------------------|
-|**200** |  |  -  |
-
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
-
-# **usersControllerUpdateEmailVerified**
-> UserResDto usersControllerUpdateEmailVerified()
-
-
-### Example
-
-```typescript
-import {
-    UsersApi,
-    Configuration
-} from './api';
-
-const configuration = new Configuration();
-const apiInstance = new UsersApi(configuration);
-
-const { status, data } = await apiInstance.usersControllerUpdateEmailVerified();
-```
-
-### Parameters
-This endpoint does not have any parameters.
-
-
-### Return type
-
-**UserResDto**
-
-### Authorization
-
-[bearer](../README.md#bearer)
-
-### HTTP request headers
-
- - **Content-Type**: Not defined
  - **Accept**: application/json
 
 

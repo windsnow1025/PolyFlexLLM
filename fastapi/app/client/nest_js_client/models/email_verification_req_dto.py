@@ -6,37 +6,32 @@ from typing import Any, TypeVar
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-T = TypeVar("T", bound="UserReqDto")
+T = TypeVar("T", bound="EmailVerificationReqDto")
 
 
 @_attrs_define
-class UserReqDto:
+class EmailVerificationReqDto:
     """
     Attributes:
-        username (str):
         email (str):
-        password (str):
+        token (str):
     """
 
-    username: str
     email: str
-    password: str
+    token: str
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
-        username = self.username
-
         email = self.email
 
-        password = self.password
+        token = self.token
 
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
         field_dict.update(
             {
-                "username": username,
                 "email": email,
-                "password": password,
+                "token": token,
             }
         )
 
@@ -45,20 +40,17 @@ class UserReqDto:
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         d = dict(src_dict)
-        username = d.pop("username")
-
         email = d.pop("email")
 
-        password = d.pop("password")
+        token = d.pop("token")
 
-        user_req_dto = cls(
-            username=username,
+        email_verification_req_dto = cls(
             email=email,
-            password=password,
+            token=token,
         )
 
-        user_req_dto.additional_properties = d
-        return user_req_dto
+        email_verification_req_dto.additional_properties = d
+        return email_verification_req_dto
 
     @property
     def additional_keys(self) -> list[str]:

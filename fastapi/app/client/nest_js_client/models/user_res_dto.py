@@ -19,7 +19,6 @@ class UserResDto:
         id (float):
         username (str):
         email (str):
-        email_verified (bool):
         roles (list[UserResDtoRolesItem]):
         credit (float):
         avatar (str | Unset):
@@ -28,7 +27,6 @@ class UserResDto:
     id: float
     username: str
     email: str
-    email_verified: bool
     roles: list[UserResDtoRolesItem]
     credit: float
     avatar: str | Unset = UNSET
@@ -40,8 +38,6 @@ class UserResDto:
         username = self.username
 
         email = self.email
-
-        email_verified = self.email_verified
 
         roles = []
         for roles_item_data in self.roles:
@@ -59,7 +55,6 @@ class UserResDto:
                 "id": id,
                 "username": username,
                 "email": email,
-                "emailVerified": email_verified,
                 "roles": roles,
                 "credit": credit,
             }
@@ -78,8 +73,6 @@ class UserResDto:
 
         email = d.pop("email")
 
-        email_verified = d.pop("emailVerified")
-
         roles = []
         _roles = d.pop("roles")
         for roles_item_data in _roles:
@@ -95,7 +88,6 @@ class UserResDto:
             id=id,
             username=username,
             email=email,
-            email_verified=email_verified,
             roles=roles,
             credit=credit,
             avatar=avatar,

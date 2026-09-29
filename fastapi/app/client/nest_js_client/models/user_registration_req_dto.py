@@ -6,42 +6,42 @@ from typing import Any, TypeVar
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-from ..models.user_privileges_req_dto_roles_item import UserPrivilegesReqDtoRolesItem
-
-T = TypeVar("T", bound="UserPrivilegesReqDto")
+T = TypeVar("T", bound="UserRegistrationReqDto")
 
 
 @_attrs_define
-class UserPrivilegesReqDto:
+class UserRegistrationReqDto:
     """
     Attributes:
         username (str):
-        roles (list[UserPrivilegesReqDtoRolesItem]):
-        credit (float):
+        email (str):
+        password (str):
+        token (str):
     """
 
     username: str
-    roles: list[UserPrivilegesReqDtoRolesItem]
-    credit: float
+    email: str
+    password: str
+    token: str
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
         username = self.username
 
-        roles = []
-        for roles_item_data in self.roles:
-            roles_item = roles_item_data.value
-            roles.append(roles_item)
+        email = self.email
 
-        credit = self.credit
+        password = self.password
+
+        token = self.token
 
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
         field_dict.update(
             {
                 "username": username,
-                "roles": roles,
-                "credit": credit,
+                "email": email,
+                "password": password,
+                "token": token,
             }
         )
 
@@ -52,23 +52,21 @@ class UserPrivilegesReqDto:
         d = dict(src_dict)
         username = d.pop("username")
 
-        roles = []
-        _roles = d.pop("roles")
-        for roles_item_data in _roles:
-            roles_item = UserPrivilegesReqDtoRolesItem(roles_item_data)
+        email = d.pop("email")
 
-            roles.append(roles_item)
+        password = d.pop("password")
 
-        credit = d.pop("credit")
+        token = d.pop("token")
 
-        user_privileges_req_dto = cls(
+        user_registration_req_dto = cls(
             username=username,
-            roles=roles,
-            credit=credit,
+            email=email,
+            password=password,
+            token=token,
         )
 
-        user_privileges_req_dto.additional_properties = d
-        return user_privileges_req_dto
+        user_registration_req_dto.additional_properties = d
+        return user_registration_req_dto
 
     @property
     def additional_keys(self) -> list[str]:

@@ -6,42 +6,27 @@ from typing import Any, TypeVar
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-from ..models.user_privileges_req_dto_roles_item import UserPrivilegesReqDtoRolesItem
-
-T = TypeVar("T", bound="UserPrivilegesReqDto")
+T = TypeVar("T", bound="EmailVerificationResDto")
 
 
 @_attrs_define
-class UserPrivilegesReqDto:
+class EmailVerificationResDto:
     """
     Attributes:
-        username (str):
-        roles (list[UserPrivilegesReqDtoRolesItem]):
-        credit (float):
+        token (str):
     """
 
-    username: str
-    roles: list[UserPrivilegesReqDtoRolesItem]
-    credit: float
+    token: str
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
-        username = self.username
-
-        roles = []
-        for roles_item_data in self.roles:
-            roles_item = roles_item_data.value
-            roles.append(roles_item)
-
-        credit = self.credit
+        token = self.token
 
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
         field_dict.update(
             {
-                "username": username,
-                "roles": roles,
-                "credit": credit,
+                "token": token,
             }
         )
 
@@ -50,25 +35,14 @@ class UserPrivilegesReqDto:
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         d = dict(src_dict)
-        username = d.pop("username")
+        token = d.pop("token")
 
-        roles = []
-        _roles = d.pop("roles")
-        for roles_item_data in _roles:
-            roles_item = UserPrivilegesReqDtoRolesItem(roles_item_data)
-
-            roles.append(roles_item)
-
-        credit = d.pop("credit")
-
-        user_privileges_req_dto = cls(
-            username=username,
-            roles=roles,
-            credit=credit,
+        email_verification_res_dto = cls(
+            token=token,
         )
 
-        user_privileges_req_dto.additional_properties = d
-        return user_privileges_req_dto
+        email_verification_res_dto.additional_properties = d
+        return email_verification_res_dto
 
     @property
     def additional_keys(self) -> list[str]:

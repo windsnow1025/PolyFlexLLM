@@ -6,7 +6,6 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **username** | **string** |  | [default to undefined]
-**emailVerified** | **boolean** |  | [default to undefined]
 **roles** | **Array&lt;string&gt;** |  | [default to undefined]
 **credit** | **number** |  | [default to undefined]
 
@@ -17,7 +16,6 @@ import { UserPrivilegesReqDto } from './api';
 
 const instance: UserPrivilegesReqDto = {
     username,
-    emailVerified,
     roles,
     credit,
 };

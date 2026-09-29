@@ -1,29 +1,25 @@
-# UserResDto
+# UserRegistrationReqDto
 
 
 ## Properties
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**id** | **number** |  | [default to undefined]
 **username** | **string** |  | [default to undefined]
 **email** | **string** |  | [default to undefined]
-**roles** | **Array&lt;string&gt;** |  | [default to undefined]
-**avatar** | **string** |  | [optional] [default to undefined]
-**credit** | **number** |  | [default to undefined]
+**password** | **string** |  | [default to undefined]
+**token** | **string** |  | [default to undefined]
 
 ## Example
 
 ```typescript
-import { UserResDto } from './api';
+import { UserRegistrationReqDto } from './api';
 
-const instance: UserResDto = {
-    id,
+const instance: UserRegistrationReqDto = {
     username,
     email,
-    roles,
-    avatar,
-    credit,
+    password,
+    token,
 };
 ```
 

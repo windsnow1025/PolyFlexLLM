@@ -1,5 +1,5 @@
 import {getNestOpenAPIConfiguration} from "@/lib/common/APIConfig";
-import {UserResDto, UserResDtoRolesEnum, UsersApi} from "@/client/nest";
+import {EmailVerificationReqDtoPurposeEnum, UserResDto, UserResDtoRolesEnum, UsersApi} from "@/client/nest";
 
 export default class UserClient {
   async fetchUsers(): Promise<UserResDto[]> {
@@ -14,14 +14,14 @@ export default class UserClient {
     return res.data;
   }
 
-  async createUser(username: string, email: string, password: string) {
+  async createUser(username: string, email: string, password: string, token: string) {
     const api = new UsersApi(getNestOpenAPIConfiguration());
-    await api.usersControllerCreate({ username, email, password });
+    await api.usersControllerCreate({ username, email, password, token });
   }
 
-  async sendEmailVerification(email: string) {
+  async sendEmailVerification(email: string, purpose: EmailVerificationReqDtoPurposeEnum) {
     const api = new UsersApi(getNestOpenAPIConfiguration());
-    await api.usersControllerSendEmailVerification({ email });
+    await api.usersControllerSendEmailVerification({ email, purpose });
   }
 
   async sendPasswordResetEmail(email: string) {
@@ -29,20 +29,14 @@ export default class UserClient {
     await api.usersControllerSendPasswordResetEmail({ email });
   }
 
-  async updateEmailVerified(): Promise<UserResDto> {
-    const api = new UsersApi(getNestOpenAPIConfiguration());
-    const res = await api.usersControllerUpdateEmailVerified();
-    return res.data;
-  }
-
   async updateResetPassword(email: string, password: string) {
     const api = new UsersApi(getNestOpenAPIConfiguration());
     await api.usersControllerUpdateResetPassword({ email, password });
   }
 
-  async updateEmail(email: string) {
+  async updateEmail(email: string, token: string) {
     const api = new UsersApi(getNestOpenAPIConfiguration());
-    await api.usersControllerUpdateEmail({ email });
+    await api.usersControllerUpdateEmail({ email, token });
   }
 
   async updateUsername(username: string) {
@@ -63,14 +57,12 @@ export default class UserClient {
 
   async updateUserPrivileges(
     username: string,
-    emailVerified: boolean,
     roles: UserResDtoRolesEnum[],
     credit: number
   ) {
     const api = new UsersApi(getNestOpenAPIConfiguration());
     await api.usersControllerUpdatePrivileges({
       username,
-      emailVerified,
       roles,
       credit,
     });

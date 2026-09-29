@@ -2,7 +2,7 @@ import {Temporal} from "@js-temporal/polyfill";
 import UserClient from "./UserClient";
 import AuthClient from "@/lib/common/user/AuthClient";
 import {handleError} from "@/lib/common/ErrorHandler";
-import {UserResDto, UserResDtoRolesEnum} from "@/client/nest";
+import {EmailVerificationReqDtoPurposeEnum, UserResDto, UserResDtoRolesEnum} from "@/client/nest";
 import {StorageKeys} from "@/lib/common/Constants";
 
 export default class UserLogic {
@@ -63,14 +63,6 @@ export default class UserLogic {
     }
   }
 
-  async fetchEmailVerified() {
-    const user = await this.fetchUser();
-    if (!user) {
-      return null;
-    }
-    return user.emailVerified;
-  }
-
   async fetchCredit() {
     const user = await this.fetchUser();
     if (!user) {
@@ -106,17 +98,17 @@ export default class UserLogic {
     }
   }
 
-  async signUp(username: string, email: string, password: string) {
+  async signUp(username: string, email: string, password: string, token: string) {
     try {
-      await this.userClient.createUser(username, email, password);
+      await this.userClient.createUser(username, email, password, token);
     } catch (error) {
       handleError(error, 'Sign up failed');
     }
   }
 
-  async sendEmailVerification(email: string) {
+  async sendEmailVerification(email: string, purpose: EmailVerificationReqDtoPurposeEnum) {
     try {
-      await this.userClient.sendEmailVerification(email);
+      await this.userClient.sendEmailVerification(email, purpose);
     } catch (error) {
       handleError(error, 'Send email verification failed');
     }
@@ -130,15 +122,6 @@ export default class UserLogic {
     }
   }
 
-  async updateEmailVerified(): Promise<boolean> {
-    try {
-      const user = await this.userClient.updateEmailVerified();
-      return user.emailVerified;
-    } catch (error) {
-      handleError(error, 'Update email verification failed');
-    }
-  }
-
   async updateResetPassword(email: string, password: string) {
     try {
       await this.userClient.updateResetPassword(email, password);
@@ -147,9 +130,9 @@ export default class UserLogic {
     }
   }
 
-  async updateEmail(email: string) {
+  async updateEmail(email: string, token: string) {
     try {
-      await this.userClient.updateEmail(email);
+      await this.userClient.updateEmail(email, token);
     } catch (error) {
       handleError(error, 'Update email failed');
     }
@@ -179,9 +162,9 @@ export default class UserLogic {
     }
   }
 
-  async updateUserPrivileges(username: string, emailVerified: boolean, roles: UserResDtoRolesEnum[], credit: number) {
+  async updateUserPrivileges(username: string, roles: UserResDtoRolesEnum[], credit: number) {
     try {
-      return await this.userClient.updateUserPrivileges(username, emailVerified, roles, credit);
+      return await this.userClient.updateUserPrivileges(username, roles, credit);
     } catch (error) {
       handleError(error, 'Failed to update privileges');
     }

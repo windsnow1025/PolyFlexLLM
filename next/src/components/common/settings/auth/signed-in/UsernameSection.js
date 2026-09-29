@@ -46,7 +46,7 @@ function UsernameSection() {
   };
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="mt-4 flex-column gap-2">
       <TextField
         label="New Username"
         variant="outlined"

@@ -24,8 +24,9 @@ import {
   UserEmailPasswordReqDto,
   UserEmailReqDto,
   UserPasswordReqDto,
-  UserRegistrationReqDto,
+  UserSignUpReqDto,
   UserUsernameReqDto,
+  VerifiedEmailReqDto,
 } from './dto/user.req.dto';
 import { UserResDto } from './dto/user.res.dto';
 import { UsersCoreService } from './users.core.service';
@@ -50,20 +51,25 @@ export class UsersController {
 
   @Public()
   @Post('user')
-  async create(@Body() userRegistrationReqDto: UserRegistrationReqDto) {
+  async create(@Body() userSignUpReqDto: UserSignUpReqDto) {
     const user = await this.usersService.create(
-      userRegistrationReqDto.username,
-      userRegistrationReqDto.email,
-      userRegistrationReqDto.password,
-      userRegistrationReqDto.token,
+      userSignUpReqDto.username,
+      userSignUpReqDto.email,
+      userSignUpReqDto.password,
+      userSignUpReqDto.token,
     );
     return this.usersCoreService.toUserDto(user);
   }
 
   @Public()
   @Post('user/email-verification')
-  async sendEmailVerification(@Body() userEmailReqDto: UserEmailReqDto) {
-    await this.usersService.sendEmailVerification(userEmailReqDto.email);
+  async sendEmailVerification(
+    @Body() emailVerificationReqDto: EmailVerificationReqDto,
+  ) {
+    await this.usersService.sendEmailVerification(
+      emailVerificationReqDto.email,
+      emailVerificationReqDto.purpose,
+    );
   }
 
   @Public()
@@ -85,13 +91,13 @@ export class UsersController {
   @Put('user/email')
   async updateEmail(
     @Request() req: RequestWithUser,
-    @Body() emailVerificationReqDto: EmailVerificationReqDto,
+    @Body() verifiedEmailReqDto: VerifiedEmailReqDto,
   ): Promise<UserResDto> {
     const id = req.user.id;
     const user = await this.usersService.updateEmail(
       id,
-      emailVerificationReqDto.email,
-      emailVerificationReqDto.token,
+      verifiedEmailReqDto.email,
+      verifiedEmailReqDto.token,
     );
     return this.usersCoreService.toUserDto(user);
   }

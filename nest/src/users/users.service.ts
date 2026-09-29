@@ -19,11 +19,19 @@ import { Cache, CACHE_MANAGER } from '@nestjs/cache-manager';
 import { UsersCoreService } from './users.core.service';
 import { ConversationsCoreService } from '../conversations/conversations.core.service';
 import { AppConfig } from '../config/config.interface';
+import { EmailVerificationPurpose } from './enums/email-verification-purpose.enum';
 
 @Injectable()
 export class UsersService {
   private readonly config: AppConfig;
   private readonly emailVerificationTtl = 60 * 60 * 1000;
+  private readonly emailVerificationContinuePaths: Record<
+    EmailVerificationPurpose,
+    string
+  > = {
+    [EmailVerificationPurpose.SignUp]: '/auth/signup',
+    [EmailVerificationPurpose.EmailChange]: '/settings',
+  };
 
   constructor(
     @InjectRepository(User)
@@ -71,7 +79,10 @@ export class UsersService {
     return savedUser;
   }
 
-  async sendEmailVerification(email: string) {
+  async sendEmailVerification(
+    email: string,
+    purpose: EmailVerificationPurpose,
+  ) {
     if (await this.usersCoreService.findOneByEmail(email)) {
       throw new ConflictException('Email already registered');
     }
@@ -83,7 +94,10 @@ export class UsersService {
       this.emailVerificationTtl,
     );
 
-    const continueUrl = new URL('/auth/verify-email', this.config.frontendUrl);
+    const continueUrl = new URL(
+      this.emailVerificationContinuePaths[purpose],
+      this.config.frontendUrl,
+    );
     continueUrl.searchParams.set('email', email);
     continueUrl.searchParams.set('token', token);
 

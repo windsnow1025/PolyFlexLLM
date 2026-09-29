@@ -1,6 +1,7 @@
-import { IsNumber, IsString, IsUrl, Min } from 'class-validator';
+import { IsEnum, IsNumber, IsString, IsUrl, Min } from 'class-validator';
+import { EmailVerificationPurpose } from '../enums/email-verification-purpose.enum';
 
-export class UserRegistrationReqDto {
+export class UserSignUpReqDto {
   @IsString()
   username: string;
 
@@ -14,20 +15,28 @@ export class UserRegistrationReqDto {
   token: string;
 }
 
+export class EmailVerificationReqDto {
+  @IsString()
+  email: string;
+
+  @IsEnum(EmailVerificationPurpose)
+  purpose: EmailVerificationPurpose;
+}
+
+export class VerifiedEmailReqDto {
+  @IsString()
+  email: string;
+
+  @IsString()
+  token: string;
+}
+
 export class UserEmailPasswordReqDto {
   @IsString()
   email: string;
 
   @IsString()
   password: string;
-}
-
-export class EmailVerificationReqDto {
-  @IsString()
-  email: string;
-
-  @IsString()
-  token: string;
 }
 
 export class UserEmailReqDto {

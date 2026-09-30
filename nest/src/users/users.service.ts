@@ -110,6 +110,10 @@ export class UsersService {
   }
 
   async sendPasswordResetEmail(email: string) {
+    if (!(await this.usersCoreService.findOneByEmail(email))) {
+      throw new NotFoundException('User not found');
+    }
+
     await this.deleteFirebaseUser(email);
     await this.firebaseService.createFirebaseUser(email);
     await this.firebaseService.sendFirebasePasswordResetEmail(email);

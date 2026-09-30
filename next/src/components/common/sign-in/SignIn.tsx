@@ -115,8 +115,8 @@ export default function SignIn() {
       }
       await wait(1);
       router.push(redirectUrl);
-    } catch (err: any) {
-      showAlert(err.message, 'error');
+    } catch (err) {
+      showAlert((err as Error).message, 'error');
     }
   };
 
@@ -230,7 +230,6 @@ export default function SignIn() {
                 color={passwordError ? 'error' : 'primary'}
               />
             </FormControl>
-            <ForgotPassword open={open} handleClose={handleClose} />
             <Button
               type="submit"
               fullWidth
@@ -249,6 +248,7 @@ export default function SignIn() {
               Forgot your password?
             </Link>
           </Box>
+          <ForgotPassword open={open} handleClose={handleClose} />
           <Typography sx={{ textAlign: 'center' }}>
             Don&apos;t have an account?{' '}
             <Link

@@ -1,17 +1,21 @@
 import React, {useEffect, useMemo, useState} from 'react';
+import {useRouter} from "next/router";
 import UserLogic from "@/lib/common/user/UserLogic";
 import TextField from "@mui/material/TextField";
-import {Alert, Button, Snackbar, Typography} from "@mui/material";
-import {wait} from "@/components/common/utils/Wait";
-import {useRouter} from "next/router";
+import {Alert, Button, Snackbar} from "@mui/material";
+import {EmailVerificationReqDtoPurposeEnum} from "@/client/nest";
+import {ResendCooldownSeconds} from "@/lib/common/Constants";
 
 function EmailSection() {
+  const router = useRouter();
+  const verifyingEmail = typeof router.query.email === 'string' ? router.query.email : null;
+  const verificationToken = typeof router.query.token === 'string' ? router.query.token : null;
+
   const [email, setEmail] = useState('');
-  const [emailVerified, setEmailVerified] = useState(false);
   const [newEmail, setNewEmail] = useState('');
-  const [emailVerificationSent, setEmailVerificationSent] = useState(false);
-  const [isSendingVerification, setIsSendingVerification] = useState(false);
-  const [isCheckingVerification, setIsCheckingVerification] = useState(false);
+  const [sentEmail, setSentEmail] = useState(null);
+  const [isSending, setIsSending] = useState(false);
+  const [isConfirming, setIsConfirming] = useState(false);
   const [resendCooldown, setResendCooldown] = useState(0);
 
   // Alert state
@@ -27,7 +31,6 @@ function EmailSection() {
         const user = await userLogic.fetchUser();
         if (user) {
           setEmail(user.email);
-          setEmailVerified(user.emailVerified);
           setNewEmail(user.email);
         }
       } catch (err) {
@@ -53,108 +56,82 @@ function EmailSection() {
     setAlertOpen(true);
   };
 
-  const handleUpdateEmail = async () => {
+  const handleSend = async () => {
     if (!userLogic.validateEmail(newEmail)) {
       showAlert("Please enter a valid email address.", 'warning');
       return;
     }
 
     try {
-      setIsSendingVerification(true);
-
-      await userLogic.updateEmail(newEmail);
-      await userLogic.sendEmailVerification(newEmail);
-
-      setEmailVerificationSent(true);
-      setResendCooldown(60);
-      showAlert("Verification email sent to " + newEmail, 'info');
+      setIsSending(true);
+      await userLogic.sendEmailVerification(newEmail, EmailVerificationReqDtoPurposeEnum.EmailChange);
+      setResendCooldown(ResendCooldownSeconds);
+      setSentEmail(newEmail);
     } catch (e) {
       showAlert(e.message, 'error');
     } finally {
-      setIsSendingVerification(false);
+      setIsSending(false);
     }
   };
 
-  const handleResendVerification = async () => {
-    if (resendCooldown > 0) {
-      showAlert(`Please wait ${resendCooldown} seconds before requesting another email.`, 'warning');
-      return;
-    }
-
+  const handleConfirm = async () => {
     try {
-      setIsSendingVerification(true);
-      await userLogic.sendEmailVerification(newEmail);
-      setResendCooldown(60);
-      showAlert("Verification email resent. Please check your inbox.", 'info');
+      setIsConfirming(true);
+      await userLogic.updateEmail(verifyingEmail, verificationToken);
+      setEmail(verifyingEmail);
+      setNewEmail(verifyingEmail);
+      showAlert("Email updated.", 'success');
+      router.replace('/settings');
     } catch (e) {
       showAlert(e.message, 'error');
     } finally {
-      setIsSendingVerification(false);
+      setIsConfirming(false);
     }
   };
 
-  const router = useRouter();
-
-  const handleCheckVerification = async () => {
-    try {
-      setIsCheckingVerification(true);
-      const isVerified = await userLogic.updateEmailVerified();
-      if (!isVerified) {
-        showAlert("Email verification failed. Please check your inbox and try again.", 'error');
-        return;
-      }
-      setEmailVerificationSent(false);
-      showAlert("Email verification success. Redirecting...", 'success');
-
-      // Redirect
-      let redirectUrl = router.query.redirect;
-      await wait(1);
-      if (!redirectUrl || !redirectUrl.startsWith('/')) {
-        redirectUrl = '/';
-      }
-      router.push(redirectUrl);
-    } catch (e) {
-      showAlert(e.message, 'error');
-    } finally {
-      setIsCheckingVerification(false);
-    }
+  const handleCancel = () => {
+    router.replace('/settings');
   };
 
-  const isProcessing = isSendingVerification || isCheckingVerification;
+  const sendButtonLabel = isSending
+    ? "Sending Verification..."
+    : resendCooldown > 0
+      ? `Resend Available in ${resendCooldown}s`
+      : "Update Email";
 
   return (
     <div className="mt-4 flex-column gap-2">
-      {emailVerificationSent ? (
+      {verifyingEmail && verificationToken ? (
         <>
-          <Typography variant="body1" align="center" gutterBottom>
-            Verification Email Sent
-          </Typography>
-          <Typography variant="body2" align="center" gutterBottom>
-            Please check your inbox (or spam folder).
-          </Typography>
-          <Button
-            variant="contained"
-            onClick={handleCheckVerification}
-            size="medium"
-            fullWidth
-            disabled={isProcessing}
-          >
-            {isCheckingVerification ? "Checking..." : "I've Verified My Email"}
-          </Button>
-          <Button
-            variant="outlined"
-            onClick={handleResendVerification}
-            size="medium"
-            fullWidth
-            disabled={isProcessing || resendCooldown > 0}
-          >
-            {resendCooldown > 0
-              ? `Resend Available in ${resendCooldown}s`
-              : "Resend Verification Email"}
-          </Button>
+          <Alert severity="info" sx={{ mb: 1 }}>
+            Confirm to set <strong>{verifyingEmail}</strong> as the email of this account.
+          </Alert>
+          <div className="flex-start-center-nowrap gap-2">
+            <Button
+              variant="outlined"
+              onClick={handleCancel}
+              fullWidth
+              disabled={isConfirming}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="contained"
+              onClick={handleConfirm}
+              fullWidth
+              disabled={isConfirming}
+            >
+              {isConfirming ? "Confirming..." : "Confirm"}
+            </Button>
+          </div>
         </>
       ) : (
         <>
+          {sentEmail && (
+            <Alert severity="info" sx={{ mb: 1 }}>
+              Verification email sent to <strong>{sentEmail}</strong>. Open the link in it on a device where you are signed in to finish the change.
+            </Alert>
+          )}
           <TextField
             label="New Email"
             variant="outlined"
@@ -162,16 +139,16 @@ function EmailSection() {
             fullWidth
             value={newEmail}
             onChange={(e) => setNewEmail(e.target.value)}
-            disabled={isProcessing}
+            disabled={isSending}
           />
           <Button
             variant="contained"
             color="primary"
-            onClick={handleUpdateEmail}
+            onClick={handleSend}
             fullWidth
-            disabled={isProcessing || (email === newEmail && emailVerified)}
+            disabled={isSending || resendCooldown > 0 || email === newEmail}
           >
-            {isSendingVerification ? "Sending Verification..." : (emailVerified ? "Update Email" : "Verify Email")}
+            {sendButtonLabel}
           </Button>
         </>
       )}

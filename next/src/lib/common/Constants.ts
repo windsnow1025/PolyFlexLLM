@@ -7,6 +7,8 @@ export const StorageKeys = {
 
 export const AuthorEmail = "windsnow1025@windsnow1025.com";
 
+export const ResendCooldownSeconds = 60;
+
 export const getBaseUrl = (): string => {
   if (process.env.NODE_ENV === "production") {
     if (!process.env.FRONTEND_URL) {

@@ -113,9 +113,6 @@ export default function SignIn() {
       if (!redirectUrl || !redirectUrl.startsWith('/')) {
         redirectUrl = '/';
       }
-      if (!(await userLogic.fetchEmailVerified())) {
-        redirectUrl = '/settings';
-      }
       await wait(1);
       router.push(redirectUrl);
     } catch (err: any) {

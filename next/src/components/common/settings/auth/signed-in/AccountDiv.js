@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import {useRouter} from "next/router";
 import {Divider, Link, Tab, Tabs, Typography} from "@mui/material";
 import {TabContext, TabPanel} from "@mui/lab";
 import CreditSection from "./CreditSection";
@@ -8,10 +9,12 @@ import PasswordSection from "./PasswordSection";
 import AvatarSection from "./AvatarSection";
 
 function AccountDiv() {
-  const [tabValue, setTabValue] = useState('0');
+  const router = useRouter();
+  const [selectedTab, setSelectedTab] = useState(null);
+  const tabValue = selectedTab ?? (router.query.token ? '1' : '0');
 
   const handleTabChange = (event, newValue) => {
-    setTabValue(newValue);
+    setSelectedTab(newValue);
   };
 
   return (

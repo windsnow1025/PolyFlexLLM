@@ -1,17 +1,18 @@
 import {Button} from "@mui/material";
 import React from "react";
-import {usePathname, useRouter} from "next/navigation";
+import {useRouter} from "next/router";
 
 function SignDiv() {
   const router = useRouter();
-  const pathname = usePathname();
+
+  const redirect = encodeURIComponent(router.asPath);
 
   const handleSignInRouter = () => {
-    router.push(`/auth/signin?redirect=${encodeURIComponent(pathname)}`);
+    router.push(`/auth/signin?redirect=${redirect}`);
   };
 
   const handleSignUpRouter = () => {
-    router.push(`/auth/signup?redirect=${encodeURIComponent(pathname)}`);
+    router.push(`/auth/signup?redirect=${redirect}`);
   };
 
   return (

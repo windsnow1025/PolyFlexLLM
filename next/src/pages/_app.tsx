@@ -11,7 +11,6 @@ import UserLogic from "@/lib/common/user/UserLogic";
 import {StorageKeys} from "@/lib/common/Constants";
 import {type Session, SessionProvider} from "@/session/SessionContext";
 import Dashboard from "@/components/common/dashboard/Dashboard";
-import EmailVerificationDialog from "@/components/common/components/EmailVerificationDialog";
 
 export default function App({Component}: { Component: React.ElementType }) {
   const [session, setSession] = React.useState<Session | null>(null);
@@ -59,7 +58,6 @@ export default function App({Component}: { Component: React.ElementType }) {
       </Head>
       <AppTheme>
         <SessionProvider session={session} authentication={authentication}>
-          <EmailVerificationDialog/>
           <div className="local-scroll-root">
             {isAuthPage ? (
               <Component/>

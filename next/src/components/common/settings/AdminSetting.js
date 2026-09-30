@@ -70,13 +70,6 @@ const AdminSetting = () => {
       editable: true
     },
     {
-      field: "emailVerified",
-      headerName: "Email Verified",
-      type: "boolean",
-      flex: 0.1,
-      editable: true
-    },
-    {
       field: "role",
       headerName: "Role",
       flex: 0.1,
@@ -112,7 +105,6 @@ const AdminSetting = () => {
     try {
       return await userLogic.updateUserPrivileges(
         row.username,
-        row.emailVerified,
         [row.role],
         row.credit
       );

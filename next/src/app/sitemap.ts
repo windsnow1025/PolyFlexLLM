@@ -19,10 +19,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: new Date(),
     },
     {
-      url: `${baseUrl}/auth/password-reset`,
-      lastModified: new Date(),
-    },
-    {
       url: `${baseUrl}/about`,
       lastModified: new Date(),
     },

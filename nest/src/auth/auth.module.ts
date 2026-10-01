@@ -5,6 +5,7 @@ import { JwtModule, JwtModuleOptions } from '@nestjs/jwt';
 import { AuthController } from './auth.controller';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AppConfig } from '../config/config.interface';
+import { GoogleService } from './google.service';
 
 // https://docs.nestjs.com/security/authentication
 @Module({
@@ -22,7 +23,7 @@ import { AppConfig } from '../config/config.interface';
       },
     }),
   ],
-  providers: [AuthService],
+  providers: [AuthService, GoogleService],
   controllers: [AuthController],
   exports: [],
 })

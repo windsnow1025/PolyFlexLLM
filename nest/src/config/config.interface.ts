@@ -44,6 +44,7 @@ export interface AppConfig {
   postgres: PostgresConfig;
   s3: S3Config;
   redis: RedisConfig;
+  googleClientId: string;
   firebase: FirebaseConfig;
   frontendUrl: string;
   creem: CreemConfig;

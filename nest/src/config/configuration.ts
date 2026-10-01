@@ -55,6 +55,7 @@ export default registerAs('app', (): AppConfig => {
       port: 6379,
       password: process.env.REDIS_PASSWORD!,
     },
+    googleClientId: process.env.GOOGLE_CLIENT_ID!,
     firebase: {
       config: firebaseConfig,
       serviceAccountKey: serviceAccountKey,

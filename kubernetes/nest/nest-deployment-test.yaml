@@ -35,6 +35,11 @@ spec:
                 secretKeyRef:
                   name: app-secret
                   key: JWT_SECRET
+            - name: FRONTEND_URL
+              valueFrom:
+                secretKeyRef:
+                  name: app-secret
+                  key: FRONTEND_URL
             - name: POSTGRES_HOST
               valueFrom:
                 configMapKeyRef:
@@ -90,11 +95,11 @@ spec:
                 secretKeyRef:
                   name: app-secret
                   key: REDIS_PASSWORD
-            - name: FRONTEND_URL
+            - name: GOOGLE_CLIENT_ID
               valueFrom:
                 secretKeyRef:
                   name: app-secret
-                  key: FRONTEND_URL
+                  key: GOOGLE_CLIENT_ID
             - name: CREEM_TEST_MODE
               valueFrom:
                 secretKeyRef:

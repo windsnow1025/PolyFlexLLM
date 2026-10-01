@@ -15,3 +15,8 @@ export class AuthTokenUsernameReqDto {
   @IsString()
   password: string;
 }
+
+export class AuthTokenGoogleReqDto {
+  @IsString()
+  idToken: string;
+}

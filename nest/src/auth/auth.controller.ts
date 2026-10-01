@@ -1,7 +1,15 @@
-import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Post,
+} from '@nestjs/common';
 import { Public } from '../common/decorators/public.decorator';
 import {
   AuthTokenEmailReqDto,
+  AuthTokenGoogleReqDto,
   AuthTokenUsernameReqDto,
 } from './dto/auth.req.dto';
 import { AuthService } from './auth.service';
@@ -31,5 +39,19 @@ export class AuthController {
       tokenReqDto.password,
     );
     return this.authService.toAuthTokenDto(token);
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Public()
+  @Post('token/google')
+  async createTokenByGoogle(@Body() tokenReqDto: AuthTokenGoogleReqDto) {
+    const token = await this.authService.getTokenByGoogle(tokenReqDto.idToken);
+    return this.authService.toAuthTokenDto(token);
+  }
+
+  @Public()
+  @Get('google/client-id')
+  getGoogleClientId() {
+    return this.authService.toGoogleClientIdDto();
   }
 }

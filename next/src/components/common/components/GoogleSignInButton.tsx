@@ -4,12 +4,19 @@ import {useRouter} from 'next/router';
 import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
 import Snackbar from '@mui/material/Snackbar';
+import {useColorScheme} from '@mui/material/styles';
 import UserLogic from '@/lib/common/user/UserLogic';
 
 export default function GoogleSignInButton() {
   const userLogic = new UserLogic();
   const router = useRouter();
+
+  const { mode, systemMode } = useColorScheme();
+  const resolvedMode = systemMode || mode;
+
   const buttonRef = React.useRef<HTMLDivElement>(null);
+
+  const [initialized, setInitialized] = React.useState(false);
 
   const [alertOpen, setAlertOpen] = React.useState(false);
   const [alertMessage, setAlertMessage] = React.useState('');
@@ -42,16 +49,24 @@ export default function GoogleSignInButton() {
         client_id: clientId,
         callback: handleCredentialResponse,
       });
-      google.accounts.id.renderButton(buttonRef.current!, {
-        type: 'standard',
-        text: 'continue_with',
-        width: buttonRef.current!.clientWidth,
-      });
+      setInitialized(true);
       google.accounts.id.prompt();
     } catch (err) {
       showAlert((err as Error).message, 'error');
     }
   };
+
+  React.useEffect(() => {
+    if (!initialized) {
+      return;
+    }
+    google.accounts.id.renderButton(buttonRef.current!, {
+      type: 'standard',
+      theme: resolvedMode === 'dark' ? 'filled_black' : 'outline',
+      text: 'continue_with',
+      width: buttonRef.current!.clientWidth,
+    });
+  }, [initialized, resolvedMode]);
 
   return (
     <>
@@ -61,7 +76,7 @@ export default function GoogleSignInButton() {
           handleScriptReady();
         }}
       />
-      <Box ref={buttonRef} sx={{ display: 'flex', justifyContent: 'center' }} />
+      <Box ref={buttonRef} sx={{ display: 'flex', justifyContent: 'center', colorScheme: 'light' }} />
       <Snackbar
         open={alertOpen}
         autoHideDuration={6000}

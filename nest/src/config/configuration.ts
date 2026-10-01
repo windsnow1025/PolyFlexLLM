@@ -32,6 +32,7 @@ export default registerAs('app', (): AppConfig => {
   return {
     port: isProduction ? 3000 : 3001,
     jwtSecret: process.env.JWT_SECRET!,
+    frontendUrl: process.env.FRONTEND_URL!,
     postgres: {
       host: process.env.POSTGRES_HOST!,
       port: 5432,
@@ -58,7 +59,6 @@ export default registerAs('app', (): AppConfig => {
       config: firebaseConfig,
       serviceAccountKey: serviceAccountKey,
     },
-    frontendUrl: process.env.FRONTEND_URL!,
     creem: {
       testMode: process.env.CREEM_TEST_MODE === 'true',
       apiKey: process.env.CREEM_API_KEY!,

@@ -19,4 +19,18 @@ export default class AuthClient {
     });
     return res.data.accessToken;
   }
+
+  async createTokenByGoogle(idToken: string): Promise<string> {
+    const api = new AuthApi(getNestOpenAPIConfiguration());
+    const res = await api.authControllerCreateTokenByGoogle({
+      idToken: idToken
+    });
+    return res.data.accessToken;
+  }
+
+  async fetchGoogleClientId(): Promise<string> {
+    const api = new AuthApi(getNestOpenAPIConfiguration());
+    const res = await api.authControllerGetGoogleClientId();
+    return res.data.clientId;
+  }
 };

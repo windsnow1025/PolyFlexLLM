@@ -2,7 +2,6 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
-import CircularProgress from '@mui/material/CircularProgress';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormGroup from '@mui/material/FormGroup';
 import Alert from '@mui/material/Alert';
@@ -20,6 +19,8 @@ import UserLogic from '@/lib/common/user/UserLogic';
 import {wait} from '@/components/common/utils/Wait';
 import {EmailVerificationReqDtoPurposeEnum} from '@/client/nest';
 import {ResendCooldownSeconds} from '@/lib/common/Constants';
+import Divider from '@mui/material/Divider';
+import GoogleSignInButton from '@/components/common/components/GoogleSignInButton';
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
@@ -355,16 +356,6 @@ export default function SignUp() {
     </Box>
   );
 
-  const renderContent = () => {
-    if (!router.isReady) {
-      return <CircularProgress sx={{ alignSelf: 'center' }} />;
-    }
-    if (email && token) {
-      return renderSignUpStep();
-    }
-    return renderEmailStep();
-  };
-
   return (
     <>
       <SignUpContainer direction="column" justifyContent="space-between">
@@ -376,7 +367,15 @@ export default function SignUp() {
           >
             Sign up
           </Typography>
-          {renderContent()}
+          {email && token ? (
+            renderSignUpStep()
+          ) : (
+            <>
+              {renderEmailStep()}
+              <Divider>or</Divider>
+              <GoogleSignInButton />
+            </>
+          )}
           <Typography sx={{ textAlign: 'center' }}>
             Already have an account?{' '}
             <Link

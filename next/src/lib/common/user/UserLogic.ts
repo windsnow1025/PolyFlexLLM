@@ -98,6 +98,23 @@ export default class UserLogic {
     }
   }
 
+  async signInByGoogle(idToken: string) {
+    try {
+      const token = await this.authService.createTokenByGoogle(idToken);
+      localStorage.setItem(StorageKeys.Token, token);
+    } catch (error) {
+      handleError(error, 'Sign in failed');
+    }
+  }
+
+  async fetchGoogleClientId(): Promise<string> {
+    try {
+      return await this.authService.fetchGoogleClientId();
+    } catch (error) {
+      handleError(error, 'Failed to fetch Google client ID');
+    }
+  }
+
   async signUp(username: string, email: string, password: string, token: string) {
     try {
       await this.userClient.createUser(username, email, password, token);

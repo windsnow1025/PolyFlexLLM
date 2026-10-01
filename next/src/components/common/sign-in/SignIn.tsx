@@ -14,6 +14,8 @@ import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import {styled} from '@mui/material/styles';
 import ForgotPassword from './components/ForgotPassword';
+import Divider from '@mui/material/Divider';
+import GoogleSignInButton from '@/components/common/components/GoogleSignInButton';
 import {wait} from '@/components/common/utils/Wait';
 import UserLogic from '@/lib/common/user/UserLogic';
 import {useRouter} from 'next/router';
@@ -249,6 +251,8 @@ export default function SignIn() {
             </Link>
           </Box>
           <ForgotPassword open={open} handleClose={handleClose} />
+          <Divider>or</Divider>
+          <GoogleSignInButton />
           <Typography sx={{ textAlign: 'center' }}>
             Don&apos;t have an account?{' '}
             <Link

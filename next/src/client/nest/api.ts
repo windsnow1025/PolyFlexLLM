@@ -30,9 +30,15 @@ export interface AnnouncementResDto {
     'id': number;
     'content': string;
 }
+export interface AuthGoogleClientIdResDto {
+    'clientId': string;
+}
 export interface AuthTokenEmailReqDto {
     'email': string;
     'password': string;
+}
+export interface AuthTokenGoogleReqDto {
+    'idToken': string;
 }
 export interface AuthTokenResDto {
     'accessToken': string;
@@ -517,6 +523,45 @@ export const AuthApiAxiosParamCreator = function (configuration?: Configuration)
         },
         /**
          * 
+         * @param {AuthTokenGoogleReqDto} authTokenGoogleReqDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        authControllerCreateTokenByGoogle: async (authTokenGoogleReqDto: AuthTokenGoogleReqDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'authTokenGoogleReqDto' is not null or undefined
+            assertParamExists('authControllerCreateTokenByGoogle', 'authTokenGoogleReqDto', authTokenGoogleReqDto)
+            const localVarPath = `/auth/token/google`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(authTokenGoogleReqDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @param {AuthTokenUsernameReqDto} authTokenUsernameReqDto 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -554,6 +599,39 @@ export const AuthApiAxiosParamCreator = function (configuration?: Configuration)
                 options: localVarRequestOptions,
             };
         },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        authControllerGetGoogleClientId: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/auth/google/client-id`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
     }
 };
 
@@ -577,6 +655,18 @@ export const AuthApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @param {AuthTokenGoogleReqDto} authTokenGoogleReqDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async authControllerCreateTokenByGoogle(authTokenGoogleReqDto: AuthTokenGoogleReqDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AuthTokenResDto>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.authControllerCreateTokenByGoogle(authTokenGoogleReqDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['AuthApi.authControllerCreateTokenByGoogle']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @param {AuthTokenUsernameReqDto} authTokenUsernameReqDto 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -585,6 +675,17 @@ export const AuthApiFp = function(configuration?: Configuration) {
             const localVarAxiosArgs = await localVarAxiosParamCreator.authControllerCreateTokenByUsername(authTokenUsernameReqDto, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['AuthApi.authControllerCreateTokenByUsername']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async authControllerGetGoogleClientId(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AuthGoogleClientIdResDto>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.authControllerGetGoogleClientId(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['AuthApi.authControllerGetGoogleClientId']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
     }
@@ -607,12 +708,29 @@ export const AuthApiFactory = function (configuration?: Configuration, basePath?
         },
         /**
          * 
+         * @param {AuthTokenGoogleReqDto} authTokenGoogleReqDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        authControllerCreateTokenByGoogle(authTokenGoogleReqDto: AuthTokenGoogleReqDto, options?: RawAxiosRequestConfig): AxiosPromise<AuthTokenResDto> {
+            return localVarFp.authControllerCreateTokenByGoogle(authTokenGoogleReqDto, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @param {AuthTokenUsernameReqDto} authTokenUsernameReqDto 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
         authControllerCreateTokenByUsername(authTokenUsernameReqDto: AuthTokenUsernameReqDto, options?: RawAxiosRequestConfig): AxiosPromise<AuthTokenResDto> {
             return localVarFp.authControllerCreateTokenByUsername(authTokenUsernameReqDto, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        authControllerGetGoogleClientId(options?: RawAxiosRequestConfig): AxiosPromise<AuthGoogleClientIdResDto> {
+            return localVarFp.authControllerGetGoogleClientId(options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -633,12 +751,31 @@ export class AuthApi extends BaseAPI {
 
     /**
      * 
+     * @param {AuthTokenGoogleReqDto} authTokenGoogleReqDto 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public authControllerCreateTokenByGoogle(authTokenGoogleReqDto: AuthTokenGoogleReqDto, options?: RawAxiosRequestConfig) {
+        return AuthApiFp(this.configuration).authControllerCreateTokenByGoogle(authTokenGoogleReqDto, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
      * @param {AuthTokenUsernameReqDto} authTokenUsernameReqDto 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     public authControllerCreateTokenByUsername(authTokenUsernameReqDto: AuthTokenUsernameReqDto, options?: RawAxiosRequestConfig) {
         return AuthApiFp(this.configuration).authControllerCreateTokenByUsername(authTokenUsernameReqDto, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public authControllerGetGoogleClientId(options?: RawAxiosRequestConfig) {
+        return AuthApiFp(this.configuration).authControllerGetGoogleClientId(options).then((request) => request(this.axios, this.basePath));
     }
 }
 

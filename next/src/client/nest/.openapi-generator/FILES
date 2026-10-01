@@ -1,5 +1,6 @@
 .gitignore
 .npmignore
+.openapi-generator-ignore
 api.ts
 base.ts
 common.ts
@@ -9,7 +10,9 @@ docs/AnnouncementReqDto.md
 docs/AnnouncementResDto.md
 docs/AppApi.md
 docs/AuthApi.md
+docs/AuthGoogleClientIdResDto.md
 docs/AuthTokenEmailReqDto.md
+docs/AuthTokenGoogleReqDto.md
 docs/AuthTokenResDto.md
 docs/AuthTokenUsernameReqDto.md
 docs/CheckoutReqDto.md

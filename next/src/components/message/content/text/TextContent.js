@@ -8,7 +8,8 @@ function TextContent({
                        setContent,
                        rawEditableState,
                      }) {
-  const { mode } = useColorScheme();
+  const { mode, systemMode } = useColorScheme();
+  const resolvedMode = systemMode || mode;
 
   const contentEditable = rawEditableState === RawEditableState.AlwaysFalse
     ? ContentEditable.False
@@ -23,14 +24,6 @@ function TextContent({
   }
 
   const updateDisplay = useCallback(async (content, editableState) => {
-    function getResolvedMode(mode) {
-      if (mode === "system") {
-        return window.matchMedia('(prefers-color-scheme: dark)').matches ? "dark" : "light";
-      }
-      return mode;
-    }
-
-    const resolvedMode = getResolvedMode(mode);
     applyTheme(resolvedMode);
 
     if (!contentRef.current) {
@@ -48,11 +41,11 @@ function TextContent({
       unparse(content);
       return;
     }
-  }, [mode]);
+  }, [resolvedMode]);
 
   useEffect(() => {
     updateDisplay(content, rawEditableState);
-  }, [content, rawEditableState, mode, updateDisplay]);
+  }, [content, rawEditableState, resolvedMode, updateDisplay]);
 
   const handleBlur = () => {
     // Prevent content update on blur caused by clicking links

@@ -117,6 +117,19 @@ Follow `https://github.com/windsnow1025/Notes/blob/main/Configuration/K3S.md`
 
 Apply Custom Configs in `./KubernetesCommand.md`
 
+#### Google Auth
+
+In Google Auth Platform, for App and Test
+- Branding
+  - Application home page: https://<domain_name>
+  - Application privacy policy link: https://<domain_name>/about/privacy
+  - Application terms of service link: https://<domain_name>/about/terms
+  - Authorized domains: <top_domain_name>
+- Clients
+  - Authorized JavaScript origins
+    - http://localhost:3000
+    - https://<domain_name>
+
 #### Usage
 
 - Main

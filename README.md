@@ -115,9 +115,7 @@ JetBrains IDEA >> `Settings` >> `Build, Execution, Deployment` >> `Deployment`
 
 Follow `https://github.com/windsnow1025/Notes/blob/main/Configuration/K3S.md`
 
-#### Apply Custom Configs
-
-See `./KubernetesCommand.md`
+Apply Custom Configs in `./KubernetesCommand.md`
 
 #### Usage
 

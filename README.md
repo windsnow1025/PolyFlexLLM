@@ -127,6 +127,7 @@ In Google Auth Platform, for App and Test
   - Authorized domains: <top_domain_name>
 - Clients
   - Authorized JavaScript origins
+    - http://localhost
     - http://localhost:3000
     - https://<domain_name>
 

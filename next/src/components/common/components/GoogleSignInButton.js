@@ -2,7 +2,6 @@ import * as React from 'react';
 import Script from 'next/script';
 import {useRouter} from 'next/router';
 import Alert from '@mui/material/Alert';
-import Box from '@mui/material/Box';
 import Snackbar from '@mui/material/Snackbar';
 import {useColorScheme} from '@mui/material/styles';
 import UserLogic from '@/lib/common/user/UserLogic';
@@ -14,21 +13,21 @@ export default function GoogleSignInButton() {
   const { mode, systemMode } = useColorScheme();
   const resolvedMode = systemMode || mode;
 
-  const buttonRef = React.useRef<HTMLDivElement>(null);
+  const buttonRef = React.useRef(null);
 
   const [initialized, setInitialized] = React.useState(false);
 
   const [alertOpen, setAlertOpen] = React.useState(false);
   const [alertMessage, setAlertMessage] = React.useState('');
-  const [alertSeverity, setAlertSeverity] = React.useState<'success' | 'error' | 'info'>('info');
+  const [alertSeverity, setAlertSeverity] = React.useState('info');
 
-  const showAlert = (message: string, severity: 'success' | 'error' | 'info' = 'info') => {
+  const showAlert = (message, severity = 'info') => {
     setAlertMessage(message);
     setAlertSeverity(severity);
     setAlertOpen(true);
   };
 
-  const handleCredentialResponse = async (response: google.accounts.id.CredentialResponse) => {
+  const handleCredentialResponse = async (response) => {
     try {
       await userLogic.signInByGoogle(response.credential);
 
@@ -38,7 +37,7 @@ export default function GoogleSignInButton() {
       }
       router.push(redirectUrl);
     } catch (err) {
-      showAlert((err as Error).message, 'error');
+      showAlert(err.message, 'error');
     }
   };
 
@@ -52,7 +51,7 @@ export default function GoogleSignInButton() {
       setInitialized(true);
       google.accounts.id.prompt();
     } catch (err) {
-      showAlert((err as Error).message, 'error');
+      showAlert(err.message, 'error');
     }
   };
 
@@ -60,11 +59,11 @@ export default function GoogleSignInButton() {
     if (!initialized) {
       return;
     }
-    google.accounts.id.renderButton(buttonRef.current!, {
+    google.accounts.id.renderButton(buttonRef.current, {
       type: 'standard',
       theme: resolvedMode === 'dark' ? 'filled_black' : 'outline',
       text: 'continue_with',
-      width: buttonRef.current!.clientWidth,
+      width: buttonRef.current.clientWidth,
     });
   }, [initialized, resolvedMode]);
 
@@ -76,7 +75,7 @@ export default function GoogleSignInButton() {
           handleScriptReady();
         }}
       />
-      <Box ref={buttonRef} sx={{ display: 'flex', justifyContent: 'center', colorScheme: 'light' }} />
+      <div ref={buttonRef} className="flex-center scheme-light"/>
       <Snackbar
         open={alertOpen}
         autoHideDuration={6000}

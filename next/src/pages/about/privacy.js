@@ -10,6 +10,7 @@ function PrivacyPolicy() {
   useEffect(() => {
     const fetchMarkdown = async () => {
       const publicService = new PublicClient();
+      // https://app-privacy-policy-generator.nisrulz.com/
       const markdownContent = await publicService.fetchMarkdown('PrivacyPolicy.md');
       setMarkdown(markdownContent);
     };

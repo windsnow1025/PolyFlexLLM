@@ -10,6 +10,7 @@ function TermsConditions() {
   useEffect(() => {
     const fetchMarkdown = async () => {
       const publicService = new PublicClient();
+      // / https://app-privacy-policy-generator.nisrulz.com/
       const markdownContent = await publicService.fetchMarkdown('TermsConditions.md');
       setMarkdown(markdownContent);
     };

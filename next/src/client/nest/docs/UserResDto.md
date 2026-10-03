@@ -8,6 +8,7 @@ Name | Type | Description | Notes
 **id** | **number** |  | [default to undefined]
 **username** | **string** |  | [default to undefined]
 **email** | **string** |  | [default to undefined]
+**hasPassword** | **boolean** |  | [default to undefined]
 **roles** | **Array&lt;string&gt;** |  | [default to undefined]
 **avatar** | **string** |  | [optional] [default to undefined]
 **credit** | **number** |  | [default to undefined]
@@ -21,6 +22,7 @@ const instance: UserResDto = {
     id,
     username,
     email,
+    hasPassword,
     roles,
     avatar,
     credit,

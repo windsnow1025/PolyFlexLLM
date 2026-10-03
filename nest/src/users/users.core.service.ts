@@ -28,6 +28,7 @@ export class UsersCoreService {
       id: user.id,
       username: user.username,
       email: user.email,
+      hasPassword: !!user.password,
       roles: user.roles,
       avatar: user.avatar,
       credit: user.credit,

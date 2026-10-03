@@ -190,6 +190,7 @@ export interface UserResDto {
     'id': number;
     'username': string;
     'email': string;
+    'hasPassword': boolean;
     'roles': Array<UserResDtoRolesEnum>;
     'avatar'?: string;
     'credit': number;

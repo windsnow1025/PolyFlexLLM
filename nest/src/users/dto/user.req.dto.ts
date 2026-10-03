@@ -31,12 +31,15 @@ export class VerifiedEmailReqDto {
   token: string;
 }
 
-export class UserEmailPasswordReqDto {
+export class VerifiedEmailPasswordReqDto {
   @IsString()
   email: string;
 
   @IsString()
   password: string;
+
+  @IsString()
+  token: string;
 }
 
 export class UserEmailReqDto {

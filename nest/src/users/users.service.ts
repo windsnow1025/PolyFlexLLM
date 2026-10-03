@@ -4,7 +4,6 @@ import {
   Inject,
   Injectable,
   NotFoundException,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -24,7 +23,7 @@ import { EmailVerificationPurpose } from './enums/email-verification-purpose.enu
 @Injectable()
 export class UsersService {
   private readonly config: AppConfig;
-  private readonly emailVerificationTtl = 60 * 60 * 1000;
+  private readonly emailTokenTtl = 60 * 60 * 1000;
   private readonly emailVerificationContinuePaths: Record<
     EmailVerificationPurpose,
     string
@@ -32,6 +31,7 @@ export class UsersService {
     [EmailVerificationPurpose.SignUp]: '/auth/signup',
     [EmailVerificationPurpose.EmailChange]: '/settings',
   };
+  private readonly passwordResetContinuePath = '/auth/signin';
 
   constructor(
     @InjectRepository(User)
@@ -59,7 +59,7 @@ export class UsersService {
     password: string,
     token: string,
   ) {
-    await this.checkEmailVerificationToken(email, token);
+    await this.checkEmailToken(this.getEmailVerificationCacheKey(email), token);
     if (await this.usersCoreService.findOneByUsername(username)) {
       throw new ConflictException('Username already registered');
     }
@@ -87,25 +87,19 @@ export class UsersService {
       throw new ConflictException('Email already registered');
     }
 
-    const token = randomBytes(32).toString('hex');
-    await this.cacheManager.set(
+    const token = await this.createEmailToken(
       this.getEmailVerificationCacheKey(email),
-      this.hashToken(token),
-      this.emailVerificationTtl,
     );
-
-    const continueUrl = new URL(
+    const continueUrl = this.getContinueUrl(
       this.emailVerificationContinuePaths[purpose],
-      this.config.frontendUrl,
+      email,
+      token,
     );
-    continueUrl.searchParams.set('email', email);
-    continueUrl.searchParams.set('token', token);
 
-    await this.deleteFirebaseUser(email);
-    await this.firebaseService.createFirebaseUser(email);
+    await this.recreateFirebaseUser(email);
     await this.firebaseService.sendFirebaseEmailVerification(
       email,
-      continueUrl.toString(),
+      continueUrl,
     );
   }
 
@@ -114,22 +108,34 @@ export class UsersService {
       throw new NotFoundException('User not found');
     }
 
-    await this.deleteFirebaseUser(email);
-    await this.firebaseService.createFirebaseUser(email);
-    await this.firebaseService.sendFirebasePasswordResetEmail(email);
+    const token = await this.createEmailToken(
+      this.getPasswordResetCacheKey(email),
+    );
+    const continueUrl = this.getContinueUrl(
+      this.passwordResetContinuePath,
+      email,
+      token,
+    );
+
+    await this.recreateFirebaseUser(email);
+    await this.firebaseService.sendFirebasePasswordResetEmail(
+      email,
+      continueUrl,
+    );
   }
 
-  async updateResetPassword(email: string, password: string) {
+  async updateResetPassword(email: string, password: string, token: string) {
     const user = await this.usersCoreService.findOneByEmail(email);
     if (!user) {
       throw new NotFoundException('User not found');
     }
 
-    if (!(await this.firebaseService.verifyFirebaseUser(email, password))) {
-      throw new UnauthorizedException('Invalid password');
-    }
+    await this.checkEmailToken(this.getPasswordResetCacheKey(email), token);
 
-    return await this.updatePassword(user, password);
+    const savedUser = await this.updatePassword(user, password);
+    await this.cacheManager.del(this.getPasswordResetCacheKey(email));
+    await this.deleteFirebaseUser(email);
+    return savedUser;
   }
 
   async updateEmail(id: number, email: string, token: string) {
@@ -142,7 +148,7 @@ export class UsersService {
       return user;
     }
 
-    await this.checkEmailVerificationToken(email, token);
+    await this.checkEmailToken(this.getEmailVerificationCacheKey(email), token);
     if (await this.usersCoreService.findOneByEmail(email)) {
       throw new ConflictException('Email already registered');
     }
@@ -224,37 +230,60 @@ export class UsersService {
     await this.firebaseAdminService.deleteAllUsers();
   }
 
-  private async deleteFirebaseUser(email: string) {
-    try {
-      await this.firebaseAdminService.deleteUserByEmail(email);
-    } catch {
-      /* empty */
-    }
+  private async hashPassword(password: string) {
+    const salt = await bcrypt.genSalt();
+    return await bcrypt.hash(password, salt);
   }
 
   private getEmailVerificationCacheKey(email: string): string {
     return `email-verification:${email}`;
   }
 
+  private getPasswordResetCacheKey(email: string): string {
+    return `password-reset:${email}`;
+  }
+
   private hashToken(token: string): string {
     return createHash('sha256').update(token).digest('hex');
   }
 
-  private async checkEmailVerificationToken(email: string, token: string) {
-    const tokenHash = await this.cacheManager.get<string>(
-      this.getEmailVerificationCacheKey(email),
+  private async createEmailToken(cacheKey: string) {
+    const token = randomBytes(32).toString('hex');
+    await this.cacheManager.set(
+      cacheKey,
+      this.hashToken(token),
+      this.emailTokenTtl,
     );
+    return token;
+  }
+
+  private getContinueUrl(path: string, email: string, token: string): string {
+    const continueUrl = new URL(path, this.config.frontendUrl);
+    continueUrl.searchParams.set('email', email);
+    continueUrl.searchParams.set('token', token);
+    return continueUrl.toString();
+  }
+
+  private async checkEmailToken(cacheKey: string, token: string) {
+    const tokenHash = await this.cacheManager.get<string>(cacheKey);
     if (!tokenHash) {
-      throw new NotFoundException('Email verification not found or expired');
+      throw new NotFoundException('Email token not found or expired');
     }
     if (this.hashToken(token) !== tokenHash) {
-      throw new ForbiddenException('Invalid email verification token');
+      throw new ForbiddenException('Invalid email token');
     }
   }
 
-  private async hashPassword(password: string) {
-    const salt = await bcrypt.genSalt();
-    const hash = await bcrypt.hash(password, salt);
-    return hash;
+  private async recreateFirebaseUser(email: string) {
+    await this.deleteFirebaseUser(email);
+    await this.firebaseService.createFirebaseUser(email);
+  }
+
+  private async deleteFirebaseUser(email: string) {
+    try {
+      await this.firebaseAdminService.deleteUserByEmail(email);
+    } catch {
+      /* empty */
+    }
   }
 }

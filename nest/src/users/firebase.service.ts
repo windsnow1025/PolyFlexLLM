@@ -4,7 +4,6 @@ import { initializeApp } from 'firebase/app';
 import {
   Auth,
   createUserWithEmailAndPassword,
-  deleteUser,
   getAuth,
   sendEmailVerification,
   sendPasswordResetEmail,
@@ -33,32 +32,19 @@ export class FirebaseService {
   }
 
   async sendFirebaseEmailVerification(email: string, continueUrl: string) {
-    const user = await this.signInFirebaseUser(
-      email,
-      this.firebaseUserPassword,
-    );
+    const user = await this.signInFirebaseUser(email);
     await sendEmailVerification(user, { url: continueUrl });
   }
 
-  async verifyFirebaseUser(email: string, password: string) {
-    try {
-      const user = await this.signInFirebaseUser(email, password);
-      await deleteUser(user);
-    } catch {
-      return false;
-    }
-    return true;
+  async sendFirebasePasswordResetEmail(email: string, continueUrl: string) {
+    await sendPasswordResetEmail(this.auth, email, { url: continueUrl });
   }
 
-  async sendFirebasePasswordResetEmail(email: string) {
-    await sendPasswordResetEmail(this.auth, email);
-  }
-
-  private async signInFirebaseUser(email: string, password: string) {
+  private async signInFirebaseUser(email: string) {
     const userCredential = await signInWithEmailAndPassword(
       this.auth,
       email,
-      password,
+      this.firebaseUserPassword,
     );
     return userCredential.user;
   }

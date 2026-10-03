@@ -1,9 +1,10 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import UserLogic from "@/lib/common/user/UserLogic";
 import TextField from "@mui/material/TextField";
 import {Alert, Button, Snackbar} from "@mui/material";
 
 function PasswordSection() {
+  const [hasPassword, setHasPassword] = useState(true);
   const [newPassword, setNewPassword] = useState('');
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
   const [passwordsMatch, setPasswordsMatch] = useState(true);
@@ -13,7 +14,21 @@ function PasswordSection() {
   const [alertMessage, setAlertMessage] = useState('');
   const [alertSeverity, setAlertSeverity] = useState('info');
 
-  const userLogic = new UserLogic();
+  const userLogic = useMemo(() => new UserLogic(), []);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const user = await userLogic.fetchUser();
+        if (user) {
+          setHasPassword(user.hasPassword);
+        }
+      } catch (err) {
+        showAlert(err.message, 'error');
+      }
+    };
+    fetchUserData();
+  }, [userLogic]);
 
   useEffect(() => {
     if (confirmNewPassword === '' || newPassword === '') {
@@ -43,7 +58,8 @@ function PasswordSection() {
     try {
       setIsProcessing(true);
       await userLogic.updatePassword(newPassword);
-      showAlert("Password updated successfully", 'success');
+      showAlert(hasPassword ? "Password updated successfully" : "Password set successfully", 'success');
+      setHasPassword(true);
       setNewPassword('');
       setConfirmNewPassword('');
     } catch (e) {
@@ -56,7 +72,9 @@ function PasswordSection() {
   return (
     <div className="mt-4 flex-column gap-2">
       <Alert severity="info" sx={{ mb: 1 }}>
-        Changing your password will sign out all signed-in devices.
+        {hasPassword
+          ? "Changing your password will sign out all signed-in devices."
+          : "Setting a password will sign out all signed-in devices."}
       </Alert>
       <TextField
         label="New Password"
@@ -85,7 +103,7 @@ function PasswordSection() {
         fullWidth
         disabled={!passwordsMatch || isProcessing}
       >
-        Update Password
+        {hasPassword ? "Update Password" : "Set Password"}
       </Button>
 
       <Snackbar

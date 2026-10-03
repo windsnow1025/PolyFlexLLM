@@ -68,7 +68,7 @@ function AccountDiv() {
         </TabPanel>
         <TabPanel value="3">
           <Typography variant="h6" gutterBottom>
-            Change Password
+            Password
           </Typography>
           <PasswordSection/>
         </TabPanel>

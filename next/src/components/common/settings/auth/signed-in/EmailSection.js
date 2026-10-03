@@ -25,6 +25,12 @@ function EmailSection() {
 
   const userLogic = useMemo(() => new UserLogic(), []);
 
+  const showAlert = (message, severity) => {
+    setAlertMessage(message);
+    setAlertSeverity(severity);
+    setAlertOpen(true);
+  };
+
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -49,12 +55,6 @@ function EmailSection() {
     }
     return () => clearTimeout(timer);
   }, [resendCooldown]);
-
-  const showAlert = (message, severity) => {
-    setAlertMessage(message);
-    setAlertSeverity(severity);
-    setAlertOpen(true);
-  };
 
   const handleSend = async () => {
     if (!userLogic.validateEmail(newEmail)) {

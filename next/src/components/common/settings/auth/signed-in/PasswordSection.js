@@ -16,6 +16,12 @@ function PasswordSection() {
 
   const userLogic = useMemo(() => new UserLogic(), []);
 
+  const showAlert = (message, severity) => {
+    setAlertMessage(message);
+    setAlertSeverity(severity);
+    setAlertOpen(true);
+  };
+
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -37,12 +43,6 @@ function PasswordSection() {
       setPasswordsMatch(newPassword === confirmNewPassword);
     }
   }, [newPassword, confirmNewPassword]);
-
-  const showAlert = (message, severity) => {
-    setAlertMessage(message);
-    setAlertSeverity(severity);
-    setAlertOpen(true);
-  };
 
   const handleUpdatePassword = async () => {
     if (!userLogic.validateUsernameOrPassword(newPassword)) {

@@ -32,7 +32,7 @@ export default function GoogleSignInButton() {
     try {
       await userLogic.signInByGoogle(response.credential);
 
-      let redirectUrl = router.query.redirect as string;
+      let redirectUrl = new URLSearchParams(window.location.search).get('redirect');
       if (!redirectUrl || !redirectUrl.startsWith('/')) {
         redirectUrl = '/';
       }

@@ -96,11 +96,7 @@ export class UsersService {
       token,
     );
 
-    await this.recreateFirebaseUser(email);
-    await this.firebaseService.sendFirebaseEmailVerification(
-      email,
-      continueUrl,
-    );
+    await this.sendFirebaseEmail(email, continueUrl);
   }
 
   async sendPasswordResetEmail(email: string) {
@@ -117,11 +113,7 @@ export class UsersService {
       token,
     );
 
-    await this.recreateFirebaseUser(email);
-    await this.firebaseService.sendFirebasePasswordResetEmail(
-      email,
-      continueUrl,
-    );
+    await this.sendFirebaseEmail(email, continueUrl);
   }
 
   async updateResetPassword(email: string, password: string, token: string) {
@@ -274,9 +266,13 @@ export class UsersService {
     }
   }
 
-  private async recreateFirebaseUser(email: string) {
+  private async sendFirebaseEmail(email: string, continueUrl: string) {
     await this.deleteFirebaseUser(email);
     await this.firebaseService.createFirebaseUser(email);
+    await this.firebaseService.sendFirebaseEmailVerification(
+      email,
+      continueUrl,
+    );
   }
 
   private async deleteFirebaseUser(email: string) {

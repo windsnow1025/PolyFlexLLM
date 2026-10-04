@@ -144,7 +144,7 @@ export default function ForgotPassword({ open, handleClose }: ForgotPasswordProp
             </>
           ) : (
             <Alert severity="info">
-              A reset link was sent to <strong>{sentEmail}</strong>. Open it to set your new password.
+              Verification email sent to <strong>{sentEmail}</strong>. Open the link in it to set your new password.
             </Alert>
           )}
         </DialogContent>

@@ -124,9 +124,6 @@ In Firebase Console, for App and Test
   - Sign-in method: Email/Password
   - Settings
     - Authorized domains: <domain_name>
-  - Templates
-    - Customize action URL
-      - App and Test: https://<domain_name>/auth/action
 
 #### Google Auth
 

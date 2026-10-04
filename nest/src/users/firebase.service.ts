@@ -6,7 +6,6 @@ import {
   createUserWithEmailAndPassword,
   getAuth,
   sendEmailVerification,
-  sendPasswordResetEmail,
   signInWithEmailAndPassword,
 } from 'firebase/auth';
 import { AppConfig } from '../config/config.interface';
@@ -34,10 +33,6 @@ export class FirebaseService {
   async sendFirebaseEmailVerification(email: string, continueUrl: string) {
     const user = await this.signInFirebaseUser(email);
     await sendEmailVerification(user, { url: continueUrl });
-  }
-
-  async sendFirebasePasswordResetEmail(email: string, continueUrl: string) {
-    await sendPasswordResetEmail(this.auth, email, { url: continueUrl });
   }
 
   private async signInFirebaseUser(email: string) {

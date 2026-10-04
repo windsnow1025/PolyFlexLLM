@@ -139,9 +139,9 @@ export default class UserLogic {
     }
   }
 
-  async updateResetPassword(email: string, password: string) {
+  async updateResetPassword(email: string, password: string, token: string) {
     try {
-      await this.userClient.updateResetPassword(email, password);
+      await this.userClient.updateResetPassword(email, password, token);
     } catch (error) {
       handleError(error, 'Failed to update reset password');
     }

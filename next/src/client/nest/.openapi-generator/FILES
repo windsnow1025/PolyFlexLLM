@@ -41,7 +41,6 @@ docs/PromptResDto.md
 docs/PromptsApi.md
 docs/ReduceCreditReqDto.md
 docs/UserAvatarReqDto.md
-docs/UserEmailPasswordReqDto.md
 docs/UserEmailReqDto.md
 docs/UserPasswordReqDto.md
 docs/UserPrivilegesReqDto.md
@@ -49,6 +48,7 @@ docs/UserResDto.md
 docs/UserSignUpReqDto.md
 docs/UserUsernameReqDto.md
 docs/UsersApi.md
+docs/VerifiedEmailPasswordReqDto.md
 docs/VerifiedEmailReqDto.md
 docs/WebUrlResDto.md
 git_push.sh

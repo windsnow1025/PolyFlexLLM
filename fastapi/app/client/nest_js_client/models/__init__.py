@@ -31,7 +31,6 @@ from .prompt_req_dto import PromptReqDto
 from .prompt_res_dto import PromptResDto
 from .reduce_credit_req_dto import ReduceCreditReqDto
 from .user_avatar_req_dto import UserAvatarReqDto
-from .user_email_password_req_dto import UserEmailPasswordReqDto
 from .user_email_req_dto import UserEmailReqDto
 from .user_password_req_dto import UserPasswordReqDto
 from .user_privileges_req_dto import UserPrivilegesReqDto
@@ -40,6 +39,7 @@ from .user_res_dto import UserResDto
 from .user_res_dto_roles_item import UserResDtoRolesItem
 from .user_sign_up_req_dto import UserSignUpReqDto
 from .user_username_req_dto import UserUsernameReqDto
+from .verified_email_password_req_dto import VerifiedEmailPasswordReqDto
 from .verified_email_req_dto import VerifiedEmailReqDto
 from .web_url_res_dto import WebUrlResDto
 
@@ -75,7 +75,6 @@ __all__ = (
     "PromptResDto",
     "ReduceCreditReqDto",
     "UserAvatarReqDto",
-    "UserEmailPasswordReqDto",
     "UserEmailReqDto",
     "UserPasswordReqDto",
     "UserPrivilegesReqDto",
@@ -84,6 +83,7 @@ __all__ = (
     "UserResDtoRolesItem",
     "UserSignUpReqDto",
     "UserUsernameReqDto",
+    "VerifiedEmailPasswordReqDto",
     "VerifiedEmailReqDto",
     "WebUrlResDto",
 )

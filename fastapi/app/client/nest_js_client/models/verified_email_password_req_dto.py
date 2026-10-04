@@ -6,19 +6,21 @@ from typing import Any, TypeVar
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-T = TypeVar("T", bound="UserEmailPasswordReqDto")
+T = TypeVar("T", bound="VerifiedEmailPasswordReqDto")
 
 
 @_attrs_define
-class UserEmailPasswordReqDto:
+class VerifiedEmailPasswordReqDto:
     """
     Attributes:
         email (str):
         password (str):
+        token (str):
     """
 
     email: str
     password: str
+    token: str
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
@@ -26,12 +28,15 @@ class UserEmailPasswordReqDto:
 
         password = self.password
 
+        token = self.token
+
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
         field_dict.update(
             {
                 "email": email,
                 "password": password,
+                "token": token,
             }
         )
 
@@ -44,13 +49,16 @@ class UserEmailPasswordReqDto:
 
         password = d.pop("password")
 
-        user_email_password_req_dto = cls(
+        token = d.pop("token")
+
+        verified_email_password_req_dto = cls(
             email=email,
             password=password,
+            token=token,
         )
 
-        user_email_password_req_dto.additional_properties = d
-        return user_email_password_req_dto
+        verified_email_password_req_dto.additional_properties = d
+        return verified_email_password_req_dto
 
     @property
     def additional_keys(self) -> list[str]:

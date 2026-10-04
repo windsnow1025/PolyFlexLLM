@@ -29,9 +29,9 @@ export default class UserClient {
     await api.usersControllerSendPasswordResetEmail({ email });
   }
 
-  async updateResetPassword(email: string, password: string) {
+  async updateResetPassword(email: string, password: string, token: string) {
     const api = new UsersApi(getNestOpenAPIConfiguration());
-    await api.usersControllerUpdateResetPassword({ email, password });
+    await api.usersControllerUpdateResetPassword({ email, password, token });
   }
 
   async updateEmail(email: string, token: string) {

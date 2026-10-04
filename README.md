@@ -117,6 +117,17 @@ Follow `https://github.com/windsnow1025/Notes/blob/main/Configuration/K3S.md`
 
 Apply Custom Configs in `./KubernetesCommand.md`
 
+#### Firebase Auth
+
+In Firebase Console, for App and Test
+- Authentication
+  - Sign-in method: Email/Password
+  - Settings
+    - Authorized domains: <domain_name>
+  - Templates
+    - Customize action URL
+      - App and Test: https://<domain_name>/auth/action
+
 #### Google Auth
 
 In Google Auth Platform, for App and Test

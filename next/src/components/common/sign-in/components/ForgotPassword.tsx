@@ -9,6 +9,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import Snackbar from '@mui/material/Snackbar';
 import UserLogic from '@/lib/common/user/UserLogic';
+import {useRouter} from 'next/router';
 
 interface ForgotPasswordProps {
   open: boolean;
@@ -17,6 +18,11 @@ interface ForgotPasswordProps {
 
 export default function ForgotPassword({ open, handleClose }: ForgotPasswordProps) {
   const userLogic = new UserLogic();
+  const router = useRouter();
+
+  const email = typeof router.query.email === 'string' ? router.query.email : null;
+  const token = typeof router.query.token === 'string' ? router.query.token : null;
+  const isResetting = email !== null && token !== null;
 
   const [sentEmail, setSentEmail] = React.useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
@@ -34,6 +40,9 @@ export default function ForgotPassword({ open, handleClose }: ForgotPasswordProp
   const close = () => {
     setSentEmail(null);
     handleClose();
+    if (isResetting) {
+      router.replace('/auth/signin');
+    }
   };
 
   const sendResetEmail = async (email: string) => {
@@ -52,14 +61,14 @@ export default function ForgotPassword({ open, handleClose }: ForgotPasswordProp
     }
   };
 
-  const updatePassword = async (email: string, password: string) => {
+  const updatePassword = async (email: string, password: string, token: string) => {
     if (!userLogic.validateUsernameOrPassword(password)) {
       showAlert('New password invalid. Must be 4-32 ASCII characters.', 'error');
       return;
     }
     try {
       setIsSubmitting(true);
-      await userLogic.updateResetPassword(email, password);
+      await userLogic.updateResetPassword(email, password, token);
       close();
       showAlert('Password updated. Sign in with your new password.', 'success');
     } catch (err) {
@@ -72,17 +81,17 @@ export default function ForgotPassword({ open, handleClose }: ForgotPasswordProp
   const handleSubmit = async (event: React.SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
-    if (sentEmail === null) {
-      await sendResetEmail(formData.get('email') as string);
+    if (email !== null && token !== null) {
+      await updatePassword(email, formData.get('password') as string, token);
     } else {
-      await updatePassword(sentEmail, formData.get('password') as string);
+      await sendResetEmail(formData.get('email') as string);
     }
   };
 
   return (
     <>
       <Dialog
-        open={open}
+        open={open || isResetting}
         onClose={close}
         slotProps={{
           paper: {
@@ -96,7 +105,25 @@ export default function ForgotPassword({ open, handleClose }: ForgotPasswordProp
         <DialogContent
           sx={{ display: 'flex', flexDirection: 'column', gap: 2, width: '100%' }}
         >
-          {sentEmail === null ? (
+          {isResetting ? (
+            <>
+              <Alert severity="info">
+                Set a new password for <strong>{email}</strong>.
+              </Alert>
+              <OutlinedInput
+                key="password"
+                autoFocus
+                required
+                margin="dense"
+                id="reset-password"
+                name="password"
+                label="New password"
+                placeholder="New password"
+                type="password"
+                fullWidth
+              />
+            </>
+          ) : sentEmail === null ? (
             <>
               <DialogContentText>
                 Enter your account&apos;s email address, and we&apos;ll send you a link to
@@ -116,32 +143,26 @@ export default function ForgotPassword({ open, handleClose }: ForgotPasswordProp
               />
             </>
           ) : (
-            <>
-              <Alert severity="info">
-                A reset link was sent to <strong>{sentEmail}</strong>. Set your new password there, then enter it here to finish.
-              </Alert>
-              <OutlinedInput
-                key="password"
-                autoFocus
-                required
-                margin="dense"
-                id="reset-password"
-                name="password"
-                label="New password"
-                placeholder="New password"
-                type="password"
-                fullWidth
-              />
-            </>
+            <Alert severity="info">
+              A reset link was sent to <strong>{sentEmail}</strong>. Open it to set your new password.
+            </Alert>
           )}
         </DialogContent>
         <DialogActions sx={{ pb: 3, px: 3 }}>
-          <Button onClick={close} disabled={isSubmitting}>
-            Cancel
-          </Button>
-          <Button variant="contained" type="submit" disabled={isSubmitting}>
-            {sentEmail === null ? 'Continue' : 'Confirm'}
-          </Button>
+          {isResetting || sentEmail === null ? (
+            <>
+              <Button onClick={close} disabled={isSubmitting}>
+                Cancel
+              </Button>
+              <Button variant="contained" type="submit" disabled={isSubmitting}>
+                {isResetting ? 'Confirm' : 'Continue'}
+              </Button>
+            </>
+          ) : (
+            <Button onClick={close}>
+              Close
+            </Button>
+          )}
         </DialogActions>
       </Dialog>
       <Snackbar

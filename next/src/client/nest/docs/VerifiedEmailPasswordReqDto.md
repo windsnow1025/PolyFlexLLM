@@ -1,4 +1,4 @@
-# UserEmailPasswordReqDto
+# VerifiedEmailPasswordReqDto
 
 
 ## Properties
@@ -7,15 +7,17 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **email** | **string** |  | [default to undefined]
 **password** | **string** |  | [default to undefined]
+**token** | **string** |  | [default to undefined]
 
 ## Example
 
 ```typescript
-import { UserEmailPasswordReqDto } from './api';
+import { VerifiedEmailPasswordReqDto } from './api';
 
-const instance: UserEmailPasswordReqDto = {
+const instance: VerifiedEmailPasswordReqDto = {
     email,
     password,
+    token,
 };
 ```
 

@@ -1,13 +1,10 @@
 import {useEffect} from 'react';
 import {useRouter} from 'next/router';
 
-function getContinuePath() {
+function getContinueUrl() {
   const continueUrl = new URLSearchParams(window.location.search).get('continueUrl');
-  if (URL.canParse(continueUrl)) {
-    const url = new URL(continueUrl);
-    if (url.origin === window.location.origin) {
-      return url.pathname + url.search + url.hash;
-    }
+  if (URL.canParse(continueUrl) && new URL(continueUrl).origin === window.location.origin) {
+    return continueUrl;
   }
   return '/';
 }
@@ -16,7 +13,7 @@ export default function ActionPage() {
   const router = useRouter();
 
   useEffect(() => {
-    router.replace(getContinuePath());
+    router.replace(getContinueUrl());
   }, [router]);
 
   return null;

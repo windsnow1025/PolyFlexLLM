@@ -75,11 +75,6 @@ spec:
                 secretKeyRef:
                   name: app-secret
                   key: AZURE_API_BASE
-            - name: GITHUB_API_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: app-secret
-                  key: GITHUB_API_KEY
             - name: XAI_API_KEY
               valueFrom:
                 secretKeyRef:

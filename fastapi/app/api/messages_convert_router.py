@@ -17,7 +17,7 @@ async def convert_messages(chat_request: MessagesConvertRequest):
 
     if api_type == "OpenAI" or api_type == "Grok":
         return await convert_messages_to_openai_responses(messages)
-    if api_type == "OpenAI-Azure" or api_type == "OpenAI-GitHub":
+    if api_type == "OpenAI-Azure":
         return await convert_messages_to_openai(messages)
     if api_type == "Gemini":
         return await convert_messages_to_gemini(messages)

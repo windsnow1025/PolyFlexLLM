@@ -61,6 +61,11 @@ spec:
                 secretKeyRef:
                   name: app-secret
                   key: VERTEX_AI_API_KEY
+            - name: VERTEX_AI_PROJECT
+              valueFrom:
+                secretKeyRef:
+                  name: app-secret
+                  key: VERTEX_AI_PROJECT
             - name: ANTHROPIC_API_KEY
               valueFrom:
                 secretKeyRef:

@@ -89,11 +89,6 @@ function AIStudio({
     return () => container.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Scroll to bottom on conversation change
-  useEffect(() => {
-    isAtBottomRef.current = true;
-  }, [selectedConversationId]);
-
   // Refresh conversations and resume stream when tab focus
   useEffect(() => {
     const handleVisibilityChange = () => {

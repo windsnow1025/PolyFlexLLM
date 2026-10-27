@@ -1,5 +1,5 @@
 import MessageDiv from "../message/MessageDiv";
-import React, {useCallback, useMemo, useRef, useState} from "react";
+import React, {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import AddMessageDivider from "./AddMessageDivider";
 import FileLogic from "@/lib/common/file/FileLogic";
 import ChatLogic from "@/lib/chat/ChatLogic";
@@ -38,11 +38,26 @@ function ChatMessagesDiv({
     scrollPendingRef.current = true;
   }, []);
 
-  const handleCollapseEntered = useCallback((node) => {
+  // Scroll to bottom after conversation change, once its last message has entered
+  const activationPendingRef = useRef(false);
+
+  useEffect(() => {
+    activationPendingRef.current = true;
+  }, [selectedConversationId]);
+
+  const handleCollapseEntered = useCallback((node, isLastMessage) => {
     // Manual add: always scroll
     if (scrollPendingRef.current) {
       scrollPendingRef.current = false;
       node.scrollIntoView({behavior: 'smooth', block: 'nearest'});
+      return;
+    }
+    // Conversation change: scroll to the last message
+    if (activationPendingRef.current) {
+      if (isLastMessage) {
+        activationPendingRef.current = false;
+        node.scrollIntoView({behavior: 'smooth', block: 'end'});
+      }
       return;
     }
     // Scroll if at bottom
@@ -117,35 +132,34 @@ function ChatMessagesDiv({
       />
       <TransitionGroup>
         {messages.map((message, index) => {
-            const isLastMessage = index === messages.length - 1;
-            const isThoughtLoading = isLastMessage && isGenerating && isLastChunkThought;
-            return (
-              <Collapse key={message.id} onEntered={handleCollapseEntered}>
-                <div data-message-index={index}>
-                  <MessageDiv
-                    message={message}
-                    setMessage={handleMessageUpdate}
-                    onMessageDelete={handleMessageDelete}
-                    setConversationUpdateKey={setConversationUpdateKey}
-                    promptsReloadKey={promptsReloadKey}
-                    setPromptsReloadKey={setPromptsReloadKey}
-                    selectedConversationId={selectedConversationId}
-                    isThoughtLoading={isThoughtLoading}
-                    setUploadingCount={setUploadingCount}
-                  />
-                  <AddMessageDivider
-                    messages={messages}
-                    setMessages={setMessages}
-                    index={index}
-                    abortGenerate={abortGenerate}
-                    setConversationUpdateKey={setConversationUpdateKey}
-                    setScrollToIndex={setScrollToIndex}
-                  />
-                </div>
-              </Collapse>
-            )
-          }
-        )}
+          const isLastMessage = index === messages.length - 1;
+          const isThoughtLoading = isLastMessage && isGenerating && isLastChunkThought;
+          return (
+            <Collapse key={message.id} onEntered={(node) => handleCollapseEntered(node, isLastMessage)}>
+              <div data-message-index={index}>
+                <MessageDiv
+                  message={message}
+                  setMessage={handleMessageUpdate}
+                  onMessageDelete={handleMessageDelete}
+                  setConversationUpdateKey={setConversationUpdateKey}
+                  promptsReloadKey={promptsReloadKey}
+                  setPromptsReloadKey={setPromptsReloadKey}
+                  selectedConversationId={selectedConversationId}
+                  isThoughtLoading={isThoughtLoading}
+                  setUploadingCount={setUploadingCount}
+                />
+                <AddMessageDivider
+                  messages={messages}
+                  setMessages={setMessages}
+                  index={index}
+                  abortGenerate={abortGenerate}
+                  setConversationUpdateKey={setConversationUpdateKey}
+                  setScrollToIndex={setScrollToIndex}
+                />
+              </div>
+            </Collapse>
+          )
+        })}
       </TransitionGroup>
 
       <Snackbar

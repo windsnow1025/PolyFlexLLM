@@ -3,6 +3,8 @@ import '../global.css';
 import * as React from 'react';
 import Head from 'next/head';
 import CssBaseline from '@mui/material/CssBaseline';
+import Alert from '@mui/material/Alert';
+import Snackbar from '@mui/material/Snackbar';
 
 import AppTheme from "@/components/common/shared-theme/AppTheme";
 
@@ -16,22 +18,32 @@ import Dashboard from "@/components/common/dashboard/Dashboard";
 export default function App({Component}: { Component: React.ElementType }) {
   const [session, setSession] = React.useState<Session | null>(null);
 
+  const [alertOpen, setAlertOpen] = React.useState(false);
+  const [alertMessage, setAlertMessage] = React.useState('');
+  const [alertSeverity, setAlertSeverity] = React.useState<'success' | 'error' | 'info'>('info');
+
   const router = useRouter();
 
   React.useEffect(() => {
     const fetchUser = async () => {
       const userLogic = new UserLogic();
-      const user = await userLogic.fetchUser();
-      if (!user) {
-        return;
-      }
-      setSession({
-        user: {
-          name: user.username,
-          email: user.email,
-          image: user.avatar,
+      try {
+        const user = await userLogic.fetchUser();
+        if (!user) {
+          return;
         }
-      });
+        setSession({
+          user: {
+            name: user.username,
+            email: user.email,
+            image: user.avatar,
+          }
+        });
+      } catch (err) {
+        setAlertMessage((err as Error).message);
+        setAlertSeverity('error');
+        setAlertOpen(true);
+      }
     };
     fetchUser();
   }, [router]);
@@ -70,6 +82,16 @@ export default function App({Component}: { Component: React.ElementType }) {
             )}
           </div>
         </SessionProvider>
+
+        <Snackbar
+          open={alertOpen}
+          autoHideDuration={6000}
+          onClose={() => setAlertOpen(false)}
+        >
+          <Alert onClose={() => setAlertOpen(false)} severity={alertSeverity} sx={{ width: '100%' }}>
+            {alertMessage}
+          </Alert>
+        </Snackbar>
       </AppTheme>
     </>
   );

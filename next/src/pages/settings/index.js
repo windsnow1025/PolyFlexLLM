@@ -1,5 +1,5 @@
 import React, {useEffect, useMemo, useState} from "react";
-import {Tab, Tabs} from "@mui/material";
+import {Alert, Snackbar, Tab, Tabs} from "@mui/material";
 import AuthSettings from "@/components/common/settings/auth/AuthSettings";
 import DeveloperSettings from "@/components/common/settings/DeveloperSettings";
 import AdminSetting from "@/components/common/settings/AdminSetting";
@@ -14,13 +14,24 @@ const Settings = () => {
 
   const [isAdmin, setIsAdmin] = useState(false);
 
+  // Alert state
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [alertSeverity, setAlertSeverity] = useState("info");
+
   const tab = Number(router.query.tab);
   const activeTab = isNaN(tab) ? 0 : tab;
 
   useEffect(() => {
     const checkAdmin = async () => {
-      const adminStatus = await userLogic.isAdmin();
-      setIsAdmin(adminStatus);
+      try {
+        const adminStatus = await userLogic.isAdmin();
+        setIsAdmin(adminStatus);
+      } catch (err) {
+        setAlertMessage(err.message);
+        setAlertSeverity("error");
+        setAlertOpen(true);
+      }
     };
 
     checkAdmin();
@@ -52,6 +63,16 @@ const Settings = () => {
         {activeTab === 2 && <DeveloperSettings/>}
         {isAdmin && activeTab === 3 && <AdminSetting/>}
       </div>
+
+      <Snackbar
+        open={alertOpen}
+        autoHideDuration={6000}
+        onClose={() => setAlertOpen(false)}
+      >
+        <Alert onClose={() => setAlertOpen(false)} severity={alertSeverity} sx={{width: "100%"}}>
+          {alertMessage}
+        </Alert>
+      </Snackbar>
     </div>
   );
 };

@@ -72,12 +72,11 @@ export default class UserLogic {
   }
 
   async isAdmin(): Promise<boolean> {
-    try {
-      const user = await this.userClient.fetchUser();
-      return user.roles.includes(UserResDtoRolesEnum.Admin);
-    } catch (error) {
-      handleError(error, 'Failed to check admin status');
+    const user = await this.fetchUser();
+    if (!user) {
+      return false;
     }
+    return user.roles.includes(UserResDtoRolesEnum.Admin);
   }
 
   async signInByEmail(email: string, password: string) {

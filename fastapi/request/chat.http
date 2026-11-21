@@ -20,7 +20,7 @@ Authorization: {{token}}
       ]
     }
   ],
-  "model": "gemini-3-pro-preview",
+  "model": "gemini-4-hydrogen",
   "api_type": "Vertex AI",
   "temperature": 0,
   "stream": true,

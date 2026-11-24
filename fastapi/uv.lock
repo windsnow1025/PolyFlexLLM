@@ -623,7 +623,7 @@ requires-dist = [
     { name = "attrs", specifier = ">=22.2.0" },
     { name = "fastapi", extras = ["standard"], specifier = "==0.128.0" },
     { name = "httpx", specifier = ">=0.23.0,<0.29.0" },
-    { name = "llm-bridge", specifier = "==2.5.2" },
+    { name = "llm-bridge", specifier = "==2.5.3" },
     { name = "python-dateutil", specifier = ">=2.8.0,<3.0.0" },
     { name = "python-dotenv", specifier = "==1.2.2" },
     { name = "python-jose", extras = ["cryptography"], specifier = "==3.5.0" },
@@ -816,13 +816,13 @@ requests = [
 
 [[package]]
 name = "google-genai"
-version = "2.31.0"
+version = "3.6.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "anyio" },
     { name = "distro" },
     { name = "google-auth", extra = ["requests"] },
-    { name = "httpx" },
+    { name = "httpx2" },
     { name = "pydantic" },
     { name = "requests" },
     { name = "sniffio" },
@@ -830,9 +830,9 @@ dependencies = [
     { name = "typing-extensions" },
     { name = "websockets" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/34/69/6a3d3839ab56ec17d7923c8679b38955e286e0a9793df10ce6d13bc5f122/google_genai-2.31.0.tar.gz", hash = "sha256:71518537de2ba967a61960cba844691dca3dd4ff07726c01a6917d132213541e", size = 745679, upload-time = "2026-10-14T23:52:24.836Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/0f/15/ecebc770eb7edec0e588498d6b872aff6091ce1af1a9c503bd70b5a1ea7a/google_genai-3.6.1.tar.gz", hash = "sha256:dfd4120a15ba5aff6a3de8a85d76e1d5d0af65c70a54c459b1c5e76f503e46e7", size = 885277, upload-time = "2026-11-18T22:18:48.819Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/1c/64/1e9ab799830101ccbdcb67376a3f12b59e51f57643862999fd31af6938a1/google_genai-2.31.0-py3-none-any.whl", hash = "sha256:c87b9d495a24b09dedb29b852a201bea69ecd0b3f6c2561dc68f4055451b1b90", size = 1208245, upload-time = "2026-10-14T23:52:22.766Z" },
+    { url = "https://files.pythonhosted.org/packages/c0/1a/576adc030b48c7491b33ab94b96521151ef5b956552c0057628ef39c69bb/google_genai-3.6.1-py3-none-any.whl", hash = "sha256:4b35064da644f61d7e5f6c0e9406bf63b945e7e96b4af18cadb3371cbc3acf74", size = 1472097, upload-time = "2026-11-18T22:18:46.803Z" },
 ]
 
 [[package]]
@@ -1104,7 +1104,7 @@ wheels = [
 
 [[package]]
 name = "llm-bridge"
-version = "2.5.2"
+version = "2.5.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "anthropic" },
@@ -1118,9 +1118,9 @@ dependencies = [
     { name = "tenacity" },
     { name = "xai-sdk" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/04/35/33ba89086faad7e5498661ddda1d2ea691a20013d61322528a25ccce4ffa/llm_bridge-2.5.2.tar.gz", hash = "sha256:a8e2208a42f5becae9dcf9454e62e714e437e19d30010750640775a0ce433204", size = 137205, upload-time = "2026-11-21T20:43:14.198Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/44/d7/e73694e1c2c0fadd5632ab940e24dbd9dd25126f71b6db21eb839e9e8c5e/llm_bridge-2.5.3.tar.gz", hash = "sha256:9c0bb7a4e5ac0471dd3f9e35607ece02ead61399deb792a29387a73aa4eed84e", size = 137250, upload-time = "2026-11-24T01:20:33.7Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/2d/3e/5dbe8117d69a78cbf12f48edaeda09ac3b589df3109ced849c507506ed01/llm_bridge-2.5.2-py3-none-any.whl", hash = "sha256:e0e09f881c99aa8355b65df2b3e257289daa28a091066c2dbea63a772e4be279", size = 56342, upload-time = "2026-11-21T20:43:12.994Z" },
+    { url = "https://files.pythonhosted.org/packages/b5/42/1e0a40fa40d6691f1697aaa57e136bf92b80486208f49718b3776f368171/llm_bridge-2.5.3-py3-none-any.whl", hash = "sha256:3736fe38a771827952d0fef78d124caaf144ec7026fd22e6b2ac3043ac5cff20", size = 56413, upload-time = "2026-11-24T01:20:32.754Z" },
 ]
 
 [[package]]
